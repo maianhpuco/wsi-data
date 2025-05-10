@@ -120,15 +120,15 @@ class isInContourV3_Easy:
             if cv2.pointPolygonTest(self.cont, point_tuple, False) >= 0:
                 return True
         return False
-import numpy as np
 
 class isInContourV3_Easy(Contour_Checking_fn):
-    def __init__(self, contour, patch_size, center_shift=0.0):  # Set center_shift to 0.0
+    def __init__(self, contour, patch_size, center_shift=0.0, contour_fn='center'):
         self.cont = contour
         self.patch_size = patch_size
         self.shift = int(patch_size//2*center_shift)
+        self.contour_fn = contour_fn
     def __call__(self, pt): 
-        print(f"Processing pt: {pt}, Type: {type(pt)}")
+        print(f"Processing pt: {pt}, Type: {type(pt)}, Contour_fn: {self.contour_fn}")
         if not isinstance(pt, (list, tuple, np.ndarray)) or len(pt) != 2:
             print(f"Invalid pt: {pt}")
             return 0
@@ -145,16 +145,56 @@ class isInContourV3_Easy(Contour_Checking_fn):
                 return 0
         pt = [int(x) for x in pt]
         center = (pt[0]+self.patch_size//2, pt[1]+self.patch_size//2)
-        all_points = [center]  # Only check center point
+        if self.contour_fn == 'center':
+            all_points = [center]
+        else:  # Default to four_pt
+            all_points = [(center[0]-self.shift, center[1]-self.shift),
+                          (center[0]+self.shift, center[1]+self.shift),
+                          (center[0]+self.shift, center[1]-self.shift),
+                          (center[0]-self.shift, center[1]+self.shift),
+                          center]
         for points in all_points:
             result = cv2.pointPolygonTest(self.cont, points, False)
             print(f"Testing point: {points}, Result: {result}")
             if result >= 0:
                 print(f"Accepted pt: {pt}")
                 return 1
-        print(f"Rejected pt: {pt}, Center point outside contour")
+        print(f"Rejected pt: {pt}, All points outside contour")
         return 0
-    
+
+# class isInContourV3_Easy(Contour_Checking_fn):
+#     def __init__(self, contour, patch_size, center_shift=0.0):  # Set center_shift to 0.0
+#         self.cont = contour
+#         self.patch_size = patch_size
+#         self.shift = int(patch_size//2*center_shift)
+#     def __call__(self, pt): 
+#         print(f"Processing pt: {pt}, Type: {type(pt)}")
+#         if not isinstance(pt, (list, tuple, np.ndarray)) or len(pt) != 2:
+#             print(f"Invalid pt: {pt}")
+#             return 0
+#         for x in pt:
+#             if not isinstance(x, (int, float, np.integer, np.floating)):
+#                 print(f"Non-numeric pt: {pt}, Invalid type: {type(x)}")
+#                 return 0
+#             try:
+#                 if np.isnan(float(x)):
+#                     print(f"Non-numeric pt: {pt}, NaN detected")
+#                     return 0
+#             except (TypeError, ValueError):
+#                 print(f"Non-numeric pt: {pt}, Cannot convert to float")
+#                 return 0
+#         pt = [int(x) for x in pt]
+#         center = (pt[0]+self.patch_size//2, pt[1]+self.patch_size//2)
+#         all_points = [center]  # Only check center point
+#         for points in all_points:
+#             result = cv2.pointPolygonTest(self.cont, points, False)
+#             print(f"Testing point: {points}, Result: {result}")
+#             if result >= 0:
+#                 print(f"Accepted pt: {pt}")
+#                 return 1
+#         print(f"Rejected pt: {pt}, Center point outside contour")
+#         return 0
+
 # class isInContourV3_Easy(Contour_Checking_fn):
 # 	def __init__(self, contour, patch_size, center_shift=0.5):
 # 		self.cont = contour

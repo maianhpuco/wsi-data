@@ -265,6 +265,16 @@ if __name__ == '__main__':
     vis_params = {'vis_level': -1, 'line_thickness': 250}
     patch_params = {'use_padding': True, 'contour_fn': 'four_pt'}
 
+    # if preset:
+    #     preset_df = pd.read_csv(preset)
+    #     for key in seg_params.keys():
+    #         seg_params[key] = preset_df.loc[0, key]
+    #     for key in filter_params.keys():
+    #         filter_params[key] = preset_df.loc[0, key]
+    #     for key in vis_params.keys():
+    #         vis_params[key] = preset_df.loc[0, key]
+    #     for key in patch_params.keys():
+    #         patch_params[key] = preset_df.loc[0, key]
     if preset:
         preset_df = pd.read_csv(preset)
         for key in seg_params.keys():
@@ -274,8 +284,12 @@ if __name__ == '__main__':
         for key in vis_params.keys():
             vis_params[key] = preset_df.loc[0, key]
         for key in patch_params.keys():
-            patch_params[key] = preset_df.loc[0, key]
-
+            if key in preset_df.columns:
+                patch_params[key] = preset_df.loc[0, key]
+        # Explicitly handle center_shift
+        if 'center_shift' in preset_df.columns:
+        patch_params['center_shift'] = preset_df.loc[0, 'center_shift']
+        
     parameters = {
         'seg_params': seg_params,
         'filter_params': filter_params,
