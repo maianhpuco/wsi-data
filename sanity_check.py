@@ -10,7 +10,7 @@ import pandas as pd
 import os
 
 # File paths
-base_path = "/datasets/TGCA-metadata/KICH"
+base_path = "~/datasets/TGCA-metadata/KICH"
 slides_path = os.path.join(base_path, "slides.xlsx")
 uuids_path = os.path.join(base_path, "uuids.xlsx")
 
