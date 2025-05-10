@@ -95,6 +95,16 @@ def generate_metadata(
     uuids_df.to_excel(uuids_path, index=False)
     print(f"Generated {uuids_path} with {len(uuids_df)} UUID-filename mappings")
 
+#======== for simea ========  
+def expand_paths(obj):
+    if isinstance(obj, dict):
+        return {k: expand_paths(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [expand_paths(i) for i in obj]
+    elif isinstance(obj, str) and obj.startswith("~"):
+        return os.path.expanduser(obj)
+    return obj
+ 
 def main():
     """Parse command-line arguments and generate metadata files."""
     parser = argparse.ArgumentParser(description='Generate slides.xlsx and uuids.xlsx for WSI processing')
@@ -122,7 +132,8 @@ def main():
         import yaml 
         with open(args.config, 'r') as f:
             config = yaml.safe_load(f)
-            
+        config = expand_paths(config)
+ 
         paths_config = config.get('paths', {})
         source_dir = os.path.expanduser(paths_config.get('source_dir'))
         metadata_dir = os.path.expanduser(os.path.dirname(paths_config.get('slide_name_file')))
