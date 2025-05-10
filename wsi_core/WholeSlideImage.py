@@ -720,7 +720,7 @@ class WholeSlideImage(object):
     #         return None 
      # lated ------- < end of lated  
     # In WholeSlideImage.py, line ~594
-import numpy as np
+    # import numpy as np
 
     @classmethod
     def process_coord_candidate(cls, coord, contour_holes, ref_patch_size, cont_check_fn):
