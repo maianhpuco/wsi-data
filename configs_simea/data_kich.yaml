@@ -8,7 +8,7 @@ paths:
   stitch_save_dir: "/home/mvu9/processing_datasets/processing_tgca/kich/graph_1024"
   slide_name_file: "/home/mvu9/datasets/TGCA-metadata/KICH/slides.xlsx"
   uuid_name_file: "/home/mvu9/datasets/TGCA-metadata/KICH/uuids.xlsx"
-  preset_file: "./presets/tcga.csv"
+  preset_file: "./presets/tcga_kich.csv"
 
 # Processing parameters
 processing:

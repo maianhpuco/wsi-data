@@ -697,29 +697,65 @@ class WholeSlideImage(object):
         else:
             return {}, {}
 
+    # @classmethod
+    # def process_coord_candidate(cls, coord, contour_holes, ref_patch_size, cont_check_fn):
+    #     # print(f"Coord: {coord}, Type: {type(coord)}, Contour_holes: {len(contour_holes)} holes")
+    #     # if WholeSlideImage.isInContours(cont_check_fn, coord, contour_holes, ref_patch_size):
+    #     #     return coord
+    #     # else:
+    #     #     return None
+    #     # print(f"Coord: {coord}, Type: {type(coord)}, Contour_holes: {len(contour_holes)} holes")
+    #     # Validate coord
+    #     if not isinstance(coord, (list, tuple, np.ndarray)) or len(coord) != 2:
+    #         # print(f"Invalid coord: {coord}")
+    #         return None
+    #     if not all(isinstance(x, (int, float)) and not np.isnan(x) for x in coord):
+    #         # print(f"Non-numeric coord: {coord}")
+    #         return None
+    #     # Convert coord to list of integers
+    #     coord = [int(x) for x in coord]
+    #     if WholeSlideImage.isInContours(cont_check_fn, coord, contour_holes, ref_patch_size):
+    #         return coord
+    #     else:
+    #         return None 
+     # lated ------- < end of lated  
+    # In WholeSlideImage.py, line ~594
+import numpy as np
+
     @classmethod
     def process_coord_candidate(cls, coord, contour_holes, ref_patch_size, cont_check_fn):
-        # print(f"Coord: {coord}, Type: {type(coord)}, Contour_holes: {len(contour_holes)} holes")
-        # if WholeSlideImage.isInContours(cont_check_fn, coord, contour_holes, ref_patch_size):
-        #     return coord
-        # else:
-        #     return None
-        # print(f"Coord: {coord}, Type: {type(coord)}, Contour_holes: {len(contour_holes)} holes")
-        # Validate coord
+        print(f"Coord: {coord}, Type: {type(coord)}, Contour_holes: {len(contour_holes)} holes")
+        print(f"Coord dtypes: {[type(x) for x in coord]}, Values: {coord}")
         if not isinstance(coord, (list, tuple, np.ndarray)) or len(coord) != 2:
-            # print(f"Invalid coord: {coord}")
+            print(f"Invalid coord: {coord}")
             return None
-        if not all(isinstance(x, (int, float)) and not np.isnan(x) for x in coord):
-            # print(f"Non-numeric coord: {coord}")
-            return None
-        # Convert coord to list of integers
+        for x in coord:
+            if not isinstance(x, (int, float, np.integer, np.floating)):
+                print(f"Non-numeric coord: {coord}, Invalid type: {type(x)}")
+                return None
+            try:
+                if np.isnan(float(x)):
+                    print(f"Non-numeric coord: {coord}, NaN detected")
+                    return None
+            except (TypeError, ValueError):
+                print(f"Non-numeric coord: {coord}, Cannot convert to float")
+                return None
         coord = [int(x) for x in coord]
-        if WholeSlideImage.isInContours(cont_check_fn, coord, contour_holes, ref_patch_size):
+        print(f"Converted coord: {coord}")
+        contour_result = cont_check_fn(coord)
+        print(f"Contour check result: {contour_result}")
+        if contour_result == 1:
+            # Check against holes
+            for hole in contour_holes:
+                if cv2.pointPolygonTest(hole, (coord[0]+ref_patch_size//2, coord[1]+ref_patch_size//2), False) >= 0:
+                    print(f"Rejected coord: {coord}, Inside hole")
+                    return None
+            print(f"Accepted coord: {coord}")
             return coord
-        else:
-            return None 
-     # lated ------- < end of lated  
-        
+        print(f"Rejected coord: {coord}, Failed contour check")
+        return None 
+
+
     def visHeatmap(self, scores, coords, vis_level=-1,
                    top_left=None, bot_right=None,
                    patch_size=(256, 256),
