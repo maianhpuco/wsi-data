@@ -123,7 +123,7 @@ class isInContourV3_Easy:
 import numpy as np
 
 class isInContourV3_Easy(Contour_Checking_fn):
-    def __init__(self, contour, patch_size, center_shift=0.1):  # Further reduced center_shift
+    def __init__(self, contour, patch_size, center_shift=0.0):  # Set center_shift to 0.0
         self.cont = contour
         self.patch_size = patch_size
         self.shift = int(patch_size//2*center_shift)
@@ -145,21 +145,14 @@ class isInContourV3_Easy(Contour_Checking_fn):
                 return 0
         pt = [int(x) for x in pt]
         center = (pt[0]+self.patch_size//2, pt[1]+self.patch_size//2)
-        if self.shift > 0:
-            all_points = [(center[0]-self.shift, center[1]-self.shift),
-                          (center[0]+self.shift, center[1]+self.shift),
-                          (center[0]+self.shift, center[1]-self.shift),
-                          (center[0]-self.shift, center[1]+self.shift),
-                          center]  # Include center point
-        else:
-            all_points = [center]
+        all_points = [center]  # Only check center point
         for points in all_points:
             result = cv2.pointPolygonTest(self.cont, points, False)
             print(f"Testing point: {points}, Result: {result}")
             if result >= 0:
                 print(f"Accepted pt: {pt}")
                 return 1
-        print(f"Rejected pt: {pt}, All points outside contour")
+        print(f"Rejected pt: {pt}, Center point outside contour")
         return 0
     
 # class isInContourV3_Easy(Contour_Checking_fn):
