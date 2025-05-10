@@ -3,6 +3,9 @@ metadata_all: metadata_kirc metadata_kirp metadata_lusc metadata_luad
 metadata_kich_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
 
+pp_kich_simea: 
+	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kich.yaml  
+
 metadata_kich:
 	python scripts/preprocessing/tcga/generate_metadata.py --config configs/data_tcga_kich.yaml
 
