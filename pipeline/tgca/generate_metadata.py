@@ -111,12 +111,20 @@ def main():
         with open(args.config, 'r') as f:
             config = yaml.safe_load(f)   
         source_dir = config.get('source_dir')
+        
+        
         metadata_dir = config.get('metadata_dir')
         manifest_path = config.get('manifest_path', None)
+        
+
     else:
         source_dir = args.source_dir
         metadata_dir = args.metadata_dir
         manifest_path = args.manifest_path
+        
+    print("source_dir: ", source_dir) 
+    print("metadata_dir: ", metadata_dir)
+    print("manifest_path: ", manifest_path) 
 
     generate_metadata(source_dir, metadata_dir, manifest_path)
 
