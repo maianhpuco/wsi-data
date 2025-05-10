@@ -106,22 +106,32 @@ def main():
     args = parser.parse_args()
 
     # Load config if specified
+    # if args.config:
+    #     import yaml 
+    #     with open(args.config, 'r') as f:
+    #         config = yaml.safe_load(f)   
+    #     source_dir = config.get('source_dir')
+    #     metadata_dir = config.get('metadata_dir')
+    #     manifest_path = config.get('manifest_path', None)
+    # else:
+    #     source_dir = args.source_dir
+    #     metadata_dir = args.metadata_dir
+    #     manifest_path = args.manifest_path
+    
     if args.config:
         import yaml 
         with open(args.config, 'r') as f:
-            config = yaml.safe_load(f)   
-        source_dir = config.get('source_dir')
-        
-        
-        metadata_dir = config.get('metadata_dir')
-        manifest_path = config.get('manifest_path', None)
-        
-
+            config = yaml.safe_load(f)
+            
+        paths_config = config.get('paths', {})
+        source_dir = os.path.expanduser(paths_config.get('source_dir'))
+        metadata_dir = os.path.expanduser(os.path.dirname(paths_config.get('slide_name_file')))
+        manifest_path = args.manifest_path  # still use CLI for manifest if needed
     else:
-        source_dir = args.source_dir
-        metadata_dir = args.metadata_dir
+        source_dir = os.path.expanduser(args.source_dir)
+        metadata_dir = os.path.expanduser(args.metadata_dir)
         manifest_path = args.manifest_path
-        
+ 
     print("source_dir: ", source_dir) 
     print("metadata_dir: ", metadata_dir)
     print("manifest_path: ", manifest_path) 
