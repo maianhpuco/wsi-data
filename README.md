@@ -64,3 +64,60 @@ pip install opencv-python-headless==4.1.1.26
 
 ``` 
 
+==================================Check-list================================== 
+====download==== 
+Compare manifest files vs data download: 
+TGCA - Renal 
+[x] KICH 
+[x] KIRP 
+[x] KIRC
+
+TCGA-Lung 
+[x] LUSD  
+[x] LUAD  
+
+====metadata generation====
+TGCA - Renal 
+[x] KICH 
+[x] KIRP 
+[x] KIRC
+
+TCGA-Lung 
+[] LUSC
+[] LUAD    
+
+====preprocessing -> h5====
+
+
+TGCA - Renal 
+[] KICH 
+[] KIRP 
+[] KIRC
+
+TCGA-Lung 
+[] LUSC
+[] LUAD  
+
+```
+ls /project/hnguyen2/mvu9/datasets/TGCA-datasets/KIRC > ./check_sum/downloaded_ids_kirc.txt 
+cut -f1 manifest/KIRC/gdc_manifest* | tail -n +2 > all_ids_kirc.txt
+comm -23 <(sort all_ids_kirc.txt) <(sort ./check_sum/downloaded_ids_kirc.txt) > failed_ids_kirc.txt 
+
+cat failed_ids_kirc.txt | jq -R -s -c 'split("\n") | map(select(length > 0))' > ids_kirc.json
+echo '{"ids":'$(cat ids_kirc.json)'}' > request_kirc.json
+
+curl -s -X POST https://api.gdc.cancer.gov/manifest \
+  -H "Content-Type: application/json" \
+  -d @request_kirc.json \
+  -o failed_manifest_kirc.txt
+
+./gdc-client download -m failed_manifest_kirc.txt -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/KIRC
+``` 
+
+```
+ls /project/hnguyen2/mvu9/datasets/TGCA-datasets/LUAD > ./check_sum/downloaded_ids_luad.txt 
+cut -f1 manifest/LUAD/gdc_manifest* | tail -n +2 > all_ids_luad.txt
+comm -23 <(sort all_ids_luad.txt) <(sort ./check_sum/downloaded_ids_luad.txt) > failed_ids_luad.txt  
+
+```
+
