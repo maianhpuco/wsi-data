@@ -288,7 +288,7 @@ if __name__ == '__main__':
                 patch_params[key] = preset_df.loc[0, key]
         # Explicitly handle center_shift
         if 'center_shift' in preset_df.columns:
-        patch_params['center_shift'] = preset_df.loc[0, 'center_shift']
+            patch_params['center_shift'] = preset_df.loc[0, 'center_shift']
         
     parameters = {
         'seg_params': seg_params,
