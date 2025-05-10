@@ -6,6 +6,7 @@ This repo include data preprocessing and dataloader for Pathology and WSIs
 
 
 ## TCGA dataset 
+
 ### Download
 Guidance: https://andrewjanowczyk.com/download-tcga-digital-pathology-images-ffpe/
 
@@ -13,9 +14,10 @@ Example
 
 ```
 ./gdc-client download -m gdc_manifest.txt -d path/save/data 
-./gdc-client download -m manifest/LUSC/gdc_manifest.2025-05-09.192912.txt -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/LUSC
+./gdc-client download -m manifest/KICH/gdc_manifest.2025-05-09.192912.txt -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/LUSC
 
-``` 
+```
+
 
 ### Fail Download Fix Command 
 
@@ -35,6 +37,8 @@ curl -s -X POST https://api.gdc.cancer.gov/manifest \
 ./gdc-client download -m failed_manifest_kirp.txt -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/KIRP 
 ```
 
+- simea 
+./gdc-client download -m manifest/KICH/ -d ~/datasets/TGCA-datasets/KICH 
 
 
 ==================================Customize==================================
