@@ -1,4 +1,8 @@
 metadata_all: metadata_kirc metadata_kirp metadata_lusc metadata_luad
+
+pp_all: pp_kirc pp_kirp 
+
+
 #--------SIMAE --------- 
 metadata_kich_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
@@ -7,7 +11,6 @@ metadata_kirp_simea:
 
 metadata_kirc_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirc.yaml 
-
 
 
 
