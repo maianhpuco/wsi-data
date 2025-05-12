@@ -79,8 +79,9 @@ def main():
     svs2uuid = {row[1].rstrip('\n'): row[0] for row in uuid_data.values}
 
     # Process patches using ThreadPoolExecutor
-    pool = ThreadPoolExecutor(max_workers=16)
+    pool = ThreadPoolExecutor(max_workers=4)
     all_file_names = [f for f in os.listdir(patch_folder) if f.endswith('.h5')]
+    
     for patch_file_name in all_file_names:
         pool.submit(
             generate_patch,
