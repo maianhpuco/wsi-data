@@ -24,7 +24,9 @@ pp_kirp_simea:
 pp_kirc_simea:
 	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirc.yaml  
 
-
+#--------SIMAE --------- PATCHES GENERATION 
+gen_patches_kich_simea:
+	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
 
 #--------MAUI--------- 
 metadata_kich:
