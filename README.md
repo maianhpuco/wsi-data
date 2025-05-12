@@ -39,8 +39,7 @@ curl -s -X POST https://api.gdc.cancer.gov/manifest \
 
 - simea 
 ./gdc-client download -m manifest/KICH/ -d ~/datasets/TGCA-datasets/KICH 
-
-
+./gdc-client download -m manifest/KIRP/ -d ~/datasets/TGCA-datasets/KIRP
 ==================================Customize==================================
 ```
 conda install -c conda-forge \
