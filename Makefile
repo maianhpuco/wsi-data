@@ -2,9 +2,26 @@ metadata_all: metadata_kirc metadata_kirp metadata_lusc metadata_luad
 #--------SIMAE --------- 
 metadata_kich_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
+metadata_kirp_simea:
+	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirp.yaml 
 
+metadata_kirc_simea:
+	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirc.yaml 
+
+
+
+
+#--------SIMAE --------- PREPROCESSING 
 pp_kich_simea: 
-	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kich.yaml  
+	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kich.yaml 
+
+pp_kirp_simea:
+	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirp.yaml  
+
+pp_kirc_simea:
+	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirc.yaml  
+
+
 
 #--------MAUI--------- 
 metadata_kich:
