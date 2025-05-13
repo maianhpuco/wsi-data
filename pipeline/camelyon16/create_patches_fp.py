@@ -5,14 +5,14 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import yaml
-import sys 
-# Get the absolute path of the parent of the parent directory
+import sys
+
+# Setup system path
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
 print("Search path:", base_path)
 
-
-# Internal project imports
+# Internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
 from wsi_core.batch_process_utils import initialize_df
@@ -79,12 +79,14 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		current_vis_params = vis_params.copy()
 		current_patch_params = patch_params.copy()
 
-		# Infer best level if needed
-		for k in ['vis_level', 'seg_level']:
-			if current_seg_params[k if 'seg' in k else k] < 0:
-				best_level = wsi.getOpenSlide().get_best_level_for_downsample(64)
-				current_seg_params[k] = best_level
-				current_vis_params[k] = best_level
+		# Infer seg and vis level if set to -1
+		if current_seg_params.get('seg_level', -1) < 0:
+			best_level = wsi.getOpenSlide().get_best_level_for_downsample(64)
+			current_seg_params['seg_level'] = best_level
+
+		if current_vis_params.get('vis_level', -1) < 0:
+			best_level = wsi.getOpenSlide().get_best_level_for_downsample(64)
+			current_vis_params['vis_level'] = best_level
 
 		# Handle keep/exclude IDs
 		for key in ['keep_ids', 'exclude_ids']:
@@ -94,17 +96,17 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 			else:
 				current_seg_params[key] = []
 
-		# Check WSI size for feasibility
+		# Check WSI size
 		w, h = wsi.level_dim[current_seg_params['seg_level']]
 		if w * h > 1e8:
-			print(f"[ERROR] WSI size {w}x{h} too large for segmentation. Skipping.")
+			print(f"[ERROR] WSI size {w}x{h} too large. Skipping.")
 			df.loc[idx, 'status'] = 'failed_seg'
 			continue
 
 		df.loc[idx, 'vis_level'] = current_vis_params['vis_level']
 		df.loc[idx, 'seg_level'] = current_seg_params['seg_level']
 
-		# Segment
+		# Segmentation
 		if seg:
 			wsi, seg_time = segment(wsi, current_seg_params, current_filter_params)
 			seg_times += seg_time
@@ -117,7 +119,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 			mask = wsi.visWSI(**current_vis_params)
 			mask.save(os.path.join(mask_save_dir, f"{slide_id}.jpg"))
 
-		# Patch
+		# Patching
 		if patch:
 			current_patch_params.update({
 				'patch_level': patch_level,
@@ -131,7 +133,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		else:
 			patch_time = -1
 
-		# Stitch
+		# Stitching
 		if stitch:
 			patch_path = os.path.join(patch_save_dir, slide_id + '.h5')
 			if os.path.isfile(patch_path):
@@ -145,6 +147,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		df.loc[idx, 'status'] = 'processed'
 		df.to_csv(os.path.join(save_dir, 'process_list_autogen.csv'), index=False)
 
+	# Averages
 	seg_times /= total
 	patch_times /= total
 	stitch_times /= total
@@ -160,59 +163,59 @@ if __name__ == "__main__":
 	parser.add_argument("--config", type=str, required=True, help="Path to YAML config file")
 	args = parser.parse_args()
 
-	# Load configuration
+	# Load YAML config
 	config = load_config(args.config)
 
-	# Extract paths and processing settings
+	# Paths
 	paths = config['paths']
-	proc = config['processing']
-
 	source = paths['source']
 	save_dir = paths['save_dir']
 	patch_save_dir = paths['patch_save_dir']
 	mask_save_dir = paths['mask_save_dir']
 	stitch_save_dir = paths['stitch_save_dir']
-	process_list = paths.get('process_list', None)
-if process_list:
+	process_list = paths.get('process_list')
+	if process_list:
 		process_list = os.path.join(save_dir, process_list)
 
-patch_size = proc['patch_size']
-step_size = proc['step_size']
-patch_level = proc['patch_level']
-seg = proc['seg']
-patch = proc['patch']
-stitch = proc['stitch']
-auto_skip = proc['auto_skip']
+	# Processing flags
+	proc = config['processing']
+	patch_size = proc['patch_size']
+	step_size = proc['step_size']
+	patch_level = proc['patch_level']
+	seg = proc['seg']
+	patch = proc['patch']
+	stitch = proc['stitch']
+	auto_skip = proc['auto_skip']
 
-# Parameters
-seg_params = config['segmentation']
-filter_params = config['filtering']
-vis_params = config['visualization']
-patch_params = config['patching']
+	# Parameter groups
+	seg_params = config['segmentation']
+	filter_params = config['filtering']
+	vis_params = config['visualization']
+	patch_params = config['patching']
 
-# Create output directories
-for d in [save_dir, patch_save_dir, mask_save_dir, stitch_save_dir]:
-	os.makedirs(d, exist_ok=True)
+	# Ensure output folders exist
+	for d in [save_dir, patch_save_dir, mask_save_dir, stitch_save_dir]:
+		os.makedirs(d, exist_ok=True)
 
-# Run the pipeline
-seg_and_patch(
-	source=source,
-	save_dir=save_dir,
-	patch_save_dir=patch_save_dir,
-	mask_save_dir=mask_save_dir,
-	stitch_save_dir=stitch_save_dir,
-	patch_size=patch_size,
-	step_size=step_size,
-	patch_level=patch_level,
-	seg=seg,
-	patch=patch,
-	stitch=stitch,
-	auto_skip=auto_skip,
-	process_list=process_list,
-	seg_params=seg_params,
-	filter_params=filter_params,
-	vis_params=vis_params,
-	patch_params=patch_params,
-	save_mask=True,
-	use_default_params=False
-)
+	# Run
+	seg_and_patch(
+		source=source,
+		save_dir=save_dir,
+		patch_save_dir=patch_save_dir,
+		mask_save_dir=mask_save_dir,
+		stitch_save_dir=stitch_save_dir,
+		patch_size=patch_size,
+		step_size=step_size,
+		patch_level=patch_level,
+		seg=seg,
+		patch=patch,
+		stitch=stitch,
+		auto_skip=auto_skip,
+		process_list=process_list,
+		seg_params=seg_params,
+		filter_params=filter_params,
+		vis_params=vis_params,
+		patch_params=patch_params,
+		save_mask=True,
+		use_default_params=False
+	)
