@@ -45,3 +45,6 @@ for cls in classes:
         dest_path = os.path.join(test_dir, folder)
         shutil.copytree(src_path, dest_path)
         print(f"Copied {src_path} -> {dest_path}")
+        
+        
+        # /home/mvu9/processing_datasets/test_tgca/kirc/patches_png/TCGA-BP-4797-01Z-00-DX1.ede57976-a7d8-4534-bba3-3a3472fefd62
