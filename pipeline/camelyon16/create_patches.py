@@ -95,13 +95,21 @@ def seg_and_patch(config):
                 param_dict[key] = best_level
                 df.loc[idx, key] = best_level
 
+        # for id_key in ['keep_ids', 'exclude_ids']:
+        #     val = seg_params[id_key]
+        #     if val != 'none' and len(str(val)) > 0:
+        #         seg_params[id_key] = np.array(str(val).split(',')).astype(int)
+        #     else:
+        #         seg_params[id_key] = []
         for id_key in ['keep_ids', 'exclude_ids']:
             val = seg_params[id_key]
-            if val != 'none' and len(str(val)) > 0:
-                seg_params[id_key] = np.array(str(val).split(',')).astype(int)
+            if isinstance(val, list) and len(val) > 0:
+                seg_params[id_key] = np.array(val).astype(int)
+            elif isinstance(val, str) and val.lower() != 'none' and val.strip() not in ['', '[]']:
+                seg_params[id_key] = np.array(val.strip('[]').split(',')).astype(int)
             else:
                 seg_params[id_key] = []
-
+ 
         # Segment
         if seg:
             wsi_obj, seg_time = segment(wsi_obj, seg_params, filter_params)

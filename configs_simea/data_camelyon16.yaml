@@ -24,7 +24,7 @@ paths:
   source: "/home/mvu9/datasets/camelyon16/raw_data/camelyon16/images"
   save_dir: "/home/mvu9/processing_datasets/processing_camelyon16"
   patch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
-  
+  patch_h5_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_h5"
   mask_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/masks"
   stitch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/stitches"
   process_list: null  # or "my_list.csv"
@@ -35,7 +35,7 @@ processing:
   patch_level: 1
   seg: true
   patch: true
-  stitch: false
+  stitch: false 
   auto_skip: true
 
 segmentation:
