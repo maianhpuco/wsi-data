@@ -61,7 +61,7 @@ def main():
     config = load_config(args.config)
 
     slide_folder = config['paths']['source_dir']
-    patch_folder = os.path.join(config['paths']['root_dir'], f"patches_{config['processing']['patch_size']}")
+    patch_folder = config['paths']['patch_h5_dir']
     save_folder = config['paths']['patch_png_dir']
     uuid_file = config['paths']['uuid_name_file']
     patch_size = config['processing']['patch_size']
