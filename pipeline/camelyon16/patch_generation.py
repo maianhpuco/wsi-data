@@ -5,6 +5,8 @@ import argparse
 import pandas as pd
 import yaml
 import sys 
+from PIL import Image
+
 # Setup path
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
@@ -28,10 +30,32 @@ def segment(wsi_obj, seg_params, filter_params):
     wsi_obj.segmentTissue(**seg_params, filter_params=filter_params)
     return wsi_obj, time.time() - start_time
 
-def patching(wsi_obj, **kwargs):
-    start_time = time.time()
-    file_path = wsi_obj.createPatches_bag_hdf5(**kwargs, save_coord=True)
-    return file_path, time.time() - start_time
+def extract_and_save_png_patches(wsi_obj, patch_params, slide_id, patch_png_dir):
+    os.makedirs(patch_png_dir, exist_ok=True)
+    patch_dir = os.path.join(patch_png_dir, slide_id)
+    os.makedirs(patch_dir, exist_ok=True)
+
+    patch_generator = wsi_obj._getPatchGenerator(
+        cont=None,
+        cont_idx=0,
+        patch_level=patch_params['patch_level'],
+        save_path=patch_dir,
+        patch_size=patch_params['patch_size'],
+        step_size=patch_params['step_size'],
+        custom_downsample=1,
+        white_black=True,
+        white_thresh=patch_params['white_thresh'],
+        black_thresh=patch_params['black_thresh'],
+        contour_fn=patch_params['contour_fn'],
+        use_padding=True
+    )
+
+    for i, patch_info in enumerate(patch_generator):
+        patch = patch_info['patch_PIL']
+        coord_x = patch_info['x']
+        coord_y = patch_info['y']
+        filename = f"{coord_x}_{coord_y}.png"
+        patch.save(os.path.join(patch_dir, filename))
 
 def seg_and_patch(config):
     paths = config['paths']
@@ -50,7 +74,7 @@ def seg_and_patch(config):
     vis_params = config['visualization']
     patch_params = config['patching']
 
-    patch_save_dir = paths['patch_save_dir']
+    patch_png_dir = paths['patch_png_dir']
     mask_save_dir = paths['mask_save_dir']
     stitch_save_dir = paths['stitch_save_dir']
     save_dir = paths['save_dir']
@@ -60,7 +84,7 @@ def seg_and_patch(config):
     if process_list:
         process_list = os.path.join(save_dir, process_list)
 
-    os.makedirs(patch_save_dir, exist_ok=True)
+    os.makedirs(patch_png_dir, exist_ok=True)
     os.makedirs(mask_save_dir, exist_ok=True)
     os.makedirs(stitch_save_dir, exist_ok=True)
 
@@ -79,7 +103,7 @@ def seg_and_patch(config):
         slide = df.loc[idx, 'slide_id']
         slide_id, _ = os.path.splitext(slide)
 
-        if auto_skip and os.path.isfile(os.path.join(patch_save_dir, slide_id + '.h5')):
+        if auto_skip and os.path.exists(os.path.join(patch_png_dir, slide_id)):
             print(f"[SKIP] {slide_id} already processed")
             df.loc[idx, 'status'] = 'already_exist'
             continue
@@ -88,20 +112,12 @@ def seg_and_patch(config):
         full_path = os.path.join(source, slide)
         wsi_obj = WholeSlideImage(full_path)
 
-        # Infer levels
         for key, param_dict in [('seg_level', seg_params), ('vis_level', vis_params)]:
             if param_dict[key] < 0:
                 best_level = wsi_obj.getOpenSlide().get_best_level_for_downsample(64)
                 param_dict[key] = best_level
                 df.loc[idx, key] = best_level
 
-        # for id_key in ['keep_ids', 'exclude_ids']:
-        #     val = seg_params[id_key]
-        #     if val != 'none' and len(str(val)) > 0:
-        #         seg_params[id_key] = np.array(str(val).split(',')).astype(int)
-        #     else:
-        #         seg_params[id_key] = []
-        
         for id_key in ['keep_ids', 'exclude_ids']:
             val = seg_params[id_key]
             if isinstance(val, list) and len(val) > 0:
@@ -110,34 +126,27 @@ def seg_and_patch(config):
                 seg_params[id_key] = np.array(val.strip('[]').split(',')).astype(int)
             else:
                 seg_params[id_key] = []
- 
-        # Segment
+
         if seg:
             wsi_obj, seg_time = segment(wsi_obj, seg_params, filter_params)
             seg_times += seg_time
             print(f"[INFO] Segmentation took {seg_time:.2f}s")
 
-        # Save mask
-        mask_img = wsi_obj.visWSI(**vis_params)
-        if isinstance(mask_img, tuple):
-            mask_img = mask_img[0]
+        mask_img = wsi_obj.visWSI(**vis_params)[0]
         mask_img.save(os.path.join(mask_save_dir, f"{slide_id}.png"))
 
-        # Patch
         if patch:
-            patch_params.update({'patch_level': patch_level, 'patch_size': patch_size, 'step_size': step_size,
-                                 'save_path': patch_save_dir, 'custom_downsample': 1})
-            _, patch_time = patching(wsi_obj, **patch_params)
-            patch_times += patch_time
-            print(f"[INFO] Patching took {patch_time:.2f}s")
-
-        # Stitch
-        if stitch:
-            file_path = os.path.join(patch_save_dir, slide_id + '.h5')
-            heatmap, stitch_time = stitching(file_path, downscale=64)
-            stitch_times += stitch_time
-            heatmap.save(os.path.join(stitch_save_dir, f"{slide_id}.png"))
-            print(f"[INFO] Stitching took {stitch_time:.2f}s")
+            start = time.time()
+            extract_and_save_png_patches(wsi_obj, {
+                'patch_level': patch_level,
+                'patch_size': patch_size,
+                'step_size': step_size,
+                'white_thresh': patch_params['white_thresh'],
+                'black_thresh': patch_params['black_thresh'],
+                'contour_fn': patch_params['contour_fn']
+            }, slide_id, patch_png_dir)
+            patch_times += time.time() - start
+            print(f"[INFO] PNG Patching took {patch_times:.2f}s")
 
         df.loc[idx, 'status'] = 'processed'
         df.to_csv(os.path.join(save_dir, 'process_list_autogen.csv'), index=False)
@@ -145,13 +154,12 @@ def seg_and_patch(config):
     total = len(process_stack)
     print(f"\n[SUMMARY] Avg segmentation time: {seg_times/total:.2f}s")
     print(f"[SUMMARY] Avg patching time: {patch_times/total:.2f}s")
-    print(f"[SUMMARY] Avg stitching time: {stitch_times/total:.2f}s")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Segmentation + patching via config')
+    parser = argparse.ArgumentParser(description='Segmentation + PNG patching via config')
     parser.add_argument('--config', type=str, required=True, help='YAML config file')
     args = parser.parse_args()
 
     config = load_config(args.config)
     seg_and_patch(config)
-    print("[INFO] Finished processing all slides.") 
+    print("[INFO] Finished processing all slides.")
