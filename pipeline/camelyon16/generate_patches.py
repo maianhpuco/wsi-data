@@ -35,27 +35,28 @@ def extract_and_save_png_patches(wsi_obj, patch_params, slide_id, patch_png_dir)
     patch_dir = os.path.join(patch_png_dir, slide_id)
     os.makedirs(patch_dir, exist_ok=True)
 
-    patch_generator = wsi_obj._getPatchGenerator(
-        cont=None,
-        cont_idx=0,
-        patch_level=patch_params['patch_level'],
-        save_path=patch_dir,
-        patch_size=patch_params['patch_size'],
-        step_size=patch_params['step_size'],
-        custom_downsample=1,
-        white_black=True,
-        white_thresh=patch_params['white_thresh'],
-        black_thresh=patch_params['black_thresh'],
-        contour_fn=patch_params['contour_fn'],
-        use_padding=True
-    )
+    for cont_idx, cont in enumerate(wsi_obj.contours_tissue):
+        patch_generator = wsi_obj._getPatchGenerator(
+            cont=cont,
+            cont_idx=cont_idx,
+            patch_level=patch_params['patch_level'],
+            save_path=patch_dir,
+            patch_size=patch_params['patch_size'],
+            step_size=patch_params['step_size'],
+            custom_downsample=1,
+            white_black=True,
+            white_thresh=patch_params['white_thresh'],
+            black_thresh=patch_params['black_thresh'],
+            contour_fn=patch_params['contour_fn'],
+            use_padding=True
+        )
 
-    for i, patch_info in enumerate(patch_generator):
-        patch = patch_info['patch_PIL']
-        coord_x = patch_info['x']
-        coord_y = patch_info['y']
-        filename = f"{coord_x}_{coord_y}.png"
-        patch.save(os.path.join(patch_dir, filename))
+        for patch_info in patch_generator:
+            patch = patch_info['patch_PIL']
+            coord_x = patch_info['x']
+            coord_y = patch_info['y']
+            filename = f"{coord_x}_{coord_y}.png"
+            patch.save(os.path.join(patch_dir, filename))
 
 def seg_and_patch(config):
     paths = config['paths']
