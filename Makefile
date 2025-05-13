@@ -7,8 +7,6 @@ pp_all_simea: pp_kirp_simea pp_kirc_simea pp_kirc_simea
 
 
 #--------SIMAE --------- 
-metadata_camelyon16_simea:
-	python pipeline/tgca/generate_metadata.py --config configs_simea/data_camelyon16.yaml
 metadata_kich_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
 metadata_kirp_simea:
@@ -18,7 +16,11 @@ metadata_kirc_simea:
 
 
 
+
 #--------SIMAE --------- PREPROCESSING 
+pp_camelyon16_simea:
+	python pipeline/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
+
 pp_kich_simea: 
 	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kich.yaml 
 
