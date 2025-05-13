@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import yaml
+# Get the absolute path of the parent of the parent directory
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(base_path)
+print("Search path:", base_path)
+
 
 # Internal project imports
 from wsi_core.WholeSlideImage import WholeSlideImage
