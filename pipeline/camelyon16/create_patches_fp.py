@@ -7,7 +7,7 @@ from tqdm import tqdm
 import yaml
 import sys
 
-# Setup system path
+# Setup path
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
 print("Search path:", base_path)
@@ -79,7 +79,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		current_vis_params = vis_params.copy()
 		current_patch_params = patch_params.copy()
 
-		# Infer seg and vis level if set to -1
+		# Infer best level
 		if current_seg_params.get('seg_level', -1) < 0:
 			best_level = wsi.getOpenSlide().get_best_level_for_downsample(64)
 			current_seg_params['seg_level'] = best_level
@@ -96,7 +96,6 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 			else:
 				current_seg_params[key] = []
 
-		# Check WSI size
 		w, h = wsi.level_dim[current_seg_params['seg_level']]
 		if w * h > 1e8:
 			print(f"[ERROR] WSI size {w}x{h} too large. Skipping.")
@@ -106,7 +105,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		df.loc[idx, 'vis_level'] = current_vis_params['vis_level']
 		df.loc[idx, 'seg_level'] = current_seg_params['seg_level']
 
-		# Segmentation
+		# Segment
 		if seg:
 			wsi, seg_time = segment(wsi, current_seg_params, current_filter_params)
 			seg_times += seg_time
@@ -116,10 +115,12 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 		# Save mask
 		if save_mask:
-			mask = wsi.visWSI(**current_vis_params)
-			mask.save(os.path.join(mask_save_dir, f"{slide_id}.jpg"))
+			mask_img = wsi.visWSI(**current_vis_params)
+			if isinstance(mask_img, tuple):
+				mask_img = mask_img[0]
+			mask_img.save(os.path.join(mask_save_dir, f"{slide_id}.jpg"))
 
-		# Patching
+		# Patch
 		if patch:
 			current_patch_params.update({
 				'patch_level': patch_level,
@@ -133,7 +134,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		else:
 			patch_time = -1
 
-		# Stitching
+		# Stitch
 		if stitch:
 			patch_path = os.path.join(patch_save_dir, slide_id + '.h5')
 			if os.path.isfile(patch_path):
@@ -163,7 +164,6 @@ if __name__ == "__main__":
 	parser.add_argument("--config", type=str, required=True, help="Path to YAML config file")
 	args = parser.parse_args()
 
-	# Load YAML config
 	config = load_config(args.config)
 
 	# Paths
@@ -177,7 +177,7 @@ if __name__ == "__main__":
 	if process_list:
 		process_list = os.path.join(save_dir, process_list)
 
-	# Processing flags
+	# Processing
 	proc = config['processing']
 	patch_size = proc['patch_size']
 	step_size = proc['step_size']
@@ -187,13 +187,13 @@ if __name__ == "__main__":
 	stitch = proc['stitch']
 	auto_skip = proc['auto_skip']
 
-	# Parameter groups
+	# Parameters
 	seg_params = config['segmentation']
 	filter_params = config['filtering']
 	vis_params = config['visualization']
 	patch_params = config['patching']
 
-	# Ensure output folders exist
+	# Create dirs
 	for d in [save_dir, patch_save_dir, mask_save_dir, stitch_save_dir]:
 		os.makedirs(d, exist_ok=True)
 
