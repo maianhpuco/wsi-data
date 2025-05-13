@@ -4,7 +4,7 @@ import time
 import argparse
 import pandas as pd
 import yaml
-
+import sys 
 # Setup path
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
