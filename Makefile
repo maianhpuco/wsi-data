@@ -1,4 +1,4 @@
-metadata_all: metadata_kirc metadata_kirp metadata_lusc metadata_luad
+metadata_all: metadata_kirc metadata_kirp metadata_kich
 
 pp_all_simea: pp_kirp_simea pp_kirc_simea 
 
