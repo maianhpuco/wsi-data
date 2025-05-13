@@ -38,7 +38,7 @@ gen_patches_kirp_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kirp.yaml 
 
 gen_patches_camelyon16_simea:
-	python pipeline/camelyon16/create_patches.py --config configs_simea/data_camelyon16.yaml
+	python pipeline/camelyon16/generate_patches.py --config configs_simea/data_camelyon16.yaml
  
 #--------MAUI--------- 
 metadata_kich:

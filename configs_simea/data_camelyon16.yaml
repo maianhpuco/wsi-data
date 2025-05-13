@@ -31,13 +31,13 @@ paths:
   process_list: null  # or "my_list.csv"
 
 processing:
-  patch_size: 1024
-  step_size: 1024
+  patch_size: 256
+  step_size: 256
   patch_level: 1
   seg: true
   patch: true
   stitch: false 
-  auto_skip: true
+  auto_skip: false 
 
 segmentation:
   seg_level: -1
