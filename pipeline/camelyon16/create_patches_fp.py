@@ -39,7 +39,7 @@ def patching(wsi_object, **kwargs):
 	file_path = wsi_object.process_contours(**kwargs)
 	return file_path, time.time() - start
 
-def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_dir,
+def seg_and_patch(source, save_dir, patch_h5_dir, mask_save_dir, stitch_save_dir,
 				  patch_size=256, step_size=256, patch_level=0,
 				  seg_params=None, filter_params=None, vis_params=None, patch_params=None,
 				  seg=False, patch=False, stitch=False, save_mask=True,
@@ -64,7 +64,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		slide = process_stack.loc[idx, 'slide_id']
 		slide_id, _ = os.path.splitext(slide)
 
-		if auto_skip and os.path.isfile(os.path.join(patch_save_dir, slide_id + '.h5')):
+		if auto_skip and os.path.isfile(os.path.join(patch_h5_dir, slide_id + '.h5')):
 			print(f"[SKIP] {slide_id} already exists.")
 			df.loc[idx, 'status'] = 'already_exist'
 			continue
@@ -126,7 +126,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				'patch_level': patch_level,
 				'patch_size': patch_size,
 				'step_size': step_size,
-				'save_path': patch_save_dir
+				'save_path': patch_h5_dir
 			})
 			_, patch_time = patching(wsi, **current_patch_params)
 			patch_times += patch_time
@@ -136,7 +136,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 		# Stitch
 		if stitch:
-			patch_path = os.path.join(patch_save_dir, slide_id + '.h5')
+			patch_path = os.path.join(patch_h5_dir, slide_id + '.h5')
 			if os.path.isfile(patch_path):
 				heatmap, stitch_time = stitching(patch_path, wsi)
 				stitch_times += stitch_time
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 	paths = config['paths']
 	source = paths['source']
 	save_dir = paths['save_dir']
-	patch_save_dir = paths['patch_save_dir']
+	patch_h5_dir = paths['patch_h5_dir']
 	mask_save_dir = paths['mask_save_dir']
 	stitch_save_dir = paths['stitch_save_dir']
 	process_list = paths.get('process_list')
@@ -194,14 +194,14 @@ if __name__ == "__main__":
 	patch_params = config['patching']
 
 	# Create dirs
-	for d in [save_dir, patch_save_dir, mask_save_dir, stitch_save_dir]:
+	for d in [save_dir, patch_h5_dir, mask_save_dir, stitch_save_dir]:
 		os.makedirs(d, exist_ok=True)
 
 	# Run
 	seg_and_patch(
 		source=source,
 		save_dir=save_dir,
-		patch_save_dir=patch_save_dir,
+		patch_h5_dir=patch_h5_dir,
 		mask_save_dir=mask_save_dir,
 		stitch_save_dir=stitch_save_dir,
 		patch_size=patch_size,
