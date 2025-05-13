@@ -45,8 +45,13 @@ def generate_patch(patch_file_name, slide_folder, patch_folder, save_folder, svs
         coords = f['coords']
         patch_level = coords.attrs['patch_level']
         patch_size = coords.attrs['patch_size']
+    
+        try:
+            slide = openslide.OpenSlide(slide_path)
+        except Exception as e:
+            print(f"[ERROR] Failed to open slide {slide_path}: {e}")
+            return
 
-        slide = openslide.OpenSlide(slide_path)
         try:
             magnification = int(float(slide.properties.get('aperio.AppMag', 40)))
         except:

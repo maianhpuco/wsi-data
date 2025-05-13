@@ -8,7 +8,6 @@ metadata_kich_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
 metadata_kirp_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirp.yaml 
-
 metadata_kirc_simea:
 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirc.yaml 
 
