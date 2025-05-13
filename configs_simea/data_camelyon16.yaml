@@ -1,0 +1,21 @@
+paths:
+  source_dir: "/datasets/camelyon16/raw_data/camelyon16/images"
+  save_dir: "/home/mvu9/processing_datasets/processing_camelyon16"
+  patch_h5_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_h5"
+  patch_png_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_png"
+  mask_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/masks"
+  only_mask_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/only_masks"
+  stitch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/graph_1024"
+  slide_name_file: "/home/mvu9/datasets/TGCA-metadata/CAMELYON16/slides.xlsx"
+  uuid_name_file: "/home/mvu9/datasets/TGCA-metadata/CAMELYON16/uuids.xlsx"
+  preset_file: "./presets/tcga_kich.csv"
+
+# Processing parameters
+processing:
+  patch_size: 1024
+  step_size: 1024
+  patch_level: 1
+  seg: true
+  patch: true
+  stitch: false
+  auto_skip: true
