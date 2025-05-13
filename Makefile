@@ -3,7 +3,7 @@ metadata_all: metadata_kirc metadata_kirp metadata_kich
 
 
 metadata_all_simea: metadata_kich_simea metadata_kirp_simea metadata_kirc_simea
-pp_all_simea: pp_kirp_simea pp_kirc_simea pp_kirc_simea 
+pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea 
 
 
 #--------SIMAE --------- 
@@ -33,7 +33,8 @@ pp_kirc_simea:
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
-
+gen_patches_kirc_simea:
+	python feature_extraction/generate_patches.py --config configs_simea/data_kirc.yaml 
 #--------MAUI--------- 
 metadata_kich:
 	python scripts/preprocessing/tcga/generate_metadata.py --config configs/data_tcga_kich.yaml
