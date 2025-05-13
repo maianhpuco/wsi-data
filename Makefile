@@ -1,6 +1,9 @@
 metadata_all: metadata_kirc metadata_kirp metadata_kich
 
-pp_all_simea: pp_kirp_simea pp_kirc_simea 
+
+
+metadata_all_simea: metadata_kich_simea metadata_kirp_simea metadata_kirc_simea
+pp_all_simea: pp_kirp_simea pp_kirc_simea pp_kirc_simea 
 
 
 #--------SIMAE --------- 
