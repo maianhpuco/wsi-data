@@ -34,7 +34,9 @@ pp_kirc_simea:
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
 gen_patches_kirc_simea:
-	python feature_extraction/generate_patches.py --config configs_simea/data_kirc.yaml 
+	python feature_extraction/generate_patches.py --config configs_simea/data_kirc.yaml
+gen_patches_kirp_simea:
+	python feature_extraction/generate_patches.py --config configs_simea/data_kirp.yaml  
 #--------MAUI--------- 
 metadata_kich:
 	python scripts/preprocessing/tcga/generate_metadata.py --config configs/data_tcga_kich.yaml
