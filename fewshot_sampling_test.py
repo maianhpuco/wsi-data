@@ -7,6 +7,9 @@ source_root = '/home/mvu9/processing_datasets/processing_tgca'
 fewshot_root = '/home/mvu9/processing_datasets/fewshot_tgca_4_shots'
 validation_root = '/home/mvu9/processing_datasets/validation'
 test_root = '/home/mvu9/processing_datasets/test_tgca'
+if os.path.exists(test_root):
+    # Remove the directory if it exists
+    shutil.rmtree(test_root) 
 os.makedirs(test_root, exist_ok=True)
 
 classes = ['kich', 'kirc', 'kirp']
