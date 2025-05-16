@@ -3,6 +3,12 @@ import sys
 import argparse
 import yaml
 import subprocess
+import torch
+
+if torch.cuda.is_available():
+    print(f"✅ CUDA is available. Using: {torch.cuda.get_device_name(0)}")
+else:
+    print("⚠️ CUDA is NOT available. Using CPU only.")
 
 def load_config(config_path):
     with open(config_path, 'r') as f:
