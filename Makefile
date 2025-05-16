@@ -30,7 +30,8 @@ pp_kirc_simea:
 	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirc.yaml  
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
 ef_camelyon16_simea: 
-	python pipeline/camelyon16/extract_features_fp.py --config config_simea/config_camelyon16.yaml
+	CUDA_VISIBLE_DEVICES=0 python pipeline/camelyon16/extract_features_fp.py --config configs_simea/config_camelyon16.yaml
+
 
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
