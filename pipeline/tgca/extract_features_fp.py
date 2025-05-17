@@ -3,7 +3,6 @@ import sys
 import argparse
 import yaml
 import time
-from functools import partial
 import torch
 import torch.nn as nn
 import timm
@@ -17,11 +16,6 @@ import pandas as pd
 
 # Ensure CLAM is in the import path
 sys.path.append("src/externals/CLAM")
-# Get the absolute path of the parent of the parent directory
-
-# base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-# sys.path.append(base_path)
-# print("Search path:", base_path) 
 
 from utils.file_utils import save_hdf5
 from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
@@ -36,8 +30,11 @@ else:
 
 def load_config(config_path):
     """Load YAML configuration file."""
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
+    try:
+        with open(config_path, 'r') as f:
+            return yaml.safe_load(f)
+    except Exception as e:
+        raise ValueError(f"Failed to load config file {config_path}: {str(e)}")
 
 def compute_w_loader(output_path, loader, model, verbose=0):
     """Compute features for a DataLoader and save to HDF5."""
@@ -46,17 +43,21 @@ def compute_w_loader(output_path, loader, model, verbose=0):
 
     mode = 'w'
     for count, data in enumerate(tqdm(loader)):
-        with torch.inference_mode():
-            batch = data['img']
-            coords = data['coord'].numpy().astype(np.int32)
-            batch = batch.to(device, non_blocking=True)
-            
-            features = model(batch)
-            features = features.cpu().numpy().astype(np.float32)
+        try:
+            with torch.inference_mode():
+                batch = data['img']
+                coords = data['coord'].numpy().astype(np.int32)
+                batch = batch.to(device, non_blocking=True)
+                
+                features = model(batch)
+                features = features.cpu().numpy().astype(np.float32)
 
-            asset_dict = {'features': features, 'coords': coords}
-            save_hdf5(output_path, asset_dict, attr_dict=None, mode=mode)
-            mode = 'a'
+                asset_dict = {'features': features, 'coords': coords}
+                save_hdf5(output_path, asset_dict, attr_dict=None, mode=mode)
+                mode = 'a'
+        except Exception as e:
+            print(f"Error processing batch {count}: {str(e)}")
+            continue
     
     return output_path
 
@@ -70,53 +71,71 @@ def main():
     cfg = load_config(args.config)
 
     # Set paths from config
-    source = cfg['paths']['source']
+    source = cfg['paths']['source_dir']
     patch_h5_dir = cfg['paths']['patch_h5_dir']
     feat_dir = os.path.join(cfg['paths']['save_dir'], 'features_fp')
-    csv_path = os.path.join(cfg['paths']['save_dir'], 'slide_list.csv')
+    slide_name_file = cfg['paths']['slide_name_file']
 
     # Create necessary directories
-    os.makedirs(feat_dir, exist_ok=True)
-    os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
-    os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
+    try:
+        os.makedirs(feat_dir, exist_ok=True)
+        os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
+        os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
+    except Exception as e:
+        print(f"Error creating directories: {str(e)}")
+        sys.exit(1)
 
-    # Generate slide list if not found
-    
-    # if os.path.exists(csv_path):
-    #     shutil.remove
-    
-    print(f"🔧 Generating slide list CSV at: {csv_path}")
-    slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".tif")
-    print("---- extentions>>>>", slide_ext)
-    slide_files = [f for f in os.listdir(source) if f.endswith(slide_ext)]
-    print(">>> Found: ", len(slide_files), ' slides')
+    # Read slide list from Excel
+    print(f"🔧 Reading slide list from: {slide_name_file}")
+    try:
+        slide_df = pd.read_excel(slide_name_file)
+        if 'slide_id' not in slide_df.columns:
+            print(f"❌ 'slide_id' column not found in {slide_name_file}")
+            sys.exit(1)
+        slide_files = slide_df['slide_id'].tolist()
+    except Exception as e:
+        print(f"❌ Error reading {slide_name_file}: {str(e)}")
+        sys.exit(1)
+
+    slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".svs")
+    print(f"Slide extension: {slide_ext}")
+    slide_files = [f for f in slide_files if f.endswith(slide_ext) or f + slide_ext in os.listdir(source)]
     if not slide_files:
         print(f"❌ No slides found in {source} with extension {slide_ext}")
         sys.exit(1)
-    print(f"Found {len(slide_files)} slides: {slide_files[:5]}")  # Print first 5 for debugging
-    with open(csv_path, 'w') as f:
-        f.write("slide_id\n")
-        for s in slide_files:
-            f.write(s + '\n')
+    print(f"Found {len(slide_files)} slides: {slide_files[:5]}")
+
+    # Write slide list to CSV for Dataset_All_Bags
+    csv_path = os.path.join(cfg['paths']['save_dir'], 'slide_list.csv')
+    try:
+        with open(csv_path, 'w') as f:
+            f.write("slide_id\n")
+            for s in slide_files:
+                f.write(s + '\n')
+    except Exception as e:
+        print(f"❌ Error writing {csv_path}: {str(e)}")
+        sys.exit(1)
 
     # Feature extraction config
     feat_cfg = cfg.get("feature_extraction", {})
     model_name = feat_cfg.get("model_name", "resnet50_trunc")
     batch_size = feat_cfg.get("batch_size", 256)
     target_patch_size = feat_cfg.get("target_patch_size", 224)
-    slide_ext = feat_cfg.get("slide_ext", ".tif")
+    slide_ext = feat_cfg.get("slide_ext", ".svs")
     no_auto_skip = feat_cfg.get("no_auto_skip", False)
-    
-    # preprocessing config === 
+
+    # Processing config
     patch_size = cfg['processing']['patch_size']
     patch_level = cfg['processing']['patch_level']
-    
+
     # Initialize dataset
     print('Initializing dataset')
-    if csv_path is None:
-        raise ValueError("CSV path is not provided")
-    
-    bags_dataset = Dataset_All_Bags(csv_path)
+    try:
+        bags_dataset = Dataset_All_Bags(csv_path)
+    except Exception as e:
+        print(f"❌ Error initializing dataset: {str(e)}")
+        sys.exit(1)
+
     total = len(bags_dataset)
     if total == 0:
         print(f"❌ No slides found in dataset from {csv_path}")
@@ -124,13 +143,21 @@ def main():
     print(f"Total slides in dataset: {total}")
 
     # Load model
-    model, img_transforms = get_encoder(model_name, target_img_size=target_patch_size)
-    model.eval()
-    model = model.to(device)
-    
+    try:
+        model, img_transforms = get_encoder(model_name, target_img_size=target_patch_size)
+        model.eval()
+        model = model.to(device)
+    except Exception as e:
+        print(f"❌ Error loading model {model_name}: {str(e)}")
+        sys.exit(1)
+
     # Check for existing feature files
-    dest_files = os.listdir(os.path.join(feat_dir, 'pt_files'))
-    
+    try:
+        dest_files = os.listdir(os.path.join(feat_dir, 'pt_files'))
+    except Exception as e:
+        print(f"Error accessing pt_files directory: {str(e)}")
+        dest_files = []
+
     # DataLoader kwargs
     loader_kwargs = {'num_workers': 8, 'pin_memory': True} if device.type == "cuda" else {}
 
@@ -146,20 +173,8 @@ def main():
         # Skip if features already exist and no_auto_skip is False
         if not no_auto_skip and slide_id + '.pt' in dest_files:
             print(f"Skipped {slide_id} (features already exist)")
-            continue 
-        
-        
-        # #=======Check h5 file=========== 
-        # def print_all_keys(h5_file_path):
-        #     with h5py.File(h5_file_path, 'r') as f:
-        #         print(f"\n All keys in {h5_file_path}:\n")
-        #         def recursive_print(name):
-        #             print(name)
-        #         f.visit(recursive_print)
-        
-        #  #=======Done h5 file=========== 
-         
-         
+            continue
+
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
@@ -177,8 +192,7 @@ def main():
                                         wsi=wsi, 
                                         img_transforms=img_transforms, 
                                         patch_level=patch_level, 
-                                        patch_size=patch_size, 
-                                        )
+                                        patch_size=patch_size)
             
             if len(dataset) == 0:
                 print(f"❌ No patches found in {h5_file_path}")
