@@ -76,6 +76,7 @@ def main():
     os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
 
     # Generate slide list if not found
+    print("---- extentions>>>>", slide_ext)
     if not os.path.exists(csv_path):
         print(f"🔧 Generating slide list CSV at: {csv_path}")
         slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".tif")
