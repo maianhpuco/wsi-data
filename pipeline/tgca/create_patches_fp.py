@@ -337,8 +337,8 @@ if __name__ == '__main__':
 	vis_params = {'vis_level': -1, 'line_thickness': 250}
 	patch_params = {'use_padding': True, 'contour_fn': 'four_pt'}
 
-	if args.preset:
-		preset_df = pd.read_csv(os.path.join('presets', args.preset))
+	if preset:
+		preset_df = pd.read_csv(os.path.join('presets', preset))
 		for key in seg_params.keys():
 			seg_params[key] = preset_df.loc[0, key]
 
