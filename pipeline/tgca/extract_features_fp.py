@@ -152,7 +152,7 @@ def main():
         # #=======Check h5 file=========== 
         # def print_all_keys(h5_file_path):
         #     with h5py.File(h5_file_path, 'r') as f:
-        #         print(f"\n📂 All keys in {h5_file_path}:\n")
+        #         print(f"\n All keys in {h5_file_path}:\n")
         #         def recursive_print(name):
         #             print(name)
         #         f.visit(recursive_print)
@@ -160,7 +160,6 @@ def main():
         #  #=======Done h5 file=========== 
          
          
-          
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
