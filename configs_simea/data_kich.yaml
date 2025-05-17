@@ -19,3 +19,10 @@ processing:
   patch: true
   stitch: false
   auto_skip: true
+
+feature_extraction:
+  model_name: "resnet50_trunc"
+  batch_size: 256
+  target_patch_size: 224
+  slide_ext: ".svs"  # Adjust if TCGA-KICH uses .tif or other format
+  no_auto_skip: false  # Inverted from processing.auto_skip
