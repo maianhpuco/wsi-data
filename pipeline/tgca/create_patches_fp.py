@@ -298,7 +298,7 @@ if __name__ == '__main__':
 	save_dir = paths['save_dir']
 	patch_save_dir = paths['patch_h5_dir']  # Use patch_h5_dir instead of constructing patches_<patch_size>
 	mask_save_dir = paths['mask_save_dir']
-	only_mask_save_dir = paths['only_mask_save_dir']
+	# only_mask_save_dir = paths['only_mask_save_dir']
 	stitch_save_dir = paths['stitch_save_dir']
 	slide_name_file = paths['slide_name_file']
 	uuid_name_file = paths['uuid_name_file']
@@ -320,7 +320,7 @@ if __name__ == '__main__':
 		'save_dir': save_dir,
 		'patch_save_dir': patch_save_dir,
 		'mask_save_dir': mask_save_dir,
-		'only_mask_save_dir': only_mask_save_dir,
+		# 'only_mask_save_dir': only_mask_save_dir,
 		'stitch_save_dir': stitch_save_dir
 	}
 	
