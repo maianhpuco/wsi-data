@@ -129,7 +129,7 @@ def main():
     for bag_candidate_idx in tqdm(range(total)):
         slide_id = bags_dataset[bag_candidate_idx].split(slide_ext)[0]
         bag_name = slide_id + '.h5'
-        h5_file_path = os.path.join(patch_h5_dir, 'patches', bag_name)
+        h5_file_path = os.path.join(patch_h5_dir, bag_name)
         slide_file_path = os.path.join(source, slide_id + slide_ext)
         print(f'\nProgress: {bag_candidate_idx+1}/{total}')
         print(f"Slide ID: {slide_id}")
@@ -156,6 +156,7 @@ def main():
         print("key in h5 file")
         
         print_all_keys(h5_file_path) 
+        
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
