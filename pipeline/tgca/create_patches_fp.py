@@ -359,18 +359,33 @@ if __name__ == '__main__':
 	print(parameters)
 
 	seg_times, patch_times = seg_and_patch(
-		**directories,
+		**directories, 
 		**parameters,
-		slide_name_file=slide_name_file,
-		patch_size=patch_size,
-		step_size=step_size,
-		seg=seg,
-		use_default_params=False,
-		save_mask=True,
-		stitch=stitch,
-		patch_level=patch_level,
-		patch=patch,
-		auto_skip=auto_skip,
-		process_list=None,
-		uuid_name_file=uuid_name_file
-	)
+		patch_size = patch_size, 
+		step_size = step_size, 
+		seg = seg,  
+		use_default_params=False, 
+		save_mask = True, 
+		stitch = stitch,
+		patch_level = patch_level,
+		patch = patch,
+		process_list = None, 
+		auto_skip=auto_skip
+		)
+	
+	# seg_times, patch_times = seg_and_patch(
+	# 	**directories,
+	# 	**parameters,
+	# 	slide_name_file=slide_name_file,
+	# 	patch_size=patch_size,
+	# 	step_size=step_size,
+	# 	seg=seg,
+	# 	use_default_params=False,
+	# 	save_mask=True,
+	# 	stitch=stitch,
+	# 	patch_level=patch_level,
+	# 	patch=patch,
+	# 	auto_skip=auto_skip,
+	# 	process_list=None,
+	# 	uuid_name_file=uuid_name_file
+	# )
