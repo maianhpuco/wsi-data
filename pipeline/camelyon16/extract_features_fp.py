@@ -44,10 +44,10 @@ def main():
         # with open(csv_path, 'w') as f:
         #     for s in slide_files:
         #         f.write(s + '\n')
-    with open(csv_path, 'w') as f:
-        f.write("slide_id\n")
-        for s in slide_files:
-            f.write(s + '\n')
+        with open(csv_path, 'w') as f:
+            f.write("slide_id\n")
+            for s in slide_files:
+                f.write(s + '\n')
             
     # Feature extraction config
     feat_cfg = cfg.get("feature_extraction", {})
