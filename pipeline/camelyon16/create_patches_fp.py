@@ -8,9 +8,9 @@ import yaml
 import sys
 
 # Setup path
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-sys.path.append(base_path)
-print("Search path:", base_path)
+# base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+# sys.path.append(base_path)
+# print("Search path:", base_path)
 sys.path.append("src/externals/CLAM")
 # Internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
