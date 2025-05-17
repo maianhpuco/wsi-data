@@ -12,9 +12,9 @@ paths:
 
 # Processing parameters
 processing:
-  patch_size: 1024
-  step_size: 1024
-  patch_level: 1
+  patch_size: 256
+  step_size: 256
+  patch_level: 0
   seg: true
   patch: true
   stitch: false
