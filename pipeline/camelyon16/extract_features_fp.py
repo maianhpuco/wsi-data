@@ -20,6 +20,7 @@ import pandas as pd
 # Get the absolute path of the parent of the parent directory
 
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(base_path)
 # sys.path.append(base_path)
 # print("Search path:", base_path) 
 
