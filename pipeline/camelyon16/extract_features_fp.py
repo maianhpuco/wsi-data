@@ -41,10 +41,14 @@ def main():
         print(f"🔧 Generating slide list CSV at: {csv_path}")
         slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".tif")
         slide_files = [f for f in os.listdir(source) if f.endswith(slide_ext)]
-        with open(csv_path, 'w') as f:
-            for s in slide_files:
-                f.write(s + '\n')
-
+        # with open(csv_path, 'w') as f:
+        #     for s in slide_files:
+        #         f.write(s + '\n')
+    with open(csv_path, 'w') as f:
+        f.write("slide_id\n")
+        for s in slide_files:
+            f.write(s + '\n')
+            
     # Feature extraction config
     feat_cfg = cfg.get("feature_extraction", {})
     model_name = feat_cfg.get("model_name", "resnet50_trunc")
