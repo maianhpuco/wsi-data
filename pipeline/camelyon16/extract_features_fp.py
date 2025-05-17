@@ -25,9 +25,9 @@ from models import get_encoder
 # Check CUDA availability
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 if torch.cuda.is_available():
-    print(f"✅ CUDA is available. Using: {torch.cuda.get_device_name(0)}")
+    print(f"CUDA is available. Using: {torch.cuda.get_device_name(0)}")
 else:
-    print("⚠️ CUDA is NOT available. Using CPU only.")
+    print("CUDA is NOT available. Using CPU only.")
 
 def load_config(config_path):
     """Load YAML configuration file."""
@@ -129,7 +129,7 @@ def main():
     for bag_candidate_idx in tqdm(range(total)):
         slide_id = bags_dataset[bag_candidate_idx].split(slide_ext)[0]
         bag_name = slide_id + '.h5'
-        h5_file_path = os.path.join(patch_h5_dir, bag_name)
+        h5_file_path = os.path.join(patch_h5_dir, 'patches', bag_name)
         slide_file_path = os.path.join(source, slide_id + slide_ext)
         print(f'\nProgress: {bag_candidate_idx+1}/{total}')
         print(f"Slide ID: {slide_id}")
@@ -138,7 +138,24 @@ def main():
         if not no_auto_skip and slide_id + '.pt' in dest_files:
             print(f"Skipped {slide_id} (features already exist)")
             continue 
-
+        
+        
+        #=======Check h5 file=========== 
+        def print_all_keys(h5_file_path):
+            with h5py.File(h5_file_path, 'r') as f:
+                print(f"\n📂 All keys in {h5_file_path}:\n")
+                def recursive_print(name):
+                    print(name)
+                f.visit(recursive_print)
+         #=======Done h5 file=========== 
+         
+         
+          
+        # Replace with your actual path
+        # h5_file_path = "your_file_path.h5"
+        print("key in h5 file")
+        
+        print_all_keys(h5_file_path) 
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
