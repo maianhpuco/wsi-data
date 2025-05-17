@@ -24,7 +24,7 @@ sys.path.append("src/externals/CLAM")
 # print("Search path:", base_path) 
 
 from utils.file_utils import save_hdf5
-from .dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
+from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
 from models import get_encoder
 
 # Check CUDA availability
