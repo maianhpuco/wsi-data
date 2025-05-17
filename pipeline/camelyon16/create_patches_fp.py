@@ -5,6 +5,7 @@ import argparse
 import pandas as pd
 from tqdm import tqdm
 import yaml
+import sys 
 sys.path.append("src/externals/CLAM")
 # internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
