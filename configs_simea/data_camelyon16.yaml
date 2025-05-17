@@ -66,3 +66,9 @@ patching:
   white_thresh: 5
   black_thresh: 40
 
+feature_extraction:
+  model_name: resnet50_trunc
+  batch_size: 256
+  target_patch_size: 224
+  slide_ext: .tif
+  no_auto_skip: False
