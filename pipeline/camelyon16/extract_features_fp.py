@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 # Ensure CLAM is in the import path
-sys.path.append("src/externals/CLAM")
+# sys.path.append("src/externals/CLAM")
 
 from utils.file_utils import save_hdf5
 from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
