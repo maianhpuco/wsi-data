@@ -279,65 +279,65 @@ parser.add_argument('--process_list',  type = str, default=None,
 	# 			   'patch_save_dir': patch_save_dir, 
 	# 			   'mask_save_dir' : mask_save_dir, 
 	# 			   'stitch_save_dir': stitch_save_dir}
-    # 
-    
-     
+	# 
+	
+	 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='seg and patch')
-    parser.add_argument('--config', type=str, default='config.yaml', help='path to YAML config file')
-    args = parser.parse_args()
+	parser = argparse.ArgumentParser(description='seg and patch')
+	parser.add_argument('--config', type=str, default='config.yaml', help='path to YAML config file')
+	args = parser.parse_args()
 
-    # Load YAML configuration
-    import yaml 
-    with open(args.config, 'r') as file:
-        config = yaml.safe_load(file)
+	# Load YAML configuration
+	import yaml 
+	with open(args.config, 'r') as file:
+		config = yaml.safe_load(file)
 
-    # Extract paths from config
-    paths = config['paths']
-    source = paths['source_dir']
-    save_dir = paths['save_dir']
-    patch_save_dir = paths['patch_h5_dir']  # Use patch_h5_dir instead of constructing patches_<patch_size>
-    mask_save_dir = paths['mask_save_dir']
-    only_mask_save_dir = paths['only_mask_save_dir']
-    stitch_save_dir = paths['stitch_save_dir']
-    slide_name_file = paths['slide_name_file']
-    uuid_name_file = paths['uuid_name_file']
-    preset = paths['preset_file']
+	# Extract paths from config
+	paths = config['paths']
+	source = paths['source_dir']
+	save_dir = paths['save_dir']
+	patch_save_dir = paths['patch_h5_dir']  # Use patch_h5_dir instead of constructing patches_<patch_size>
+	mask_save_dir = paths['mask_save_dir']
+	only_mask_save_dir = paths['only_mask_save_dir']
+	stitch_save_dir = paths['stitch_save_dir']
+	slide_name_file = paths['slide_name_file']
+	uuid_name_file = paths['uuid_name_file']
+	preset = paths['preset_file']
 
-    # Extract processing parameters
-    proc = config['processing']
-    patch_size = proc['patch_size']
-    step_size = proc['step_size']
-    patch_level = proc['patch_level']
-    seg = proc['seg']
-    patch = proc['patch']
-    stitch = proc['stitch']
-    auto_skip = proc['auto_skip']
+	# Extract processing parameters
+	proc = config['processing']
+	patch_size = proc['patch_size']
+	step_size = proc['step_size']
+	patch_level = proc['patch_level']
+	seg = proc['seg']
+	patch = proc['patch']
+	stitch = proc['stitch']
+	auto_skip = proc['auto_skip']
 
-    # Create output directories
-    directories = {
-        'source': source,
-        'save_dir': save_dir,
-        'patch_save_dir': patch_save_dir,
-        'mask_save_dir': mask_save_dir,
-        'only_mask_save_dir': only_mask_save_dir,
-        'stitch_save_dir': stitch_save_dir
-    }
-    
+	# Create output directories
+	directories = {
+		'source': source,
+		'save_dir': save_dir,
+		'patch_save_dir': patch_save_dir,
+		'mask_save_dir': mask_save_dir,
+		'only_mask_save_dir': only_mask_save_dir,
+		'stitch_save_dir': stitch_save_dir
+	}
+	
 
-    for key, val in directories.items():
-        print(f"{key} : {val}")
-        if key != 'source':
-            os.makedirs(val, exist_ok=True)
+	for key, val in directories.items():
+		print(f"{key} : {val}")
+		if key != 'source':
+			os.makedirs(val, exist_ok=True)
 
-    # Load preset parameters if provided
-    seg_params = {'seg_level': -1, 'sthresh': 8, 'mthresh': 7, 'close': 4, 'use_otsu': False,
-                  'keep_ids': 'none', 'exclude_ids': 'none'}
-    filter_params = {'a_t': 100, 'a_h': 16, 'max_n_holes': 8}
-    vis_params = {'vis_level': -1, 'line_thickness': 250}
-    patch_params = {'use_padding': True, 'contour_fn': 'four_pt'}
+	# Load preset parameters if provided
+	seg_params = {'seg_level': -1, 'sthresh': 8, 'mthresh': 7, 'close': 4, 'use_otsu': False,
+				  'keep_ids': 'none', 'exclude_ids': 'none'}
+	filter_params = {'a_t': 100, 'a_h': 16, 'max_n_holes': 8}
+	vis_params = {'vis_level': -1, 'line_thickness': 250}
+	patch_params = {'use_padding': True, 'contour_fn': 'four_pt'}
 
-    if args.preset:
+	if args.preset:
 		preset_df = pd.read_csv(os.path.join('presets', args.preset))
 		for key in seg_params.keys():
 			seg_params[key] = preset_df.loc[0, key]
@@ -359,16 +359,16 @@ if __name__ == '__main__':
 	print(parameters)
 
 	seg_times, patch_times = seg_and_patch(
-        **directories, 
-        **parameters,
-        patch_size = args.patch_size, 
-        step_size=args.step_size, 
-        seg = args.seg,  
-        use_default_params=False, 
-        save_mask = True, 
-        stitch= args.stitch,
-        patch_level=args.patch_level,
-        patch = args.patch,
-        process_list = None, 
-        auto_skip=args.no_auto_skip
-        )
+		**directories, 
+		**parameters,
+		patch_size = args.patch_size, 
+		step_size=args.step_size, 
+		seg = args.seg,  
+		use_default_params=False, 
+		save_mask = True, 
+		stitch= args.stitch,
+		patch_level=args.patch_level,
+		patch = args.patch,
+		process_list = None, 
+		auto_skip=args.no_auto_skip
+		)
