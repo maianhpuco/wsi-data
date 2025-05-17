@@ -14,13 +14,13 @@ import numpy as np
 import pandas as pd
 
 # Ensure CLAM is in the import path
-sys.path.append("src/externals/CLAM")
-# base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")) 
-# sys.path.append(base_path)
+# sys.path.append("src/externals/CLAM")
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")) 
+sys.path.append(base_path)
 
 # print("current base", base_path)
 from utils.file_utils import save_hdf5
-from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
+from datasets.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
 from models import get_encoder
 
 # Check CUDA availability
