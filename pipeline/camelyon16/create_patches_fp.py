@@ -5,8 +5,7 @@ import argparse
 import pandas as pd
 from tqdm import tqdm
 import yaml
-import sys 
-sys.path.append("src/externals/CLAM")
+
 # internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
@@ -43,7 +42,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
                               'keep_ids': 'none', 'exclude_ids': 'none'},
                   filter_params={'a_t': 100, 'a_h': 16, 'max_n_holes': 8}, 
                   vis_params={'vis_level': -1, 'line_thickness': 250},
-                  patch_params={'use_padding': True, 'contour_fn': 'four_pt'},
+                  patch_params={'use_padding': True, 'contour_fn': 'four_pt', 'white_thresh': 5, 'black_thresh': 40},
                   patch_level=0, use_default_params=False, seg=False, save_mask=True, 
                   stitch=False, patch=False, auto_skip=True, process_list=None):
 
@@ -67,7 +66,9 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
             'a_h': np.full((len(df)), int(filter_params['a_h']), dtype=np.uint32),
             'max_n_holes': np.full((len(df)), int(filter_params['max_n_holes']), dtype=np.uint32),
             'line_thickness': np.full((len(df)), int(vis_params['line_thickness']), dtype=np.uint32),
-            'contour_fn': np.full((len(df)), patch_params['contour_fn'])
+            'contour_fn': np.full((len(df)), patch_params['contour_fn']),
+            'white_thresh': np.full((len(df)), int(patch_params['white_thresh']), dtype=np.uint32),
+            'black_thresh': np.full((len(df)), int(patch_params['black_thresh']), dtype=np.uint32)
         })
 
     seg_times = 0.
