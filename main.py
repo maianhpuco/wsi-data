@@ -1,10 +1,10 @@
 from __future__ import print_function
 import argparse
 import os
-from utils.file_utils import save_pkl
-from utils.utils import *
-from utils.core_utils import train
-from datasets.dataset_generic import Generic_MIL_Dataset
+from utils_old.file_utils import save_pkl
+from utils_old.utils import *
+from utils_old.core_utils import train
+from dataset_modules.dataset_generic import Generic_MIL_Dataset
 import torch
 import pandas as pd
 import numpy as np

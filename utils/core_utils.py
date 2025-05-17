@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from utils.utils import *
+from utils_old.utils import *
 import os
 from dataset_modules.dataset_generic import save_splits
 from models.model_mil import MIL_fc, MIL_fc_mc

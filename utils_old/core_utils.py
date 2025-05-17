@@ -1,13 +1,13 @@
 import numpy as np
 import torch
-from utils.utils import *
+from utils_old.utils import *
 import os
-from datasets.dataset_generic import save_splits
+from dataset_modules.dataset_generic import save_splits
 from models.model_mil import MIL_fc, MIL_fc_mc
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_auc_score, roc_curve, f1_score
 from sklearn.metrics import auc as calc_auc
-from utils.loss_utils import FocalLoss
+from utils_old.loss_utils import FocalLoss
 
 
 class Accuracy_Logger(object):

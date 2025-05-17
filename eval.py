@@ -5,10 +5,10 @@ import argparse
 import torch
 import os
 import pandas as pd
-from utils.utils import *
+from utils_old.utils import *
 from math import floor
-from datasets.dataset_generic import Generic_MIL_Dataset
-from utils.eval_utils import *
+from dataset_modules.dataset_generic import Generic_MIL_Dataset
+from utils_old.eval_utils import *
 
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

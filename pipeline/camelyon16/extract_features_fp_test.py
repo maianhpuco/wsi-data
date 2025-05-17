@@ -17,11 +17,6 @@ import pandas as pd
 
 # Ensure CLAM is in the import path
 sys.path.append("src/externals/CLAM")
-# Get the absolute path of the parent of the parent directory
-
-# base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-# sys.path.append(base_path)
-# print("Search path:", base_path) 
 
 from utils_old.file_utils import save_hdf5
 from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
@@ -30,9 +25,9 @@ from models import get_encoder
 # Check CUDA availability
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 if torch.cuda.is_available():
-    print(f"CUDA is available. Using: {torch.cuda.get_device_name(0)}")
+    print(f"✅ CUDA is available. Using: {torch.cuda.get_device_name(0)}")
 else:
-    print("CUDA is NOT available. Using CPU only.")
+    print("⚠️ CUDA is NOT available. Using CPU only.")
 
 def load_config(config_path):
     """Load YAML configuration file."""
@@ -106,11 +101,7 @@ def main():
     target_patch_size = feat_cfg.get("target_patch_size", 224)
     slide_ext = feat_cfg.get("slide_ext", ".tif")
     no_auto_skip = feat_cfg.get("no_auto_skip", False)
-    
-    # preprocessing config === 
-    patch_size = cfg['processing']['patch_size']
-    patch_level = cfg['processing']['patch_level']
-    
+
     # Initialize dataset
     print('Initializing dataset')
     if csv_path is None:
@@ -138,7 +129,7 @@ def main():
     for bag_candidate_idx in tqdm(range(total)):
         slide_id = bags_dataset[bag_candidate_idx].split(slide_ext)[0]
         bag_name = slide_id + '.h5'
-        h5_file_path = os.path.join(patch_h5_dir, bag_name)
+        h5_file_path = os.path.join(patch_h5_dir, 'patches', bag_name)
         slide_file_path = os.path.join(source, slide_id + slide_ext)
         print(f'\nProgress: {bag_candidate_idx+1}/{total}')
         print(f"Slide ID: {slide_id}")
@@ -147,20 +138,7 @@ def main():
         if not no_auto_skip and slide_id + '.pt' in dest_files:
             print(f"Skipped {slide_id} (features already exist)")
             continue 
-        
-        
-        # #=======Check h5 file=========== 
-        # def print_all_keys(h5_file_path):
-        #     with h5py.File(h5_file_path, 'r') as f:
-        #         print(f"\n📂 All keys in {h5_file_path}:\n")
-        #         def recursive_print(name):
-        #             print(name)
-        #         f.visit(recursive_print)
-        
-        #  #=======Done h5 file=========== 
-         
-         
-          
+
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
@@ -176,10 +154,7 @@ def main():
             wsi = openslide.open_slide(slide_file_path)
             dataset = Whole_Slide_Bag_FP(file_path=h5_file_path, 
                                         wsi=wsi, 
-                                        img_transforms=img_transforms, 
-                                        # patch_level=patch_level, 
-                                        # patch_size=patch_size, 
-                                        )
+                                        img_transforms=img_transforms)
             
             if len(dataset) == 0:
                 print(f"❌ No patches found in {h5_file_path}")

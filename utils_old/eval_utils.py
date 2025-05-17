@@ -2,8 +2,8 @@ import numpy as np
 import torch
 from models.model_mil import MIL_fc, MIL_fc_mc
 import pandas as pd
-from utils.utils import *
-from utils.core_utils import Accuracy_Logger
+from utils_old.utils import *
+from utils_old.core_utils import Accuracy_Logger
 from sklearn.metrics import roc_auc_score, roc_curve, auc, f1_score
 from sklearn.preprocessing import label_binarize
 
