@@ -314,6 +314,6 @@ if __name__ == "__main__":
         save_mask=True,
         stitch=stitch,
         patch=patch,
-        process_list=process_list,
+        process_list=None,
         auto_skip=auto_skip
     )
