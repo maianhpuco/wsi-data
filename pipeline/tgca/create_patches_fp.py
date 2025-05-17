@@ -1,5 +1,10 @@
+import os
+import sys
 
-
+# Get the absolute path of the parent of the parent directory
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(base_path)
+print("Search path:", base_path)
 
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
@@ -7,8 +12,10 @@ from wsi_core.batch_process_utils import initialize_df
 import os
 import numpy as np
 import time
-import argparse
 import pandas as pd
+import yaml
+import argparse
+
 
 def stitching(file_path, wsi_object, downscale = 64):
 	start = time.time()
