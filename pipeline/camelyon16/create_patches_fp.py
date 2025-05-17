@@ -236,7 +236,6 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 	return seg_times, patch_times
 
 def load_config(config_path):
-	import yaml 
     """Load YAML configuration file."""
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
