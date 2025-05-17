@@ -77,19 +77,22 @@ def main():
 
     # Generate slide list if not found
     
-    if not os.path.exists(csv_path):
-        print(f"🔧 Generating slide list CSV at: {csv_path}")
-        slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".tif")
-        print("---- extentions>>>>", slide_ext)
-        slide_files = [f for f in os.listdir(source) if f.endswith(slide_ext)]
-        if not slide_files:
-            print(f"❌ No slides found in {source} with extension {slide_ext}")
-            sys.exit(1)
-        print(f"Found {len(slide_files)} slides: {slide_files[:5]}")  # Print first 5 for debugging
-        with open(csv_path, 'w') as f:
-            f.write("slide_id\n")
-            for s in slide_files:
-                f.write(s + '\n')
+    # if os.path.exists(csv_path):
+    #     shutil.remove
+    
+    print(f"🔧 Generating slide list CSV at: {csv_path}")
+    slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".tif")
+    print("---- extentions>>>>", slide_ext)
+    slide_files = [f for f in os.listdir(source) if f.endswith(slide_ext)]
+    print(">>> Found: ", len(slide_files), ' slides')
+    if not slide_files:
+        print(f"❌ No slides found in {source} with extension {slide_ext}")
+        sys.exit(1)
+    print(f"Found {len(slide_files)} slides: {slide_files[:5]}")  # Print first 5 for debugging
+    with open(csv_path, 'w') as f:
+        f.write("slide_id\n")
+        for s in slide_files:
+            f.write(s + '\n')
 
     # Feature extraction config
     feat_cfg = cfg.get("feature_extraction", {})
