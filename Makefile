@@ -36,8 +36,10 @@ ef_camelyon16_simea:
 
 ef_kich_simea: 
 	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kich.yaml
-
-
+ef_kirc_simea: 
+	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kirc.yaml
+ef_kirp_simea: 
+	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kirp.yaml
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
