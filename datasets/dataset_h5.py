@@ -86,8 +86,10 @@ class Whole_Slide_Bag_FP(Dataset):
 		pretrained=False,
 		custom_transforms=None,
 		custom_downsample=1,
-		target_patch_size=-1
-		):
+		target_patch_size=-1, 
+		patch_level=None, 
+		patch_size=None 
+ 		):
 		"""
 		Args:
 			file_path (string): Path to the .h5 file containing patched data.
@@ -107,8 +109,25 @@ class Whole_Slide_Bag_FP(Dataset):
 
 		with h5py.File(self.file_path, "r") as f:
 			dset = f['coords']
-			self.patch_level = f['coords'].attrs['patch_level']
-			self.patch_size = f['coords'].attrs['patch_size']
+   
+
+			# self.patch_level = f['coords'].attrs['patch_level']
+			# self.patch_size = f['coords'].attrs['patch_size']
+   
+			#======== MAIANH: EDIT THE ORIGINAL CODE HERE =====
+			 
+    		# Try to get from HDF5 first; fallback to argument
+			self.patch_level = f['coords'].attrs.get('patch_level') if 'patch_level' in f['coords'].attrs else patch_level
+			self.patch_size = f['coords'].attrs.get('patch_size') if 'patch_size' in f['coords'].attrs else patch_size
+
+			# Only raise error if both sources failed
+			if self.patch_level is None:
+				print(f"⚠️ 'patch_level' not found in HDF5 or arguments for file: {self.file_path}")
+			if self.patch_size is None:
+				print(f"⚠️ 'patch_size' not found in HDF5 or arguments for file: {self.file_path}")
+		
+   
+			#=======END: EDIT ========== 
 			self.length = len(dset)
 			if target_patch_size > 0:
 				self.target_patch_size = (target_patch_size, ) * 2
@@ -117,6 +136,7 @@ class Whole_Slide_Bag_FP(Dataset):
 			else:
 				self.target_patch_size = None
 		self.summary()
+  
 			
 	def __len__(self):
 		return self.length

@@ -101,7 +101,11 @@ def main():
     target_patch_size = feat_cfg.get("target_patch_size", 224)
     slide_ext = feat_cfg.get("slide_ext", ".tif")
     no_auto_skip = feat_cfg.get("no_auto_skip", False)
-
+    
+    # preprocessing config === 
+    patch_size = cfg['processing']['patch_size']
+    patch_level = cfg['processing']['patch_level']
+    
     # Initialize dataset
     print('Initializing dataset')
     if csv_path is None:
@@ -140,23 +144,18 @@ def main():
             continue 
         
         
-        #=======Check h5 file=========== 
-        def print_all_keys(h5_file_path):
-            with h5py.File(h5_file_path, 'r') as f:
-                print(f"\n📂 All keys in {h5_file_path}:\n")
-                def recursive_print(name):
-                    print(name)
-                f.visit(recursive_print)
-         #=======Done h5 file=========== 
+        # #=======Check h5 file=========== 
+        # def print_all_keys(h5_file_path):
+        #     with h5py.File(h5_file_path, 'r') as f:
+        #         print(f"\n📂 All keys in {h5_file_path}:\n")
+        #         def recursive_print(name):
+        #             print(name)
+        #         f.visit(recursive_print)
+        
+        #  #=======Done h5 file=========== 
          
          
           
-        # Replace with your actual path
-        # h5_file_path = "your_file_path.h5"
-        print("key in h5 file")
-        
-        print_all_keys(h5_file_path) 
-        
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
             print(f"❌ H5 file not found: {h5_file_path}")
@@ -172,7 +171,10 @@ def main():
             wsi = openslide.open_slide(slide_file_path)
             dataset = Whole_Slide_Bag_FP(file_path=h5_file_path, 
                                         wsi=wsi, 
-                                        img_transforms=img_transforms)
+                                        img_transforms=img_transforms, 
+                                        patch_level=patch_level, 
+                                        patch_size=patch_size, 
+                                        )
             
             if len(dataset) == 0:
                 print(f"❌ No patches found in {h5_file_path}")
