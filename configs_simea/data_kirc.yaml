@@ -9,7 +9,8 @@ paths:
   slide_name_file: "/home/mvu9/datasets/TGCA-metadata/KIRC/slides.xlsx"
   uuid_name_file: "/home/mvu9/datasets/TGCA-metadata/KIRC/uuids.xlsx"
   preset_file: "/home/mvu9/folder_04_ma/wsi-data/presets/tcga_vilamil.csv"
-    slide_list:  "/home/mvu9/processing_datasets/processing_tgca/kirc/process_list_autogen.csv" 
+  slide_list:  "/home/mvu9/processing_datasets/processing_tgca/kirc/process_list_autogen.csv" 
+
 # Processing parameters
 processing:
   patch_size: 256
