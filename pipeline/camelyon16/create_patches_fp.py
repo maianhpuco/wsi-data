@@ -59,7 +59,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				  'keep_ids': 'none', 'exclude_ids': 'none'},
 				  filter_params = {'a_t':100, 'a_h': 16, 'max_n_holes':8}, 
 				  vis_params = {'vis_level': -1, 'line_thickness': 500},
-				  patch_params = {'use_padding': True, 'contour_fn': 'four_pt'},
+				  patch_params = {'use_padding': True, 'contour_fn': 'four_pt', 'white_thresh': 5, 'black_thresh': 50},
 				  patch_level = 0,
 				  use_default_params = False, 
 				  seg = False, save_mask = True, 

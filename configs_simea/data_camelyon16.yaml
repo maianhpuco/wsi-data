@@ -63,8 +63,8 @@ visualization:
 patching:
   use_padding: true
   contour_fn: "four_pt"
-  # white_thresh: 5
-  # black_thresh: 40
+  white_thresh: 5
+  black_thresh: 50
 
 feature_extraction:
   model_name: resnet50_trunc
