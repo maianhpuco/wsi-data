@@ -23,7 +23,7 @@ sys.path.append("src/externals/CLAM")
 # sys.path.append(base_path)
 # print("Search path:", base_path) 
 
-from utils_old.file_utils import save_hdf5
+from utils.file_utils import save_hdf5
 from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
 from models import get_encoder
 
