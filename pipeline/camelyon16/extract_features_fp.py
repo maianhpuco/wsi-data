@@ -177,8 +177,8 @@ def main():
             dataset = Whole_Slide_Bag_FP(file_path=h5_file_path, 
                                         wsi=wsi, 
                                         img_transforms=img_transforms, 
-                                        patch_level=patch_level, 
-                                        patch_size=patch_size, 
+                                        # patch_level=patch_level, 
+                                        # patch_size=patch_size, 
                                         )
             
             if len(dataset) == 0:
