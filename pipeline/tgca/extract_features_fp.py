@@ -7,7 +7,6 @@ import torch
 import torch.nn as nn
 import timm
 from torch.utils.data import DataLoader
-from PIL import Image
 import h5py
 import openslide
 from tqdm import tqdm
@@ -61,23 +60,6 @@ def compute_w_loader(output_path, loader, model, verbose=0):
     
     return output_path
 
-def find_slide_paths(source_dir, slide_ids, slide_ext):
-    """Find full paths to slide files in UUID subdirectories."""
-    slide_paths = {}
-    for slide_id in slide_ids:
-        # Remove slide_ext if present in slide_id
-        slide_base = slide_id.replace(slide_ext, '')
-        found = False
-        # Search recursively in subdirectories
-        for root, _, files in os.walk(source_dir):
-            if slide_base + slide_ext in files:
-                slide_paths[slide_base] = os.path.join(root, slide_base + slide_ext)
-                found = True
-                break
-        if not found:
-            print(f"❌ Slide file not found for {slide_id} in {source_dir}")
-    return slide_paths
-
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Feature Extraction')
@@ -93,6 +75,7 @@ def main():
     feat_dir = os.path.join(cfg['paths']['save_dir'], 'features_fp')
     slide_name_file = cfg['paths']['slide_name_file']
     uuid_name_file = cfg['paths'].get('uuid_name_file')
+    csv_path = cfg['paths'].get('slide_list', os.path.join(cfg['paths']['save_dir'], 'slide_list.csv'))
 
     # Create necessary directories
     try:
@@ -107,48 +90,47 @@ def main():
     print(f"🔧 Reading slide list from: {slide_name_file}")
     try:
         slide_df = pd.read_excel(slide_name_file)
-        if 'slide_id' not in slide_df.columns:
-            print(f"❌ 'slide_id' column not found in {slide_name_file}")
+        if 'Filename' not in slide_df.columns:
+            print(f"❌ 'Filename' column not found in {slide_name_file}. Available columns: {slide_df.columns.tolist()}")
             sys.exit(1)
-        slide_files = slide_df['slide_id'].tolist()
+        slide_files = slide_df['Filename'].tolist()
     except Exception as e:
         print(f"❌ Error reading {slide_name_file}: {str(e)}")
         sys.exit(1)
 
-    # Read UUID mapping if available
+    # Read UUID mapping
     uuid_map = {}
-    if uuid_name_file:
-        try:
-            uuid_df = pd.read_excel(uuid_name_file)
-            if 'slide_id' in uuid_df.columns and 'uuid' in uuid_df.columns:
-                uuid_map = dict(zip(uuid_df['slide_id'].str.replace('.svs', ''), uuid_df['uuid']))
-            else:
-                print(f"⚠️ 'slide_id' or 'uuid' column not found in {uuid_name_file}, searching subdirectories")
-        except Exception as e:
-            print(f"⚠️ Error reading {uuid_name_file}: {str(e)}, searching subdirectories")
+    try:
+        uuid_df = pd.read_excel(uuid_name_file)
+        if 'Filename' not in uuid_df.columns or 'UUID' not in uuid_df.columns:
+            print(f"❌ 'Filename' or 'UUID' column not found in {uuid_name_file}. Available columns: {uuid_df.columns.tolist()}")
+            sys.exit(1)
+        uuid_map = dict(zip(uuid_df['Filename'], uuid_df['UUID']))
+    except Exception as e:
+        print(f"❌ Error reading {uuid_name_file}: {str(e)}")
+        sys.exit(1)
 
     slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".svs")
     print(f"Slide extension: {slide_ext}")
 
-    # Find slide paths
+    # Filter slides to those present in both slides.xlsx and uuids.xlsx
+    slide_files = [f for f in slide_files if f in uuid_map]
+    if not slide_files:
+        print(f"❌ No slides found in {slide_name_file} that match {uuid_name_file}")
+        sys.exit(1)
+
+    # Find slide paths using UUID mapping
     slide_paths = {}
-    if uuid_map:
-        # Use UUID mapping if available
-        for slide_id in slide_files:
-            slide_base = slide_id.replace(slide_ext, '')
-            uuid = uuid_map.get(slide_base)
-            if uuid:
-                slide_path = os.path.join(source, uuid, slide_base + slide_ext)
-                if os.path.exists(slide_path):
-                    slide_paths[slide_base] = slide_path
-                else:
-                    print(f"❌ Slide file not found: {slide_path}")
+    for slide_id in slide_files:
+        uuid = uuid_map.get(slide_id)
+        if uuid:
+            slide_path = os.path.join(source, uuid, slide_id)
+            if os.path.exists(slide_path):
+                slide_paths[slide_id.replace(slide_ext, '')] = slide_path
             else:
-                print(f"⚠️ UUID not found for {slide_id}, searching subdirectories")
-                slide_paths.update(find_slide_paths(source, [slide_id], slide_ext))
-    else:
-        # Search subdirectories if no UUID mapping
-        slide_paths = find_slide_paths(source, slide_files, slide_ext)
+                print(f"❌ Slide file not found: {slide_path}")
+        else:
+            print(f"⚠️ UUID not found for {slide_id}")
 
     if not slide_paths:
         print(f"❌ No valid slide files found in {source}")
@@ -156,7 +138,6 @@ def main():
     print(f"Found {len(slide_paths)} slides: {list(slide_paths.keys())[:5]}")
 
     # Write slide list to CSV for Dataset_All_Bags
-    csv_path = os.path.join(cfg['paths']['save_dir'], 'slide_list.csv')
     try:
         with open(csv_path, 'w') as f:
             f.write("slide_id\n")
