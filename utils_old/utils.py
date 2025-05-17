@@ -1,20 +1,12 @@
-import pickle
 import torch
 import numpy as np
 import torch.nn as nn
-import pdb
-
-import torch
-import numpy as np
-import torch.nn as nn
-from torchvision import transforms
 from torch.utils.data import DataLoader, Sampler, WeightedRandomSampler, RandomSampler, SequentialSampler, sampler
 import torch.optim as optim
-import pdb
-import torch.nn.functional as F
 import math
 from itertools import islice
 import collections
+
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SubsetSequentialSampler(Sampler):
@@ -37,35 +29,44 @@ def collate_MIL(batch):
 	label = torch.LongTensor([item[1] for item in batch])
 	return [img, label]
 
-def collate_features(batch):
-	img = torch.cat([item[0] for item in batch], dim = 0)
-	coords = np.vstack([item[1] for item in batch])
-	return [img, coords]
+def collate_tranformer(batch):
+	img_s = torch.cat([item[0] for item in batch], dim = 0)
+	coord_s = torch.cat([item[1] for item in batch], dim = 0)
+	img_l = torch.cat([item[2] for item in batch], dim = 0)
+	coord_l = torch.cat([item[3] for item in batch], dim = 0)
+	label = torch.LongTensor([item[4] for item in batch])
+	return [img_s, coord_s, img_l, coord_l, label]
 
 
-def get_simple_loader(dataset, batch_size=1, num_workers=1):
+def get_simple_loader(dataset, batch_size=1, num_workers=1, mode='clam'):
+	if(mode == 'transformer'):
+		collate = collate_tranformer
+
 	kwargs = {'num_workers': 4, 'pin_memory': False, 'num_workers': num_workers} if device.type == "cuda" else {}
-	loader = DataLoader(dataset, batch_size=batch_size, sampler = sampler.SequentialSampler(dataset), collate_fn = collate_MIL, **kwargs)
+	loader = DataLoader(dataset, batch_size=batch_size, sampler = sampler.SequentialSampler(dataset), collate_fn = collate, **kwargs)
 	return loader 
 
-def get_split_loader(split_dataset, training = False, testing = False, weighted = False):
+def get_split_loader(split_dataset, training = False, testing = False, weighted = False, mode='clam'):
 	"""
 		return either the validation loader or training loader 
 	"""
+	if(mode == 'transformer'):
+		collate = collate_tranformer
+
 	kwargs = {'num_workers': 4} if device.type == "cuda" else {}
 	if not testing:
 		if training:
 			if weighted:
 				weights = make_weights_for_balanced_classes_split(split_dataset)
-				loader = DataLoader(split_dataset, batch_size=1, sampler = WeightedRandomSampler(weights, len(weights)), collate_fn = collate_MIL, **kwargs)	
+				loader = DataLoader(split_dataset, batch_size=1, sampler = WeightedRandomSampler(weights, len(weights)), collate_fn = collate, **kwargs)
 			else:
-				loader = DataLoader(split_dataset, batch_size=1, sampler = RandomSampler(split_dataset), collate_fn = collate_MIL, **kwargs)
+				loader = DataLoader(split_dataset, batch_size=1, sampler = RandomSampler(split_dataset), collate_fn = collate, **kwargs)
 		else:
-			loader = DataLoader(split_dataset, batch_size=1, sampler = SequentialSampler(split_dataset), collate_fn = collate_MIL, **kwargs)
+			loader = DataLoader(split_dataset, batch_size=1, sampler = SequentialSampler(split_dataset), collate_fn = collate, **kwargs)
 	
 	else:
 		ids = np.random.choice(np.arange(len(split_dataset), int(len(split_dataset)*0.1)), replace = False)
-		loader = DataLoader(split_dataset, batch_size=1, sampler = SubsetSequentialSampler(ids), collate_fn = collate_MIL, **kwargs )
+		loader = DataLoader(split_dataset, batch_size=1, sampler = SubsetSequentialSampler(ids), collate_fn = collate, **kwargs)
 
 	return loader
 
@@ -116,17 +117,17 @@ def generate_split(cls_ids, val_num, test_num, samples, n_splits = 5,
 			remaining_ids = np.setdiff1d(possible_indices, val_ids) #indices of this class left after validation
 			all_val_ids.extend(val_ids)
 
-			if custom_test_ids is None: # sample test split
-
+			if custom_test_ids is None:  # sample test split
 				test_ids = np.random.choice(remaining_ids, test_num[c], replace = False)
 				remaining_ids = np.setdiff1d(remaining_ids, test_ids)
 				all_test_ids.extend(test_ids)
+			# all_test_ids.extend(val_ids)
 
 			if label_frac == 1:
 				sampled_train_ids.extend(remaining_ids)
 			
 			else:
-				sample_num  = math.ceil(len(remaining_ids) * label_frac)
+				sample_num = math.ceil(len(remaining_ids) * label_frac)
 				slice_ids = np.arange(sample_num)
 				sampled_train_ids.extend(remaining_ids[slice_ids])
 
