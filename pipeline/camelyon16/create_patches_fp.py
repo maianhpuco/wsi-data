@@ -5,7 +5,7 @@ import argparse
 import pandas as pd
 from tqdm import tqdm
 import yaml
-
+sys.path.append("src/externals/CLAM")
 # internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
