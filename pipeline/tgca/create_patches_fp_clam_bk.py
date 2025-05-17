@@ -1,25 +1,20 @@
-import os 
+import os
 import sys
 
-# Setup path
+# Get the absolute path of the parent of the parent directory
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
-print("Search path:", base_path) 
-
-clam_path = os.path.join(base_path,'src', 'external', 'CLAM')
-sys.path.append(clam_path)
+print("Search path:", base_path)
 
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
 from wsi_core.batch_process_utils import initialize_df
-# other imports
 import os
 import numpy as np
 import time
-import argparse
-import pdb
 import pandas as pd
-from tqdm import tqdm
+import yaml
+import argparse
 
 def stitching(file_path, wsi_object, downscale = 64):
 	start = time.time()
