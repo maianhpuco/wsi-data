@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 import argparse
 import yaml
 
-
 def generate_split(df, split_folder, fold_number):
     df = df.rename(columns={'slide_id': 'image'})
 
@@ -35,11 +34,19 @@ def generate_split(df, split_folder, fold_number):
     # Step 4: Train-validation split
     train_df, val_df = train_test_split(train_val_df, test_size=0.2, random_state=fold_number)
 
-    # Step 5: Create output DataFrame
+    # Step 5: Reset and count
     train_df = train_df.reset_index(drop=True)
     val_df = val_df.reset_index(drop=True)
     test_df = test_df.reset_index(drop=True)
 
+    print(f"\n📁 Fold {fold_number}")
+    print(f"Train samples: {len(train_df)}")
+    print(f"Val   samples: {len(val_df)}")
+    print(f"Test  samples: {len(test_df)}")
+    total = len(train_df) + len(val_df) + len(test_df)
+    print(f"Total: {total} / {len(df)} entries used\n")
+
+    # Step 6: Create output DataFrame (equal-length rows)
     min_len = min(len(train_df), len(val_df), len(test_df))
     split_df = pd.DataFrame({
         'train': train_df['clean_name'][:min_len],
@@ -53,12 +60,11 @@ def generate_split(df, split_folder, fold_number):
     print("🔍 Preview of split DataFrame:")
     print(split_df.head(3))
 
-    # Step 6: Save CSV
+    # Step 7: Save CSV
     os.makedirs(split_folder, exist_ok=True)
     split_df_path = os.path.join(split_folder, f'fold_{fold_number}.csv')
     split_df.to_csv(split_df_path, index=False)
     print(f"✅ Fold {fold_number} saved to: {split_df_path}")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate multiple train/val/test splits for WSI dataset')

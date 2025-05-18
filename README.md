@@ -130,3 +130,15 @@ comm -23 <(sort all_ids_luad.txt) <(sort ./check_sum/downloaded_ids_luad.txt) > 
 
 ```
 
+Fold note 
+
+TCGA - RENAL
+[3 rows x 3 columns]
+Train: 601 samples → KICH: 66, KIRP: 200, KIRC: 335
+Val:   151 samples → KICH: 25, KIRP: 40, KIRC: 86
+Test:  188 samples → KICH: 30, KIRP: 60, KIRC: 98
+Total: 940 / 940 complete
+ Saved to: /home/mvu9/processing_datasets/processing_tcga/splits_csv/fold_2
+
+CAMELYON16 
+
