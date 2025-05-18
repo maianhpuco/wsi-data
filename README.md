@@ -14,7 +14,10 @@ Example
 
 ```
 ./gdc-client download -m gdc_manifest.txt -d path/save/data 
-./gdc-client download -m manifest/KICH/gdc_manifest.2025-05-09.192912.txt -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/LUSC
+./gdc-client download -m manifest/LUSC -d /project/hnguyen2/mvu9/datasets/TGCA-datasets/LUSC
+
+
+
 
 ```
 
@@ -38,8 +41,11 @@ curl -s -X POST https://api.gdc.cancer.gov/manifest \
 ```
 
 - simea 
+chmod +x gdc-client 
+
 ./gdc-client download -m manifest/KICH/ -d ~/datasets/TGCA-datasets/KICH 
 ./gdc-client download -m manifest/KIRP/ -d ~/datasets/TGCA-datasets/KIRP
+./gdc-client download -m manifest/LUAD/ -d ~/datasets/TGCA-datasets/LUAD
 ==================================Customize==================================
 ```
 conda install -c conda-forge \

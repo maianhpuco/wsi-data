@@ -33,6 +33,8 @@ paths:
   pt_files: "/home/mvu9/processing_datasets/processing_camelyon16/features_fp/pt_files"
   ht_files: "/home/mvu9/processing_datasets/processing_camelyon16/features_fp/h5_files"
 
+fold_number: 5 
+
 processing:
   patch_size: 256
   step_size: 256
