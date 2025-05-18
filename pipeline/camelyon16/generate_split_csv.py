@@ -9,7 +9,7 @@ def generate_split(df, split_folder, fold_number):
     df = df.rename(columns={'slide_id': 'image'})
 
     # Step 1: Load external test labels
-    test_label_df = pd.read_csv('./camelyon16_csv_split_camil/splits_0.csv')
+    test_label_df = pd.read_csv('./data/camelyon16_csv_splits_camil/splits_0.csv')
     test_label_map = dict(zip(test_label_df['test'], test_label_df['test_label']))
 
     # Step 2: Split based on image names
