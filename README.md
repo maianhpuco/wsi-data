@@ -82,6 +82,7 @@ TGCA - Renal
 [x] KIRC
 
 TCGA-Lung 
+
 [x] LUSD  
 [x] LUAD  
 
@@ -131,14 +132,34 @@ comm -23 <(sort all_ids_luad.txt) <(sort ./check_sum/downloaded_ids_luad.txt) > 
 ```
 
 Fold note 
+--------------------------------------
+ Fold 1
+                             patient_id  ... label
+0  a26025f2-49b3-437e-94a0-18b14067932d  ...  KICH
+1  836ac1ec-6d7d-4df6-845b-461bf2c3e4ad  ...  KICH
+3  b5491ed3-9e8d-4c6b-9d8d-bc9ada7b4d6f  ...  KICH
 
-TCGA - RENAL
 [3 rows x 3 columns]
-Train: 601 samples → KICH: 66, KIRP: 200, KIRC: 335
-Val:   151 samples → KICH: 25, KIRP: 40, KIRC: 86
-Test:  188 samples → KICH: 30, KIRP: 60, KIRC: 98
+Train: 601 samples → KICH: 72, KIRP: 195, KIRC: 334
+Val:   151 samples → KICH: 26, KIRP: 40, KIRC: 85
+Test:  188 samples → KICH: 23, KIRP: 65, KIRC: 100
 Total: 940 / 940 complete
- Saved to: /home/mvu9/processing_datasets/processing_tcga/splits_csv/fold_2
-
+ Saved to: /home/mvu9/processing_datasets/processing_tcga/splits_csv/fold_1
+ 
+patient_id, slide, label 
+--------------------------------------
 CAMELYON16 
 
+----Fold 1
+Train samples: 216
+Val   samples: 54
+Test  samples: 129
+Total: 399 / 399 entries used
+
+Preview of split DataFrame:
+        train  train_label         val  val_label      test  test_label
+0  normal_125            0  normal_013          0  test_001         1.0
+1   tumor_098            1   tumor_063          1  test_002         1.0
+2   tumor_100            1  normal_052          0  test_003         0.0
+Fold 1 saved to: ./data/camelyon16_folds/fold_1.csv
+ 
