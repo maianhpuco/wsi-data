@@ -39,7 +39,7 @@ def generate_split(df, split_folder, fold_number):
     val_df = val_df.reset_index(drop=True)
     test_df = test_df.reset_index(drop=True)
 
-    print(f"\n📁 Fold {fold_number}")
+    print(f"\n-----Fold {fold_number}")
     print(f"Train samples: {len(train_df)}")
     print(f"Val   samples: {len(val_df)}")
     print(f"Test  samples: {len(test_df)}")
@@ -57,14 +57,15 @@ def generate_split(df, split_folder, fold_number):
         'test_label': test_df['label'][:min_len],
     })
 
-    print("🔍 Preview of split DataFrame:")
+    print("Preview of split DataFrame:")
     print(split_df.head(3))
 
     # Step 7: Save CSV
     os.makedirs(split_folder, exist_ok=True)
     split_df_path = os.path.join(split_folder, f'fold_{fold_number}.csv')
     split_df.to_csv(split_df_path, index=False)
-    print(f"✅ Fold {fold_number} saved to: {split_df_path}")
+    print(f"Fold {fold_number} saved to: {split_df_path}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate multiple train/val/test splits for WSI dataset')
