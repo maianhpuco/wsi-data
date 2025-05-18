@@ -74,9 +74,10 @@ def generate_tcga_splits(config):
 
         # Show class balance
         print(train_df.head(3))
-        print(f"Train: {len(train_df)} samples → {count_labels(train_df, 'label')}")
-        print(f"Val:   {len(val_df)} samples → {count_labels(val_df, 'label')}")
-        print(f"Test:  {len(test_df)} samples → {count_labels(test_df, 'label')}")
+        print(f"Train: {len(train_df)} samples → {count_labels(train_df)}")
+        print(f"Val:   {len(val_df)} samples → {count_labels(val_df)}")
+        print(f"Test:  {len(test_df)} samples → {count_labels(test_df)}")
+
         total = len(train_df) + len(val_df) + len(test_df)
         print(f"Total: {total} / {len(df)} complete")
 
