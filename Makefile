@@ -13,7 +13,9 @@ pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea
 # metadata_kirc_simea:
 # 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirc.yaml 
 
-
+##--------SIMAE --------- PREPROCESSING  
+gen_split:
+	python pipeline/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
 
 
 #--------SIMAE --------- PREPROCESSING 

@@ -51,7 +51,7 @@ def generate_split(df, split_folder, fold_number):
     split_df_path = os.path.join(split_folder, f'fold_{fold_number}.csv')
     os.makedirs(split_folder, exist_ok=True)
     split_df.to_csv(split_df_path, index=False)
-    print(f"Fold {fold_number} saved to: {split_df_path}")
+    print(f"> Fold {fold_number} saved to: {split_df_path}")
 
 
 if __name__ == "__main__":
