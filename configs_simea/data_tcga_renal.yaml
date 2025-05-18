@@ -1,8 +1,8 @@
 paths:
   metadata:
-    kich: "datasets/TCGA-metadata/KICH/uuids.xlsx"
-    kirp: "datasets/TCGA-metadata/KIRP/uuids.xlsx"
-    kirc: "datasets/TCGA-metadata/KIRC/uuids.xlsx"
+    kich: "/home/mvu9/datasets/TCGA-metadata/KICH/uuids.xlsx"
+    kirp: "/home/mvu9/datasets/TCGA-metadata/KIRP/uuids.xlsx"
+    kirc: "/home/mvu9/datasets/TCGA-metadata/KIRC/uuids.xlsx"
   split_folder: "/home/mvu9/processing_datasets/processing_tcga/splits_csv" 
 
 fold_number: 5
