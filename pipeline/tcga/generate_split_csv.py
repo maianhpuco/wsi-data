@@ -32,6 +32,7 @@ def generate_tcga_splits(config):
 
     # Combine and rename
     df = pd.concat([kich_df, kirp_df, kirc_df], ignore_index=True)
+    df.columns = df.columns.str.strip().str.lower()  # normalize column names
     df = df.rename(columns={'uuid': 'patient_id', 'filename': 'slide'})
     df['slide'] = df['slide'].str.replace('.svs', '', regex=False)
 
