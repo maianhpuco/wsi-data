@@ -70,7 +70,8 @@ if __name__ == "__main__":
         config = yaml.safe_load(f)
 
     slide_list = config['paths']['slide_list']
-    split_folder = config['paths']['split_folder']
+    # split_folder = config['paths']['split_folder']
+    split_folder = './data/camelyon16_folds'
     total_folds = int(config.get('fold_number', 5))  # default to 5 if not specified
 
     # Read the dataset once
