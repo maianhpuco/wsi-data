@@ -6,12 +6,19 @@ import yaml
 
 
 def generate_split(df, split_folder, fold_number):
-    # Step 1: Split based on image names
-    df = df.rename(columns={'slide_id': 'image'})
-    train_val_df = df[df['image'].str.startswith(('normal', 'tumor'))]
-    test_df = df[df['image'].str.startswith('test')]
+    # Step 1: Load the slide list
+    df = pd.read_csv(args.slide_list)
+    df.rename(columns={'slide_id': 'image'}, inplace=True)
 
-    # Extract clean names and assign labels
+    # Step 2: Load external test labels
+    test_label_df = pd.read_csv('./camelyon16_csv_split_camil/splits_0.csv')
+    test_label_map = dict(zip(test_label_df['test'], test_label_df['test_label']))
+
+    # Step 3: Split based on image names
+    train_val_df = df[df['image'].str.startswith(('normal', 'tumor'))].copy()
+    test_df = df[df['image'].str.startswith('test')].copy()
+    
+    
     def clean_name_and_label(row):
         name = row['image'].replace('.tif', '')
         if name.startswith('normal'):
@@ -19,11 +26,12 @@ def generate_split(df, split_folder, fold_number):
         elif name.startswith('tumor'):
             label = 1
         elif name.startswith('test'):
-            label = row['label'] if 'label' in row else None
+            label = test_label_map.get(name, None)  # get from external CSV
         else:
             label = None
-        return pd.Series([name, label])
-
+        return pd.Series([name, label]) 
+    
+    
     train_val_df[['clean_name', 'label']] = train_val_df.apply(clean_name_and_label, axis=1)
     test_df[['clean_name', 'label']] = test_df.apply(clean_name_and_label, axis=1)
 
