@@ -20,7 +20,7 @@ for subtype in ["KIRC", "KICH", "KIRP"]:
     
     print(df.head(3))
     df.columns = df.columns.str.lower()
-    if 'file_name' not in df.columns:
+    if 'filename' not in df.columns:
         raise ValueError(f"'file_name' column not found in {metadata_files[subtype]}")
 
     df['file_name'] = df['file_name'].str.replace(".svs", "", regex=False)
