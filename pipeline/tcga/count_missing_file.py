@@ -17,6 +17,8 @@ metadata_files = {
 # Count existing .pt files for each subtype
 for subtype in ["KIRC", "KICH", "KIRP"]:
     df = pd.read_excel(metadata_files[subtype])
+    
+    print(df.head(3))
     df.columns = df.columns.str.lower()
     if 'file_name' not in df.columns:
         raise ValueError(f"'file_name' column not found in {metadata_files[subtype]}")
