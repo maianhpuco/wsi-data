@@ -235,21 +235,21 @@ def main():
                 print(f"❌ No patches found in {h5_file_path}")
                 continue
 
-            # loader = DataLoader(dataset=dataset, batch_size=batch_size, **loader_kwargs)
-            # output_file_path = compute_w_loader(output_path, loader=loader, model=model, verbose=1)
+            loader = DataLoader(dataset=dataset, batch_size=batch_size, **loader_kwargs)
+            output_file_path = compute_w_loader(output_path, loader=loader, model=model, verbose=1)
 
-            # time_elapsed = time.time() - time_start
-            # print(f'\nComputing features for {output_file_path} took {time_elapsed:.2f} s')
+            time_elapsed = time.time() - time_start
+            print(f'\nComputing features for {output_file_path} took {time_elapsed:.2f} s')
 
-            # # Save features as .pt
-            # with h5py.File(output_file_path, "r") as file:
-            #     features = file['features'][:]
-            #     print(f'Features size: {features.shape}')
-            #     print(f'Coordinates size: {file["coords"].shape}')
+            # Save features as .pt
+            with h5py.File(output_file_path, "r") as file:
+                features = file['features'][:]
+                print(f'Features size: {features.shape}')
+                print(f'Coordinates size: {file["coords"].shape}')
 
-            # features = torch.from_numpy(features)
-            # bag_base, _ = os.path.splitext(bag_name)
-            # torch.save(features, os.path.join(feat_dir, 'pt_files', bag_base + '.pt'))
+            features = torch.from_numpy(features)
+            bag_base, _ = os.path.splitext(bag_name)
+            torch.save(features, os.path.join(feat_dir, 'pt_files', bag_base + '.pt'))
         
         except Exception as e:
             print(f"❌ Error processing {slide_id}: {str(e)}")
