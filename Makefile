@@ -7,11 +7,11 @@ pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea
 
 #--------SIMAE --------- 
 # metadata_kich_simea:
-# 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kich.yaml
+# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kich.yaml
 # metadata_kirp_simea:
-# 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirp.yaml 
+# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kirp.yaml 
 # metadata_kirc_simea:
-# 	python pipeline/tgca/generate_metadata.py --config configs_simea/data_kirc.yaml 
+# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kirc.yaml 
 
 ##--------SIMAE --------- PREPROCESSING  
 gen_split_camelyon16:
@@ -26,13 +26,13 @@ pp_camelyon16_simea:
 	python pipeline/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
 
 pp_kich_simea: 
-	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kich.yaml 
+	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml 
 
 pp_kirp_simea:
-	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirp.yaml  
+	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 
 pp_kirc_simea:
-	python pipeline/tgca/create_patches_fp.py --config configs_simea/data_kirc.yaml 
+	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml 
 
  
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
@@ -40,11 +40,11 @@ ef_camelyon16_simea:
 	python pipeline/camelyon16/extract_features_fp.py --config configs_simea/data_camelyon16.yaml
 
 ef_kich_simea: 
-	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kich.yaml
+	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kich.yaml
 ef_kirc_simea: 
-	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kirc.yaml
+	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirc.yaml
 ef_kirp_simea: 
-	python pipeline/tgca/extract_features_fp.py --config configs_simea/data_kirp.yaml
+	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
@@ -79,6 +79,6 @@ pp_kich:
 
 #--------MAUI--------- 
 get_split:
-	python few-shot/tgca-renal_generate_split.py \
+	python few-shot/tcga-renal_generate_split.py \
 		--configs configs/data_kirc.yaml configs/data_kich.yaml configs/data_kirp.yaml \
 		--output_dir /project/hnguyen2/mvu9/processing_datasets/tcga_renal_fewshot
