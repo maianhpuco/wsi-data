@@ -16,7 +16,7 @@ metadata_files = {
 }
 
 # Count .pt file existence for each cancer subtype
-for subtype in ["KIRC", "KICH", "KIRP"]:
+for subtype in ["KICH", "KIRP"]:
     print(f"\nChecking subtype: {subtype}")
     df = pd.read_excel(metadata_files[subtype])
     df.columns = df.columns.str.lower()
