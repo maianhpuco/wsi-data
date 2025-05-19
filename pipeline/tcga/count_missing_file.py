@@ -23,8 +23,8 @@ for subtype in ["KIRC", "KICH", "KIRP"]:
     if 'filename' not in df.columns:
         raise ValueError(f"'file_name' column not found in {metadata_files[subtype]}")
 
-    df['file_name'] = df['file_name'].str.replace(".svs", "", regex=False)
-    expected_files = df['file_name'].unique()
+    df['filename'] = df['filename'].str.replace(".svs", "", regex=False)
+    expected_files = df['filename'].unique()
     
     dir_path = dirs[subtype]
     available_files = set(f.replace(".pt", "") for f in os.listdir(dir_path) if f.endswith(".pt"))
