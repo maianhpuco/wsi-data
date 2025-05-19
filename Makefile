@@ -24,27 +24,23 @@ gen_split_tcga_renal:
 #--------SIMAE --------- PREPROCESSING 
 pp_camelyon16_simea:
 	python pipeline/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
-
 pp_kich_simea: 
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml 
-
 pp_kirp_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
-
 pp_kirc_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml 
-
  
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
 ef_camelyon16_simea: 
 	python pipeline/camelyon16/extract_features_fp.py --config configs_simea/data_camelyon16.yaml
-
 ef_kich_simea: 
 	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kich.yaml
 ef_kirc_simea: 
 	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirc.yaml
 ef_kirp_simea: 
 	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
+
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
@@ -52,7 +48,6 @@ gen_patches_kirc_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kirc.yaml
 gen_patches_kirp_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kirp.yaml 
-
 gen_patches_camelyon16_simea:
 	# python pipeline/camelyon16/generate_patches.py --config configs_simea/data_camelyon16.yaml
 	python pipeline/camelyon16/create_and_generate_patches.py --config configs_simea/data_camelyon16.yaml
