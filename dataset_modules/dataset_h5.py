@@ -284,7 +284,8 @@ class Whole_Slide_Bag_FP(Dataset):
 	def __getitem__(self, idx):
 		with h5py.File(self.file_path,'r') as hdf5_file:
 			coord = hdf5_file['coords'][idx]
-			print("LOG: coord, type(coord): ", coord[0], coord[1], type(coord[0]), type(coord[1]))
+		print("LOG: self.patch_level, self.patch_size: ", self.patch_level, self.patch_size)
+		print("LOG: type(self.patch_level), type(self.patch_size): ", type(self.patch_level), type(self.patch_size))
 		img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
 
 		img = self.roi_transforms(img)
