@@ -254,6 +254,11 @@ class Whole_Slide_Bag_FP(Dataset):
     		# Try to get from HDF5 first; fallback to argument
 			self.patch_level = f['coords'].attrs.get('patch_level') if 'patch_level' in f['coords'].attrs else patch_level
 			self.patch_size = f['coords'].attrs.get('patch_size') if 'patch_size' in f['coords'].attrs else patch_size
+			# Convert patch_level and patch_size to int64 if they exist
+			if self.patch_level is not None:
+				self.patch_level = np.int64(self.patch_level)
+			if self.patch_size is not None:
+				self.patch_size = np.int64(self.patch_size)
 
 			# Only raise error if both sources failed
 			if self.patch_level is None:
@@ -284,8 +289,6 @@ class Whole_Slide_Bag_FP(Dataset):
 	def __getitem__(self, idx):
 		with h5py.File(self.file_path,'r') as hdf5_file:
 			coord = hdf5_file['coords'][idx]
-		print("LOG: self.patch_level, self.patch_size: ", self.patch_level, self.patch_size)
-		print("LOG: type(self.patch_level), type(self.patch_size): ", type(self.patch_level), type(self.patch_size))
 		img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
 
 		img = self.roi_transforms(img)
