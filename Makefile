@@ -16,7 +16,6 @@ pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea
 ##--------SIMAE --------- PREPROCESSING  
 gen_split_camelyon16:
 	python pipeline/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
-
 gen_split_tcga_renal:
 	python pipeline/tcga/generate_split_csv.py --config configs_simea/data_tcga_renal.yaml 
 
