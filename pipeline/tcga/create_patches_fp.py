@@ -205,8 +205,8 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 
 		w, h = WSI_object.level_dim[current_seg_params['seg_level']]
 		if w * h > 1e8:
-			num_levels = len(WSI_object.level_dim)
-			print("NUM LEVELES", num_levels)
+			print(f"Number of levels: {len(WSI_object.level_dim)}")
+			print(f"Levels: {WSI_object.level_dim}")
 			print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
 			df.loc[idx, 'status'] = 'failed_seg'
 			continue
