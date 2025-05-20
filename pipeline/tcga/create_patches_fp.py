@@ -17,26 +17,26 @@ import yaml
 import argparse
 
 from PIL import Image
-# ====== added ======
-def safe_read_wsi_thumbnail(slide, level=0, tile_size=4096):
-    """Safely reads a large WSI by stitching tiles together."""
-    w, h = slide.level_dimensions[level]
-    full_image = Image.new("RGB", (w, h))
+# # ====== added ======
+# def safe_read_wsi_thumbnail(slide, level=0, tile_size=4096):
+#     """Safely reads a large WSI by stitching tiles together."""
+#     w, h = slide.level_dimensions[level]
+#     full_image = Image.new("RGB", (w, h))
 
-    for y in range(0, h, tile_size):
-        for x in range(0, w, tile_size):
-            read_w = min(tile_size, w - x)
-            read_h = min(tile_size, h - y)
-            try:
-                tile = slide.read_region((x, y), level, (read_w, read_h)).convert("RGB")
-                full_image.paste(tile, (x, y))
-            except Exception as e:
-                print(f"⚠️ Skipping tile at {(x, y)} due to read error: {e}")
-                # Optionally fill blank:
-                tile = Image.new("RGB", (read_w, read_h), (255, 255, 255))
-                full_image.paste(tile, (x, y))
-    return full_image
-# ====== added ====== 
+#     for y in range(0, h, tile_size):
+#         for x in range(0, w, tile_size):
+#             read_w = min(tile_size, w - x)
+#             read_h = min(tile_size, h - y)
+#             try:
+#                 tile = slide.read_region((x, y), level, (read_w, read_h)).convert("RGB")
+#                 full_image.paste(tile, (x, y))
+#             except Exception as e:
+#                 print(f"⚠️ Skipping tile at {(x, y)} due to read error: {e}")
+#                 # Optionally fill blank:
+#                 tile = Image.new("RGB", (read_w, read_h), (255, 255, 255))
+#                 full_image.paste(tile, (x, y))
+#     return full_image
+# # ====== added ====== 
  
 # ====== added ======
 def load_csv_slide_filter(csv_path):
@@ -226,55 +226,55 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 			current_seg_params['exclude_ids'] = []
 
 		w, h = WSI_object.level_dim[current_seg_params['seg_level']]
-		# if w * h > 1e8:
-		# 	print(f"Number of levels: {len(WSI_object.level_dim)}")
-		# 	print(f"Levels: {WSI_object.level_dim}")
-		# 	print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
-		# 	df.loc[idx, 'status'] = 'failed_seg'
-		# 	continue
+		if w * h > 1e8:
+			print(f"Number of levels: {len(WSI_object.level_dim)}")
+			print(f"Levels: {WSI_object.level_dim}")
+			print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
+			df.loc[idx, 'status'] = 'failed_seg'
+			continue
   
 		max_pixels = 1e8 
   
 		#===================== ADDED ====================== 
-		try:
-			import cv2
-			from PIL import Image
+		# try:
+		# 	import cv2
+		# 	from PIL import Image
 
-			downsample_factor = 2
-			w, h = WSI_object.level_dim[0]
+		# 	downsample_factor = 2
+		# 	w, h = WSI_object.level_dim[0]
 
-			print(f"🧱 Safely reading {w}x{h} in tiles...")
-			full_image = safe_read_wsi_thumbnail(WSI_object.wsi, level=0, tile_size=4096)
+		# 	print(f"Safely reading {w}x{h} in tiles...")
+		# 	full_image = safe_read_wsi_thumbnail(WSI_object.wsi, level=0, tile_size=4096)
 
-			np_image = np.array(full_image)
-			resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
-			resized_img = Image.fromarray(resized_np)
+		# 	np_image = np.array(full_image)
+		# 	resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
+		# 	resized_img = Image.fromarray(resized_np)
 
-			# Continue as before
-			WSI_object._resized_image = resized_img
-			WSI_object._resized_dim = resized_img.size
-			WSI_object._resized_downsample = (
-				WSI_object.level_downsamples[0][0] * downsample_factor,
-				WSI_object.level_downsamples[0][1] * downsample_factor,
-			)
+		# 	# Continue as before
+		# 	WSI_object._resized_image = resized_img
+		# 	WSI_object._resized_dim = resized_img.size
+		# 	WSI_object._resized_downsample = (
+		# 		WSI_object.level_downsamples[0][0] * downsample_factor,
+		# 		WSI_object.level_downsamples[0][1] * downsample_factor,
+		# 	)
 
-			def _read_resized_region(location, level, size):
-				if level == 1:
-					return WSI_object._resized_image.crop((0, 0, size[0], size[1]))
-				else:
-					return WSI_object.wsi.read_region(location, level, size)
+		# 	def _read_resized_region(location, level, size):
+		# 		if level == 1:
+		# 			return WSI_object._resized_image.crop((0, 0, size[0], size[1]))
+		# 		else:
+		# 			return WSI_object.wsi.read_region(location, level, size)
 
-			WSI_object.wsi.read_region = _read_resized_region
-			WSI_object.level_dim = list(WSI_object.level_dim) + [WSI_object._resized_dim]
-			WSI_object.level_downsamples = list(WSI_object.level_downsamples) + [WSI_object._resized_downsample]
-			current_seg_params['seg_level'] = len(WSI_object.level_dim) - 1
+		# 	WSI_object.wsi.read_region = _read_resized_region
+		# 	WSI_object.level_dim = list(WSI_object.level_dim) + [WSI_object._resized_dim]
+		# 	WSI_object.level_downsamples = list(WSI_object.level_downsamples) + [WSI_object._resized_downsample]
+		# 	current_seg_params['seg_level'] = len(WSI_object.level_dim) - 1
 
-			print(f"✅ Using virtual resized seg_level={current_seg_params['seg_level']}")
+		# 	print(f"Using virtual resized seg_level={current_seg_params['seg_level']}")
 
-		except Exception as e:
-			print(f"❌ Failed resizing: {e}")
-			df.loc[idx, 'status'] = 'failed_resize'
-			continue
+		# except Exception as e:
+		# 	print(f"Failed resizing: {e}")
+		# 	df.loc[idx, 'status'] = 'failed_resize'
+		# 	continue
 		#===================== ADDED ======================  
   
   

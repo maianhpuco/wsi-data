@@ -4,7 +4,6 @@ import yaml
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import KFold, train_test_split
-from collections import Counter
 
 
 def count_labels(df):
@@ -17,30 +16,40 @@ def generate_tcga_splits(config):
     kich_path = config['paths']['metadata']['kich']
     kirp_path = config['paths']['metadata']['kirp']
     kirc_path = config['paths']['metadata']['kirc']
+    pt_files_dir = config['paths']['pt_files_dir']  # <- added
     output_dir = config['paths']['split_folder']
     num_folds = int(config.get('fold_number', 5))
+
+    # Load .pt files that exist
+    valid_slide_basenames = {
+        os.path.splitext(f)[0] for f in os.listdir(pt_files_dir) if f.endswith('.pt')
+    }
+
+    print(f"✅ Found {len(valid_slide_basenames)} .pt files in {pt_files_dir}")
 
     # Load Excel files and assign labels
     kich_df = pd.read_excel(kich_path)
     kich_df['label'] = 'KICH'
-
     kirp_df = pd.read_excel(kirp_path)
     kirp_df['label'] = 'KIRP'
-
     kirc_df = pd.read_excel(kirc_path)
     kirc_df['label'] = 'KIRC'
 
-    # Combine and rename
+    # Combine and normalize
     df = pd.concat([kich_df, kirp_df, kirc_df], ignore_index=True)
-    df.columns = df.columns.str.strip().str.lower()  # normalize column names
+    df.columns = df.columns.str.strip().str.lower()
     df = df.rename(columns={'uuid': 'patient_id', 'filename': 'slide'})
     df['slide'] = df['slide'].str.replace('.svs', '', regex=False)
 
-    # Unique patients
+    # Filter to only slides that have corresponding .pt file
+    df = df[df['slide'].isin(valid_slide_basenames)]
+    print(f"✅ Filtered to {len(df)} slides with existing .pt files")
+
+    # Patient-level split
     unique_patients = df[['patient_id', 'label']].drop_duplicates()
     patient_ids = unique_patients['patient_id'].values
 
-    # Set up KFold on patients
+    # Cross-validation setup
     kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
     folds_patients = []
 
@@ -54,39 +63,29 @@ def generate_tcga_splits(config):
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Save each fold
     for i in range(num_folds):
         fold_id = i + 1
-        print(f"\n Fold {fold_id}")
+        print(f"\n📁 Fold {fold_id}")
 
         fold_dir = os.path.join(output_dir, f'fold_{fold_id}')
         os.makedirs(fold_dir, exist_ok=True)
 
-        # Get patient-level splits
-        train_patients = folds_patients[i]['train']
-        val_patients = folds_patients[i]['validation']
-        test_patients = folds_patients[i]['test']
+        train_df = df[df['patient_id'].isin(folds_patients[i]['train'])]
+        val_df = df[df['patient_id'].isin(folds_patients[i]['validation'])]
+        test_df = df[df['patient_id'].isin(folds_patients[i]['test'])]
 
-        # Map back to slides
-        train_df = df[df['patient_id'].isin(train_patients)]
-        val_df = df[df['patient_id'].isin(val_patients)]
-        test_df = df[df['patient_id'].isin(test_patients)]
-
-        # Show class balance
         print(train_df.head(3))
         print(f"Train: {len(train_df)} samples → {count_labels(train_df)}")
         print(f"Val:   {len(val_df)} samples → {count_labels(val_df)}")
         print(f"Test:  {len(test_df)} samples → {count_labels(test_df)}")
+        print(f"Total: {len(train_df) + len(val_df) + len(test_df)} / {len(df)} complete")
 
-        total = len(train_df) + len(val_df) + len(test_df)
-        print(f"Total: {total} / {len(df)} complete")
-
-        # Save
+        # Save splits
         train_df.to_csv(os.path.join(fold_dir, 'train.csv'), index=False)
         val_df.to_csv(os.path.join(fold_dir, 'val.csv'), index=False)
         test_df.to_csv(os.path.join(fold_dir, 'test.csv'), index=False)
 
-        print(f" Saved to: {fold_dir}")
+        print(f"✅ Saved to: {fold_dir}")
 
 
 if __name__ == "__main__":
