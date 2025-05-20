@@ -283,7 +283,9 @@ parser.add_argument('--slide_name_file', type=str,
 					help='a file stored all slides name needed in this project')
 parser.add_argument('--uuid_name_file', type=str,
 					help='a file stored all slides info')
-parser.add_argument('--csv_filenames', type=str, default=None, help='Path to CSV file with slide names to rerun')
+# parser.add_argument('--csv_filenames', type=str, default=None, help='Path to CSV file with slide names to rerun')
+parser.add_argument('--csv_filenames', type=str, default=None,
+                    help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
 
 
 if __name__ == '__main__':
@@ -319,10 +321,16 @@ if __name__ == '__main__':
 	auto_skip = proc['auto_skip']
 
 	# ====== added ======
-	csv_slide_filter = load_csv_slide_filter(args.csv_filenames) if args.csv_filenames else None
+	if args.csv_filenames == "yes":
+		csv_filter_path = paths.get("missing_patches_h5", None)
+		if csv_filter_path is None:
+			raise ValueError("Config is missing 'paths.missing_patches_h5'")
+		print(f"✅ Using slide filter from: {csv_filter_path}")
+		csv_slide_filter = load_csv_slide_filter(csv_filter_path)
+	else:
+		csv_slide_filter = load_csv_slide_filter(args.csv_filenames) if args.csv_filenames else None
 	# ====== added ======
 
-	# Create output directories
 	directories = {
 		'source': source,
 		'save_dir': save_dir,
