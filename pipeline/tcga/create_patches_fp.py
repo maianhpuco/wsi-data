@@ -289,6 +289,9 @@ parser.add_argument('--csv_filenames', type=str, default=None,
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='seg and patch')
 	parser.add_argument('--config', type=str, default='config.yaml', help='path to YAML config file')
+	parser.add_argument('--csv_filenames', type=str, default=None,
+                        help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
+	
 	args = parser.parse_args()
 	
 	import yaml 
@@ -385,5 +388,5 @@ if __name__ == '__main__':
 		auto_skip=auto_skip,
 		process_list=None,
 		uuid_name_file=uuid_name_file, 
- 		csv_slide_filter=csv_slide_filter
+		csv_slide_filter=csv_slide_filter
 	) 
