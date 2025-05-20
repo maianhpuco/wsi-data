@@ -90,7 +90,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 	# ====== added ======
  
  
- 	if process_list is None:
+	if process_list is None:
 		df = initialize_df(slides, seg_params, filter_params, vis_params, patch_params)
 
 	else:
@@ -379,12 +379,12 @@ if __name__ == '__main__':
 		auto_skip=auto_skip,
 		process_list=None,
 		uuid_name_file=uuid_name_file, 
-  		csv_slide_filter=csv_slide_filter
+ 		csv_slide_filter=csv_slide_filter
 	) 
 	# seg_times, patch_times = seg_and_patch(**directories, **parameters,
-	# 									   slide_name_file=args.slide_name_file,
-	# 									   patch_size = args.patch_size, step_size=args.step_size,
-	# 									   seg = args.seg,  use_default_params=False, save_mask = True,
-	# 									   stitch= args.stitch,
-	# 									   patch_level=args.patch_level, patch = args.patch,
-	# 									   process_list = process_list, auto_skip=args.no_auto_skip, uuid_name_file=args.uuid_name_file)
+	#									   slide_name_file=args.slide_name_file,
+	#									   patch_size = args.patch_size, step_size=args.step_size,
+	#									   seg = args.seg,  use_default_params=False, save_mask = True,
+	#									   stitch= args.stitch,
+	#									   patch_level=args.patch_level, patch = args.patch,
+	#									   process_list = process_list, auto_skip=args.no_auto_skip, uuid_name_file=args.uuid_name_file)
