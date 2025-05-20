@@ -29,14 +29,15 @@ pp_kich_simea:
 pp_kirp_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 pp_kirc_simea:
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml 
+	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml
+	 
 #====== 
-check_missing_file:
-	python pipeline/tcga/count_missing_file.py
-rerun_pp_kich_simea: 
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames yes
-rerun_pp_kirp_simea: 
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml --csv_filenames yes 
+# check_missing_file:
+# 	python pipeline/tcga/count_missing_file.py
+# rerun_pp_kich_simea: 
+# 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames yes
+# rerun_pp_kirp_simea: 
+# 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml --csv_filenames yes 
 
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
 ef_camelyon16_simea: 

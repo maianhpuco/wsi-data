@@ -25,7 +25,7 @@ def generate_tcga_splits(config):
         os.path.splitext(f)[0] for f in os.listdir(pt_files_dir) if f.endswith('.pt')
     }
 
-    print(f"✅ Found {len(valid_slide_basenames)} .pt files in {pt_files_dir}")
+    print(f"Found {len(valid_slide_basenames)} .pt files in {pt_files_dir}")
 
     # Load Excel files and assign labels
     kich_df = pd.read_excel(kich_path)
@@ -43,7 +43,7 @@ def generate_tcga_splits(config):
 
     # Filter to only slides that have corresponding .pt file
     df = df[df['slide'].isin(valid_slide_basenames)]
-    print(f"✅ Filtered to {len(df)} slides with existing .pt files")
+    print(f"Filtered to {len(df)} slides with existing .pt files")
 
     # Patient-level split
     unique_patients = df[['patient_id', 'label']].drop_duplicates()
@@ -65,7 +65,7 @@ def generate_tcga_splits(config):
 
     for i in range(num_folds):
         fold_id = i + 1
-        print(f"\n📁 Fold {fold_id}")
+        print(f"\n Fold {fold_id}")
 
         fold_dir = os.path.join(output_dir, f'fold_{fold_id}')
         os.makedirs(fold_dir, exist_ok=True)
@@ -85,7 +85,7 @@ def generate_tcga_splits(config):
         val_df.to_csv(os.path.join(fold_dir, 'val.csv'), index=False)
         test_df.to_csv(os.path.join(fold_dir, 'test.csv'), index=False)
 
-        print(f"✅ Saved to: {fold_dir}")
+        print(f"Saved to: {fold_dir}")
 
 
 if __name__ == "__main__":
