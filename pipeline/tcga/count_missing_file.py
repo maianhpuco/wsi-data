@@ -79,7 +79,7 @@ for subtype in ["KICH", "KIRP"]:
     else:
         missing_h5 = [f for f in expected_files if not os.path.isfile(os.path.join(h5_path, f"{f}.h5"))]
 
-        print(f"🧬 .h5 Files")
+        print(f" .h5 Files")
         print(f"  Found:    {len(expected_files) - len(missing_h5)}")
         print(f"  Missing:  {len(missing_h5)}")
         if missing_h5:
