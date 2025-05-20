@@ -68,7 +68,7 @@ for subtype in ["KICH", "KIRP"]:
         # === Save missing pt list ===
         pt_output_path = output_paths["pt"][subtype]
         os.makedirs(os.path.dirname(pt_output_path), exist_ok=True)
-        pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_pt]}).to_csv(pt_output_path, index=False)
+        # pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_pt]}).to_csv(pt_output_path, index=False)
         print(f"  Saved missing .pt list to: {pt_output_path}")
 
     # ----- Check .h5 files -----
@@ -90,5 +90,5 @@ for subtype in ["KICH", "KIRP"]:
         # === Save missing h5 list ===
         h5_output_path = output_paths["h5"][subtype]
         os.makedirs(os.path.dirname(h5_output_path), exist_ok=True)
-        pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_h5]}).to_csv(h5_output_path, index=False)
+        # pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_h5]}).to_csv(h5_output_path, index=False)
         print(f"   Saved missing .h5 list to: {h5_output_path}")
