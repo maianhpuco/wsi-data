@@ -16,6 +16,15 @@ import pandas as pd
 import yaml
 import argparse
 
+# ====== added ======
+def load_csv_slide_filter(csv_path):
+	if not os.path.exists(csv_path):
+		raise FileNotFoundError(f"CSV file not found: {csv_path}")
+	df = pd.read_csv(csv_path)
+	if 'slide' not in df.columns:
+		raise ValueError("CSV file must contain a 'slide' column")
+	return set(df['slide'].str.replace('.svs', '', regex=False))
+# ====== added ====== 
 
 def stitching(file_path, wsi_object, downscale = 64):
 	start = time.time()
@@ -61,7 +70,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 				  use_default_params = False,
 				  seg = False, save_mask = True,
 				  stitch= False,
-				  patch = False, auto_skip = True, process_list = None, uuid_name_file = None):
+				  patch = False, auto_skip = True, process_list = None, uuid_name_file = None, csv_slide_filter=None):
 
 	all_data = np.array(pd.read_excel(uuid_name_file, engine='openpyxl', header=None))
 	slides = []
@@ -71,7 +80,17 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 		id_names[data[1]] = data[0]
 
 	slides = [slide for slide in slides if os.path.isfile(os.path.join(source, id_names[str(slide)], slide))]
-	if process_list is None:
+	
+	
+	# ====== added ======
+	if csv_slide_filter:
+		print(f"⚠️  Filtering slides based on CSV: {len(slides)} -> ", end='')
+		slides = [s for s in slides if s.replace(".svs", "") in csv_slide_filter]
+		print(f"{len(slides)}")
+	# ====== added ======
+ 
+ 
+ 	if process_list is None:
 		df = initialize_df(slides, seg_params, filter_params, vis_params, patch_params)
 
 	else:
@@ -264,6 +283,7 @@ parser.add_argument('--slide_name_file', type=str,
 					help='a file stored all slides name needed in this project')
 parser.add_argument('--uuid_name_file', type=str,
 					help='a file stored all slides info')
+parser.add_argument('--csv_filenames', type=str, default=None, help='Path to CSV file with slide names to rerun')
 
 
 if __name__ == '__main__':
@@ -297,6 +317,10 @@ if __name__ == '__main__':
 	patch = proc['patch']
 	stitch = proc['stitch']
 	auto_skip = proc['auto_skip']
+
+	# ====== added ======
+	csv_slide_filter = load_csv_slide_filter(args.csv_filenames) if args.csv_filenames else None
+	# ====== added ======
 
 	# Create output directories
 	directories = {
@@ -354,7 +378,8 @@ if __name__ == '__main__':
 		patch=patch,
 		auto_skip=auto_skip,
 		process_list=None,
-		uuid_name_file=uuid_name_file
+		uuid_name_file=uuid_name_file, 
+  		csv_slide_filter=csv_slide_filter
 	) 
 	# seg_times, patch_times = seg_and_patch(**directories, **parameters,
 	# 									   slide_name_file=args.slide_name_file,
