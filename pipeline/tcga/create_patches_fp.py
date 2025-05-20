@@ -284,8 +284,7 @@ parser.add_argument('--slide_name_file', type=str,
 parser.add_argument('--uuid_name_file', type=str,
 					help='a file stored all slides info')
 parser.add_argument('--csv_filenames', type=str, default=None,
-                    help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
-
+                        help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='seg and patch')
