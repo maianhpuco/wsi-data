@@ -283,7 +283,6 @@ parser.add_argument('--slide_name_file', type=str,
 					help='a file stored all slides name needed in this project')
 parser.add_argument('--uuid_name_file', type=str,
 					help='a file stored all slides info')
-# parser.add_argument('--csv_filenames', type=str, default=None, help='Path to CSV file with slide names to rerun')
 parser.add_argument('--csv_filenames', type=str, default=None,
                     help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
 
@@ -389,10 +388,3 @@ if __name__ == '__main__':
 		uuid_name_file=uuid_name_file, 
  		csv_slide_filter=csv_slide_filter
 	) 
-	# seg_times, patch_times = seg_and_patch(**directories, **parameters,
-	#									   slide_name_file=args.slide_name_file,
-	#									   patch_size = args.patch_size, step_size=args.step_size,
-	#									   seg = args.seg,  use_default_params=False, save_mask = True,
-	#									   stitch= args.stitch,
-	#									   patch_level=args.patch_level, patch = args.patch,
-	#									   process_list = process_list, auto_skip=args.no_auto_skip, uuid_name_file=args.uuid_name_file)
