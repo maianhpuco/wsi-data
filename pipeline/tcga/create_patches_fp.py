@@ -210,33 +210,57 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 		# 	print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
 		# 	df.loc[idx, 'status'] = 'failed_seg'
 		# 	continue
+  
 		max_pixels = 1e8 
+		#===================== ADDED ====================== 
 		if len(WSI_object.level_dim) == 1:
-			print(" Only one resolution level available.")
+			print("⚠️ Only one resolution level available.")
 			if w * h > max_pixels:
 				print(f"📐 Original dim {w} x {h} exceeds limit. Attempting resize by 0.5x before segmentation.")
 
-				# Resize WSI image by 0.5x using OpenSlide read_region + numpy
 				try:
 					import cv2
+					from PIL import Image
 
-					downsample_factor = 2  # scale down to 0.5x
-					pil_image = WSI_object.get_full_image(level=0)
-					np_image = np.array(pil_image)
+					downsample_factor = 2
+					# 1. Read full image at level 0
+					full_image = WSI_object.wsi.read_region((0, 0), 0, WSI_object.level_dim[0]).convert("RGB")
+					np_image = np.array(full_image)
 
+					# 2. Resize to half resolution
 					resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
+					resized_img = Image.fromarray(resized_np)
 
-					# Update WSI_object mask for segmentation using resized image
-					WSI_object.set_resized_image(resized_np, downsample=downsample_factor)
+					# 3. Monkey-patch read_region for seg_level
+					WSI_object._resized_image = resized_img
+					WSI_object._resized_dim = resized_img.size  # (W, H)
+					WSI_object._resized_downsample = (
+						WSI_object.level_downsamples[0][0] * downsample_factor,
+						WSI_object.level_downsamples[0][1] * downsample_factor,
+					)
 
-					current_seg_params['seg_level'] = 0  # still level 0, but resized
-					print(f"Resized and updated WSI object to {resized_np.shape[1]}x{resized_np.shape[0]}")
-					# Now proceed to segmentation
+					def _read_resized_region(location, level, size):
+						if level == 1:
+							return WSI_object._resized_image.crop((0, 0, size[0], size[1]))
+						else:
+							return WSI_object.wsi.read_region(location, level, size)
+
+					WSI_object.wsi.read_region = _read_resized_region
+
+					# 4. Inject virtual level
+					WSI_object.level_dim = list(WSI_object.level_dim) + [WSI_object._resized_dim]
+					WSI_object.level_downsamples = list(WSI_object.level_downsamples) + [WSI_object._resized_downsample]
+
+					# 5. Update segmentation level to virtual resized
+					current_seg_params['seg_level'] = len(WSI_object.level_dim) - 1
+					print(f"✅ Using virtual resized seg_level={current_seg_params['seg_level']}")
+
 				except Exception as e:
-					print(f"Failed resizing: {e}")
+					print(f"❌ Failed resizing: {e}")
 					df.loc[idx, 'status'] = 'failed_resize'
 					continue
-	
+		
+		#===================== ADDED ======================  
 		df.loc[idx, 'vis_level'] = current_vis_params['vis_level']
 		df.loc[idx, 'seg_level'] = current_seg_params['seg_level']
 
