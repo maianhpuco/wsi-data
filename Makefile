@@ -23,13 +23,18 @@ gen_split_tcga_renal:
 #--------SIMAE --------- PREPROCESSING 
 pp_camelyon16_simea:
 	python pipeline/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
+
 pp_kich_simea: 
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml 
 pp_kirp_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 pp_kirc_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml 
- 
+#====== 
+
+rerun_pp_kich_simea: 
+	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames home/mvu9/processing_datasets/missing_files/patches_h5/kich.csv
+
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
 ef_camelyon16_simea: 
 	python pipeline/camelyon16/extract_features_fp.py --config configs_simea/data_camelyon16.yaml
