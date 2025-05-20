@@ -259,33 +259,6 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 
 	return seg_times, patch_times
 
-# parser = argparse.ArgumentParser(description='seg and patch')
-# parser.add_argument('--source', type = str,
-# 					help='path to folder containing raw wsi image files')
-# parser.add_argument('--step_size', type = int, default=256,
-# 					help='step_size')
-# parser.add_argument('--patch_size', type = int, default=256,
-# 					help='patch_size')
-# parser.add_argument('--patch', default=False, action='store_true')
-# parser.add_argument('--seg', default=False, action='store_true')
-# parser.add_argument('--stitch', default=False, action='store_true')
-# parser.add_argument('--no_auto_skip', default=False, action='store_false')
-# parser.add_argument('--save_dir', type = str,
-# 					help='directory to save processed data')
-# parser.add_argument('--preset', default=None, type=str,
-# 					help='predefined profile of default segmentation and filter parameters (.csv)')
-# parser.add_argument('--patch_level', type=int, default=0,
-# 					help='downsample level at which to patch')
-# parser.add_argument('--process_list',  type = str, default=None,
-# 					help='name of list of images to process with parameters (.csv)')
-
-# parser.add_argument('--slide_name_file', type=str,
-# 					help='a file stored all slides name needed in this project')
-# parser.add_argument('--uuid_name_file', type=str,
-# 					help='a file stored all slides info')
-# parser.add_argument('--csv_filenames', type=str, default=None,
-#                         help='Set to "yes" to load missing slide list from config[paths][missing_patches_h5]')
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='seg and patch')
 	parser.add_argument('--config', type=str, default='config.yaml', help='path to YAML config file')
@@ -323,7 +296,7 @@ if __name__ == '__main__':
 
 	# ====== added ======
 	if args.csv_filenames == "yes":
-		csv_filter_path = paths.get("missing_patches_h5", None)
+		csv_filter_path = paths["missing_patches_h5"]
 		if csv_filter_path is None:
 			raise ValueError("Config is missing 'paths.missing_patches_h5'")
 		print(f"✅ Using slide filter from: {csv_filter_path}")

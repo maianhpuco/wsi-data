@@ -38,7 +38,7 @@ output_paths = {
 
 # Check both .pt and .h5 files
 for subtype in ["KICH", "KIRP"]:
-    print(f"\n🧪 Checking subtype: {subtype}")
+    print(f"\n Checking subtype: {subtype}")
     df = pd.read_excel(metadata_files[subtype])
     df.columns = df.columns.str.lower()
 
@@ -52,12 +52,12 @@ for subtype in ["KICH", "KIRP"]:
     pt_path = pt_dirs[subtype]
     missing_pt = []
     if not os.path.exists(pt_path):
-        print(f"⚠️  .pt directory does not exist: {pt_path}")
+        print(f"  .pt directory does not exist: {pt_path}")
     else:
         available_pt = {f.replace(".pt", "") for f in os.listdir(pt_path) if f.endswith(".pt")}
         missing_pt = [f for f in expected_files if f not in available_pt]
 
-        print(f"📦 .pt Files")
+        print(f".pt Files")
         print(f"  Found:    {len(expected_files) - len(missing_pt)}")
         print(f"  Missing:  {len(missing_pt)}")
         if missing_pt:
@@ -69,13 +69,13 @@ for subtype in ["KICH", "KIRP"]:
         pt_output_path = output_paths["pt"][subtype]
         os.makedirs(os.path.dirname(pt_output_path), exist_ok=True)
         pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_pt]}).to_csv(pt_output_path, index=False)
-        print(f"  📁 Saved missing .pt list to: {pt_output_path}")
+        print(f"  Saved missing .pt list to: {pt_output_path}")
 
     # ----- Check .h5 files -----
     h5_path = h5_dirs[subtype]
     missing_h5 = []
     if not os.path.exists(h5_path):
-        print(f"⚠️  .h5 directory does not exist: {h5_path}")
+        print(f"  .h5 directory does not exist: {h5_path}")
     else:
         missing_h5 = [f for f in expected_files if not os.path.isfile(os.path.join(h5_path, f"{f}.h5"))]
 
@@ -91,4 +91,4 @@ for subtype in ["KICH", "KIRP"]:
         h5_output_path = output_paths["h5"][subtype]
         os.makedirs(os.path.dirname(h5_output_path), exist_ok=True)
         pd.DataFrame({"slide": [f"{fn}.svs" for fn in missing_h5]}).to_csv(h5_output_path, index=False)
-        print(f"  📁 Saved missing .h5 list to: {h5_output_path}")
+        print(f"   Saved missing .h5 list to: {h5_output_path}")
