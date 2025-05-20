@@ -31,7 +31,8 @@ pp_kirp_simea:
 pp_kirc_simea:
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml 
 #====== 
-
+check_missing_file:
+	python pipeline/tcga/count_missing_file.py
 rerun_pp_kich_simea: 
 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames yes 
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
