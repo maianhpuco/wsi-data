@@ -204,31 +204,39 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 			current_seg_params['exclude_ids'] = []
 
 		w, h = WSI_object.level_dim[current_seg_params['seg_level']]
-		if w * h > 1e8:
-			print(f"Number of levels: {len(WSI_object.level_dim)}")
-			print(f"Levels: {WSI_object.level_dim}")
-			print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
-			df.loc[idx, 'status'] = 'failed_seg'
-			continue
-		# fallback if resolution is too large
-		# max_pixels = 1e8
-		# fallback_attempted = False
-		# while w * h > max_pixels:
-		# 	print(f"==> level_dim {w} x {h} too large at seg_level={current_seg_params['seg_level']}")
-		# 	if current_seg_params['seg_level'] + 1 < len(WSI_object.level_dim):
-		# 		current_seg_params['seg_level'] += 1
-		# 		w, h = WSI_object.level_dim[current_seg_params['seg_level']]
-		# 		print(f"🔁 Trying seg_level={current_seg_params['seg_level']} → {w}x{h}")
-		# 		fallback_attempted = True
-		# 	else:
-		# 		print(f"=======>>> All seg_levels exceed pixel limit. Aborting slide.")
-		# 		df.loc[idx, 'status'] = 'failed_seg'
-		# 		continue  # skip this slide
+		# if w * h > 1e8:
+		# 	print(f"Number of levels: {len(WSI_object.level_dim)}")
+		# 	print(f"Levels: {WSI_object.level_dim}")
+		# 	print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
+		# 	df.loc[idx, 'status'] = 'failed_seg'
+		# 	continue
+		max_pixels = 1e8 
+		if len(WSI_object.level_dim) == 1:
+			print(" Only one resolution level available.")
+			if w * h > max_pixels:
+				print(f"📐 Original dim {w} x {h} exceeds limit. Attempting resize by 0.5x before segmentation.")
 
-		# if fallback_attempted:
-		# 	print(f"✅ Fallback succeeded. Using seg_level={current_seg_params['seg_level']} with resolution {w}x{h}")
-		
- 
+				# Resize WSI image by 0.5x using OpenSlide read_region + numpy
+				try:
+					import cv2
+
+					downsample_factor = 2  # scale down to 0.5x
+					pil_image = WSI_object.get_full_image(level=0)
+					np_image = np.array(pil_image)
+
+					resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
+
+					# Update WSI_object mask for segmentation using resized image
+					WSI_object.set_resized_image(resized_np, downsample=downsample_factor)
+
+					current_seg_params['seg_level'] = 0  # still level 0, but resized
+					print(f"Resized and updated WSI object to {resized_np.shape[1]}x{resized_np.shape[0]}")
+					# Now proceed to segmentation
+				except Exception as e:
+					print(f"Failed resizing: {e}")
+					df.loc[idx, 'status'] = 'failed_resize'
+					continue
+	
 		df.loc[idx, 'vis_level'] = current_vis_params['vis_level']
 		df.loc[idx, 'seg_level'] = current_seg_params['seg_level']
 
