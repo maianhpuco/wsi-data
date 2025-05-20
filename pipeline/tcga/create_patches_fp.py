@@ -204,11 +204,29 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 			current_seg_params['exclude_ids'] = []
 
 		w, h = WSI_object.level_dim[current_seg_params['seg_level']]
-		if w * h > 1e8:
-			print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
-			df.loc[idx, 'status'] = 'failed_seg'
-			continue
+		# if w * h > 1e8:
+		# 	print('level_dim {} x {} is likely too large for successful segmentation, aborting'.format(w, h))
+		# 	df.loc[idx, 'status'] = 'failed_seg'
+		# 	continue
+		# fallback if resolution is too large
+		max_pixels = 1e8
+		fallback_attempted = False
+		while w * h > max_pixels:
+			print(f"==> level_dim {w} x {h} too large at seg_level={current_seg_params['seg_level']}")
+			if current_seg_params['seg_level'] + 1 < len(WSI_object.level_dim):
+				current_seg_params['seg_level'] += 1
+				w, h = WSI_object.level_dim[current_seg_params['seg_level']]
+				print(f"🔁 Trying seg_level={current_seg_params['seg_level']} → {w}x{h}")
+				fallback_attempted = True
+			else:
+				print(f"=======>>> All seg_levels exceed pixel limit. Aborting slide.")
+				df.loc[idx, 'status'] = 'failed_seg'
+				continue  # skip this slide
 
+		if fallback_attempted:
+			print(f"✅ Fallback succeeded. Using seg_level={current_seg_params['seg_level']} with resolution {w}x{h}")
+		
+ 
 		df.loc[idx, 'vis_level'] = current_vis_params['vis_level']
 		df.loc[idx, 'seg_level'] = current_seg_params['seg_level']
 
