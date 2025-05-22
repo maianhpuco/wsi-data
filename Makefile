@@ -86,7 +86,7 @@ get_split:
 		--configs configs/data_kirc.yaml configs/data_kich.yaml configs/data_kirp.yaml \
 		--output_dir /project/hnguyen2/mvu9/processing_datasets/tcga_renal_fewshot
 
-gt_compute:
+cam_anno_process:
 	python compute_mask_from_annotation.py \
 	--config configs_simea/data_camelyon16.yaml
  
