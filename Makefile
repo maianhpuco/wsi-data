@@ -87,6 +87,6 @@ get_split:
 		--output_dir /project/hnguyen2/mvu9/processing_datasets/tcga_renal_fewshot
 
 cam_anno_process:
-	python compute_mask_from_annotation.py \
+	python anno_processing.py \
 	--config configs_simea/data_camelyon16.yaml
  
