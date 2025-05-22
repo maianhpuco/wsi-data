@@ -30,7 +30,7 @@ def upscale_coordinates(points, scale_factor):
     """ Upscale points back to original size. """
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
-def extract_coordinates(file_path, save_path):
+def extract_coordinates(file_path):
     """
     Fast extraction of (X, Y) coordinates **inside** multiple contours using downscaling and R-tree.
     """
@@ -106,7 +106,7 @@ def extract_coordinates(file_path, save_path):
     })
     
     basename = os.path.splitext(os.path.basename(file_path))[0]  # Correctly get file basename
-    df_inside_points.to_csv(save_path, index=False)
+    # df_inside_points.to_csv(save_path, index=False)
     
     return df_inside_points
 
