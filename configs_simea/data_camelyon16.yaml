@@ -22,6 +22,9 @@
 
 paths:
   source: "/home/mvu9/datasets/camelyon16/raw_data/camelyon16/images"
+  slide_dir: "/home/mvu9/datasets/camelyon16/raw_data/camelyon16/images"  
+  anno_xml_dir: "/home/mvu9/datasets/camelyon16/raw_data/camelyon16/annotations"
+  label_file: 'datasets/camelyon16/camelyon16_csv_splits_camil/splits_0.csv'
   save_dir: "/home/mvu9/processing_datasets/processing_camelyon16"
   # patch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
   patch_png_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_png"
@@ -33,9 +36,9 @@ paths:
   pt_files: "/home/mvu9/processing_datasets/processing_camelyon16/features_fp/pt_files"
   ht_files: "/home/mvu9/processing_datasets/processing_camelyon16/features_fp/h5_files"
   split_folder: "/home/mvu9/processing_datasets/processing_camelyon16/splits_csv" 
-  
-fold_number: 5 
+  gt_h5_dir: "/home/mvu9/processing_datasets/processing_camelyon16/gt_h5" 
 
+fold_number: 5  
 processing:
   patch_size: 256
   step_size: 256
