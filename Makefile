@@ -89,4 +89,7 @@ get_split:
 cam_anno_process:
 	python pipeline/camelyon16/anno_processing.py \
 	--config configs_simea/data_camelyon16.yaml
- 
+
+#---------fixing / sanity check 
+check_downscale:
+	python  
