@@ -3,11 +3,13 @@ import hashlib
 import os
 import yaml
 from shapely.geometry import Polygon
+from shapely import wkb
 import numpy as np
 from PIL import Image
 import cv2
 from pathlib import Path
 import matplotlib.pyplot as plt
+
 try:
     from jnius import autoclass
 except ImportError:
@@ -15,25 +17,22 @@ except ImportError:
     autoclass = None
 
 def compute_md5(file_path):
-    """Compute MD5 hash of a file."""
     try:
         with open(file_path, "rb") as f:
             return hashlib.md5(f.read()).hexdigest()
-    except (FileNotFoundError, IOError) as e:
+    except Exception as e:
         print(f"  → [ERROR] Failed to compute MD5 for {file_path}: {e}")
         return None
 
 def load_yaml_config(config_path):
-    """Load YAML configuration file."""
     try:
         with open(config_path, "r") as f:
             return yaml.safe_load(f)
-    except (FileNotFoundError, yaml.YAMLError) as e:
+    except Exception as e:
         print(f"  → [ERROR] Failed to load config {config_path}: {e}")
         return None
 
 def validate_polygon(poly, width, height):
-    """Validate a polygon: check if it's a valid Polygon and within image bounds."""
     if not isinstance(poly, Polygon) or not poly.is_valid:
         return False, "Invalid or non-Polygon geometry"
     bounds = poly.bounds
@@ -42,23 +41,15 @@ def validate_polygon(poly, width, height):
     return True, ""
 
 def estimate_memory(width, height):
-    """Estimate memory required for a mask in MB."""
-    return (width * height * 1) / (1024 * 1024)
+    return (width * height) / (1024 * 1024)
 
 def preview_annotations(image, polygons, title="Preview", max_size=1000):
-    """Preview annotations overlaid on a downscaled image."""
     img_array = np.array(image)
-    
-    # Downscale image for preview if too large
     height, width = img_array.shape[:2]
     if max(width, height) > max_size:
         scale = max_size / max(width, height)
-        new_width, new_height = int(width * scale), int(height * scale)
-        img_array = cv2.resize(img_array, (new_width, new_height), interpolation=cv2.INTER_AREA)
-        scaled_polygons = []
-        for poly in polygons:
-            scaled_coords = [(x * scale, y * scale) for x, y in poly.exterior.coords]
-            scaled_polygons.append(Polygon(scaled_coords))
+        img_array = cv2.resize(img_array, (int(width * scale), int(height * scale)), interpolation=cv2.INTER_AREA)
+        scaled_polygons = [Polygon([(x * scale, y * scale) for x, y in poly.exterior.coords]) for poly in polygons]
     else:
         scaled_polygons = polygons
 
@@ -74,54 +65,26 @@ def preview_annotations(image, polygons, title="Preview", max_size=1000):
     plt.close()
 
 def deserialize_java_object(geom_data):
-    """Deserialize Java serialized object and extract Polygon coordinates."""
     if autoclass is None:
         return None, "pyjnius not available"
-    
     try:
-        # Use Java classes via pyjnius
         ByteArrayInputStream = autoclass('java.io.ByteArrayInputStream')
         ObjectInputStream = autoclass('java.io.ObjectInputStream')
-        
-        # Convert bytes to Java input stream
         byte_stream = ByteArrayInputStream(geom_data)
         object_stream = ObjectInputStream(byte_stream)
-        
-        # Read the object (assuming it's a java.awt.Polygon or similar)
         java_obj = object_stream.readObject()
-        
-        # Check if it's a java.awt.Polygon
         if java_obj.__class__.__name__ == 'Polygon':
-            xpoints = java_obj.xpoints
-            ypoints = java_obj.ypoints
-            npoints = java_obj.npoints
-            coords = [(xpoints[i], ypoints[i]) for i in range(npoints)]
+            coords = [(java_obj.xpoints[i], java_obj.ypoints[i]) for i in range(java_obj.npoints)]
             return Polygon(coords), ""
-        
         return None, f"Unsupported Java object: {java_obj.__class__.__name__}"
     except Exception as e:
         return None, f"Java deserialization failed: {e}"
 
 def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
-    """Extract annotations from database and save as binary PNG masks."""
     os.makedirs(annotation_dir, exist_ok=True)
-
-    # Connect to database
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-
-        # Debug: Print distinct RAW_ANNOTATION_TYPE and DESCRIPTION
-        cursor.execute("SELECT DISTINCT RAW_ANNOTATION_TYPE, DESCRIPTION FROM RAW_ANNOTATION")
-        types = cursor.fetchall()
-        print(f"  → [DEBUG] RAW_ANNOTATION_TYPE and DESCRIPTION: {types}")
-
-        # Debug: Print all FILENAMES
-        cursor.execute("SELECT FILENAME FROM RAW_DATA_FILE WHERE FILETYPE LIKE '%tiff%'")
-        filenames = cursor.fetchall()
-        print(f"  → [DEBUG] FILENAMES from RAW_DATA_FILE: {[f[0] for f in filenames]}")
-
-        # Query using FILENAME
         cursor.execute("""
             SELECT rdf.FILENAME, ra.DATA, ra.RAW_ANNOTATION_TYPE 
             FROM RAW_ANNOTATION ra
@@ -135,29 +98,28 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     finally:
         conn.close()
 
-    # Group annotations by filename (without extension)
     ann_dict = {}
-    debug_printed = False
+    debug_count = 0
     for filename, geom_data, ann_type in annotations:
+        fname_key = Path(filename).stem
         try:
-            # Try deserializing as Java object
             geom, error = deserialize_java_object(geom_data)
             if geom is None:
                 raise Exception(error)
-            fname_key = Path(filename).stem
+            if fname_key not in ann_dict:
+                print(f"  → [INFO] Annotation for {fname_key}: {geom.wkt[:100]}...")
             ann_dict.setdefault(fname_key, []).append(geom)
         except Exception as e:
-            if not debug_printed:
-                print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
-                debug_printed = True
-            print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e}")
+            if debug_count < 3:
+                print(f"  → [DEBUG] RAW DATA for {filename} (hex): {geom_data[:32].hex()}... [len={len(geom_data)} bytes]")
+                print(f"  → [ERROR] Deserialization failed for {filename}: {e}")
+                debug_count += 1
 
     image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(".tiff")]
     total = len(image_files)
 
     for idx, image_file in enumerate(sorted(image_files), 1):
         print(f"[PROCESS] File {idx}/{total}: {image_file}")
-
         image_path = os.path.join(image_dir, image_file)
         fname_key = Path(image_file).stem
         if fname_key not in ann_dict:
@@ -206,14 +168,13 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         try:
             Image.fromarray(mask).save(mask_path, optimize=True)
             print(f"  → Saved mask: {mask_path}")
-        except (MemoryError, IOError) as e:
+        except Exception as e:
             print(f"  → [ERROR] Failed to save mask: {e}")
 
 def main(config_path, preview=False):
     config = load_yaml_config(config_path)
     if config is None:
         return
-
     db_path = config["paths"]["orbit_db"]
     for split in ["train", "test"]:
         image_dir = config["paths"]["slide_dir"][split]
