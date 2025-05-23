@@ -99,3 +99,7 @@ check_downscale_glo:
 	python pipeline/glomeruli/sanity_check_downscale.py \
 	--config configs_simea/data_glomeruli.yaml
  
+extract_glomeruli_masks:
+	python pipeline/glomeruli/extract_annotation.py \
+	--config configs_simea/data_glomeruli.yaml
+ 

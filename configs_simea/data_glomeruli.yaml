@@ -2,7 +2,10 @@ paths:
   slide_dir: 
     train: "/home/mvu9/datasets/glomeruli/train"
     test: "/home/mvu9/datasets/glomeruli/test"
-  
+  orbit_db : "/home/mvu9/datasets/glomeruli/orbit_db.db"  
+  anno_dir:
+    train: "/home/mvu9/processing_datasets/glomeruli/annotations/train"
+    test: "/home/mvu9/processing_datasets/glomeruli/annotations/test"  
   sanity_downscale_dir: 
     train: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/train"
     test: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/test"
