@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     args.features_h5_path = config['paths']['ht_files']
     args.annotation_path = config['paths']['anno_xml_dir']
-    args.ground_truth_path = config['paths']['mask_save_dir']
+    args.ground_truth_path = config['paths']['gt_h5_dir']
 
     os.makedirs(args.ground_truth_path, exist_ok=True)
     main(args)
