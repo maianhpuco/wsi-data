@@ -11,6 +11,9 @@ paths:
     train: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/train"
     test:  "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/test"
     validation: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/validation" 
+  patch_save_dir: ""
+  mask_save_dir: ""
+  stitch_save_dir: ""
 
 patterns: 
   slide_dir: 
@@ -25,3 +28,36 @@ patterns:
     train: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/train/Task2_WSI_level/*/*_wsi.tiff"
     test:  "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/test/Task2_WSI_level/*/*_wsi.tiff"
     validation: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/validation/Task2_WSI_level/*/*_wsi.tiff"
+    
+processing:
+  patch_size: 256
+  step_size: 256
+  patch_level: 0
+  seg: true
+  patch: true
+  stitch: true
+  auto_skip: true
+
+segmentation:
+  seg_level: -1
+  sthresh: 8
+  mthresh: 7
+  close: 4
+  use_otsu: false
+  keep_ids: "none"
+  exclude_ids: "none"
+
+filtering:
+  a_t: 100
+  a_h: 16
+  max_n_holes: 8
+
+visualization:
+  vis_level: -1
+  line_thickness: 500
+
+patching:
+  use_padding: true
+  contour_fn: "four_pt"
+  white_thresh: 5
+  black_thresh: 50
