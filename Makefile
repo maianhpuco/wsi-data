@@ -91,6 +91,11 @@ cam_anno_process:
 	--config configs_simea/data_camelyon16.yaml
 
 #---------fixing / sanity check 
-check_downscale:
+check_downscale_kpi:
 	python pipeline/kpis/sanity_check_downscale.py \
 	--config configs_simea/data_kpis.yaml 
+
+check_downscale_glo:
+	python downscale_glomeruli.py \
+	--config config_glomeruli.yaml
+ 

@@ -1,0 +1,9 @@
+paths: 
+  slide_dir: 
+    train: "/home/mvu9/datasets/glomeruli/train"
+    test: "/home/mvu9/datasets/glomeruli/test"
+  
+  sanity_downscale_dir: 
+    train: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/train"
+    test: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/test"
+
