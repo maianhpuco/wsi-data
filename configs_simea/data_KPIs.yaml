@@ -1,0 +1,20 @@
+paths: 
+  slide_dir:  
+    train: "/home/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level" 
+    test:  "/home/mvu9/datasets/kidney_pathology_image/test/Task2_WSI_level" 
+    validation: "/home/mvu9/datasets/kidney_pathology_image/validation/Task2_WSI_level" 
+  anno_xml_dir: ""
+
+patterns: 
+  slide_dir: 
+    train: "/home/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level/*/*_wsi.tiff" 
+    test:  "/home/mvu9/datasets/kidney_pathology_image/test/Task2_WSI_level/*/*_wsi.tiff"
+    validation:  "/home/mvu9/datasets/kidney_pathology_image/validation/Task2_WSI_level/*/*_wsi.tiff" 
+  anno_xml_dir: 
+    train: "/home/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level/*/*_mask.tiff"
+    test:  "/home/mvu9/datasets/kidney_pathology_image/test/Task2_WSI_level/*/*_mask.tiff"
+    validation: "/home/mvu9/datasets/kidney_pathology_image/validation/Task2_WSI_level/*/*_mask.tiff"
+  sanity_downscale_dir: 
+    train: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/train/Task2_WSI_level/*/*_wsi.tiff"
+    test:  "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/test/Task2_WSI_level/*/*_wsi.tiff"
+    validation: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/validation/Task2_WSI_level/*/*_wsi.tiff"
