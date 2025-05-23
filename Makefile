@@ -92,4 +92,5 @@ cam_anno_process:
 
 #---------fixing / sanity check 
 check_downscale:
-	python  
+	python pipeline/kpis/sanity_check_downscale.py \
+	--config configs_simea/data_kpis.yaml 
