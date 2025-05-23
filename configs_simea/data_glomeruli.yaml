@@ -9,4 +9,4 @@ paths:
   sanity_downscale_dir: 
     train: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/train"
     test: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/test"
-
+  json_save_path: "/home/mvu9/processing_datasets/glomeruli/annotations.json" 
