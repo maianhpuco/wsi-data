@@ -88,6 +88,7 @@ def main(args):
         mask = check_xy_in_coordinates_from_topleft(polygons, coordinates)
 
         mask_path = os.path.join(args.ground_truth_path, f"{name}.npy")
+        print("Shape of mask:", mask.shape)
         np.save(mask_path, mask)
         print(f"Saved mask to: {mask_path}")
 
