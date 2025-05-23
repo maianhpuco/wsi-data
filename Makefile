@@ -100,5 +100,5 @@ check_downscale_glo:
 	--config configs_simea/data_glomeruli.yaml
  
 extract_glomeruli_masks:
-	python pipeline/glomeruli/extract_annotation.py \
+	python pipeline/glomeruli/pipeline/glomeruli/.py \
 	--config configs_simea/data_glomeruli.yaml
