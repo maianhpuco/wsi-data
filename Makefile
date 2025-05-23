@@ -97,5 +97,5 @@ check_downscale_kpi:
 
 check_downscale_glo:
 	python pipeline/kpis/sanity_check_downscale.py \
-	--config config_glomeruli.yaml
+	--config configs_simea/data_glomeruli.yaml
  
