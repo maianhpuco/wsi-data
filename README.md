@@ -162,4 +162,10 @@ Preview of split DataFrame:
 1   tumor_098            1   tumor_063          1  test_002         1.0
 2   tumor_100            1  normal_052          0  test_003         0.0
 Fold 1 saved to: ./data/camelyon16_folds/fold_1.csv
- 
+
+======
+sqlite3 /home/mvu9/datasets/glomeruli/orbit.db
+.table
+.schema RAW_ANNOTATION
+.schema RAW_DATA_FILE 
+

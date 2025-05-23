@@ -43,7 +43,6 @@ def estimate_memory(width, height):
 
 def preview_annotations(image, polygons, title="Preview", max_size=1000):
     """Preview annotations overlaid on a downscaled image."""
-    # Convert PIL image to numpy array for display
     img_array = np.array(image)
     
     # Downscale image for preview if too large
@@ -52,7 +51,6 @@ def preview_annotations(image, polygons, title="Preview", max_size=1000):
         scale = max_size / max(width, height)
         new_width, new_height = int(width * scale), int(height * scale)
         img_array = cv2.resize(img_array, (new_width, new_height), interpolation=cv2.INTER_AREA)
-        # Scale polygon coordinates
         scaled_polygons = []
         for poly in polygons:
             scaled_coords = [(x * scale, y * scale) for x, y in poly.exterior.coords]
@@ -79,14 +77,12 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT c.name FROM pragma_table_info('your_table_name') c;")
-        print(f"  → [INFO] Database columns: {[col[0] for col in cursor.fetchall()]}")
-        # Query to join RAW_ANNOTATION and RAW_DATA_FILE
+        # Query using correct column names
         cursor.execute("""
-            SELECT rdf.md5, ra.geometry 
+            SELECT rdf.MD5, ra.DATA 
             FROM RAW_ANNOTATION ra
-            JOIN RAW_DATA_FILE rdf ON ra.image_id = rdf.id
-            WHERE ra.geometry IS NOT NULL
+            JOIN RAW_DATA_FILE rdf ON ra.RAW_DATA_FILE_ID = rdf.RAW_DATA_FILE_ID
+            WHERE ra.DATA IS NOT NULL
         """)
         annotations = cursor.fetchall()
     except sqlite3.Error as e:
@@ -97,8 +93,10 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
 
     # Group annotations by image hash
     ann_dict = {}
-    for image_md5, geom_wkt in annotations:
+    for image_md5, geom_data in annotations:
         try:
+            # Decode BLOB to string (assuming WKT is stored as text in BLOB)
+            geom_wkt = geom_data.decode('utf-8') if isinstance(geom_data, bytes) else geom_data
             geom = wkt.loads(geom_wkt)
             ann_dict.setdefault(image_md5, []).append(geom)
         except Exception as e:
