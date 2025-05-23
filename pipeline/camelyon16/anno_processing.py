@@ -4,89 +4,107 @@ import glob
 import pandas as pd
 import numpy as np
 import argparse
-import shutil
 import h5py
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-sys.path.append(base_path) 
-from utilities.camelyon16_annotation_processing import(
-    extract_coordinates,
-    check_xy_in_coordinates_fast
-)
+import yaml
+from tqdm import tqdm
+from shapely.geometry import Polygon, Point
+from rtree import index
+import xml.etree.ElementTree as ET
 
-def read_h5_data(file_path, dataset_name=None):
-    data = None
-    with h5py.File(file_path, "r") as file:
-        if dataset_name is not None:
-            if dataset_name in file:
-                dataset = file[dataset_name]
-                data = dataset[()]
-            else:
-                raise KeyError(f"Dataset '{dataset_name}' not found in the file.")
-        else:
-            datasets = {}
-            def visitor(name, node):
-                if isinstance(node, h5py.Dataset):
-                    datasets[name] = node[()]
-            file.visititems(visitor)
-            if len(datasets) == 1:
-                data = list(datasets.values())[0]
-            else:
-                data = datasets
-    return data 
- 
+PATCH_SIZE = 256
+
+def parse_xml(file_path):
+    try:
+        tree = ET.parse(file_path)
+        return tree.getroot()
+    except ET.ParseError as e:
+        print(f"Error parsing {file_path}: {e}")
+        return None
+
+def extract_coordinates(file_path):
+    root = parse_xml(file_path)
+    if root is None:
+        return None
+
+    contours = []
+    for annotation in root.findall(".//Annotation"):
+        contour = []
+        for coordinate in annotation.findall(".//Coordinate"):
+            x = coordinate.attrib.get("X")
+            y = coordinate.attrib.get("Y")
+            if x and y:
+                contour.append((float(x), float(y)))
+
+        if contour and contour[0] != contour[-1]:
+            contour.append(contour[0])
+        if contour:
+            contours.append(contour)
+
+    if not contours:
+        return None
+
+    polygons = [Polygon(contour) for contour in contours if len(contour) > 2]
+    return polygons
+
+def check_xy_in_coordinates_from_topleft(polygons, coordinates_h5):
+    label = np.zeros(len(coordinates_h5), dtype=np.int8)
+    spatial_index = index.Index((i, poly.bounds, None) for i, poly in enumerate(polygons))
+
+    for i, (x, y) in enumerate(coordinates_h5):
+        center_x = x + PATCH_SIZE / 2
+        center_y = y + PATCH_SIZE / 2
+        patch_center = Point(center_x, center_y)
+
+        candidates = spatial_index.intersection((center_x, center_y, center_x, center_y))
+        if any(polygons[j].contains(patch_center) for j in candidates):
+            label[i] = 1
+
+    return label
+
+def read_h5_data(file_path):
+    with h5py.File(file_path, "r") as f:
+        return f["coords"][:]
+
 def main(args):
-    _annotation_list = os.listdir(args.annotation_path)
-    _h5_files = os.listdir(args.features_h5_path)
+    xml_files = sorted([f for f in os.listdir(args.annotation_path) if f.endswith(".xml")])
+    h5_files = set(f for f in os.listdir(args.features_h5_path) if f.endswith(".h5"))
 
-    annotation_list = [] 
-    for anno_filename in _annotation_list:
-        name = anno_filename.split(".")[0]
-        if f"{name}.h5" in _h5_files: 
-            annotation_list.append(anno_filename)
+    to_process = [f for f in xml_files if f.replace(".xml", ".h5") in h5_files]
+    print("Total files to process:", len(to_process))
 
-    total_file = len(annotation_list)
-    print("Total files to process:", total_file)
+    for idx, xml_filename in enumerate(to_process):
+        name = os.path.splitext(xml_filename)[0]
+        print(f"[{idx+1}/{len(to_process)}] Processing {name}")
 
-    for idx, basename in enumerate(annotation_list):
-        print(f"Processing {idx+1}/{total_file}: {basename}")
-        name = basename.split(".")[0]
         h5_path = os.path.join(args.features_h5_path, f"{name}.h5")
-        xml_path = os.path.join(args.annotation_path, f"{name}.xml")
+        xml_path = os.path.join(args.annotation_path, xml_filename)
 
-        df_xml = extract_coordinates(xml_path)
-        df_xml = pd.DataFrame(df_xml)
+        polygons = extract_coordinates(xml_path)
+        if polygons is None:
+            print(f"No valid annotation found for {name}, skipping.")
+            continue
 
-        h5_data = read_h5_data(h5_path)
-        mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
+        coordinates = read_h5_data(h5_path)
+        mask = check_xy_in_coordinates_from_topleft(polygons, coordinates)
 
-        mask_save_path = os.path.join(args.ground_truth_path, f"{name}.npy")
-        print("Saving mask to:", mask_save_path)
-        np.save(mask_save_path, mask)
-        break 
-    mask_file = glob.glob(os.path.join(args.ground_truth_path, "*.npy")) 
-    print("Total processed annotation files:", len(annotation_list))
-    print("Generated mask files:", len(mask_file))
+        mask_path = os.path.join(args.ground_truth_path, f"{name}.npy")
+        np.save(mask_path, mask)
+        print(f"Saved mask to: {mask_path}")
 
-def reset_directory(path):
-    if os.path.exists(path):
-        print("Resetting directory:", path)
-        shutil.rmtree(path)
-    os.makedirs(path)  
- 
-if __name__=="__main__":
+    final_masks = glob.glob(os.path.join(args.ground_truth_path, "*.npy"))
+    print("Generated mask files:", len(final_masks))
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True, help='Path to YAML config file')
     args = parser.parse_args()
 
-    # Load config YAML
-    import yaml 
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
 
     args.features_h5_path = config['paths']['ht_files']
     args.annotation_path = config['paths']['anno_xml_dir']
     args.ground_truth_path = config['paths']['mask_save_dir']
+
     os.makedirs(args.ground_truth_path, exist_ok=True)
-    
-    
     main(args)
