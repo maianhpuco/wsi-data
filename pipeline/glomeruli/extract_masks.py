@@ -79,6 +79,8 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
+        cursor.execute("SELECT c.name FROM pragma_table_info('your_table_name') c;")
+        print(f"  → [INFO] Database columns: {[col[0] for col in cursor.fetchall()]}")
         # Query to join RAW_ANNOTATION and RAW_DATA_FILE
         cursor.execute("""
             SELECT rdf.md5, ra.geometry 
