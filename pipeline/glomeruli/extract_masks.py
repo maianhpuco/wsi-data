@@ -78,12 +78,17 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        # Print distinct RAW_ANNOTATION_TYPE values
-        cursor.execute("SELECT DISTINCT RAW_ANNOTATION_TYPE FROM RAW_ANNOTATION")
+        # Debug: Print distinct RAW_ANNOTATION_TYPE and DESCRIPTION
+        cursor.execute("SELECT DISTINCT RAW_ANNOTATION_TYPE, DESCRIPTION FROM RAW_ANNOTATION")
         types = cursor.fetchall()
-        print(f"  → [DEBUG] Available RAW_ANNOTATION_TYPE values: {types}")
+        print(f"  → [DEBUG] RAW_ANNOTATION_TYPE and DESCRIPTION: {types}")
 
-        # Query using FILENAME for matching
+        # Debug: Print sample FILENAMES
+        cursor.execute("SELECT FILENAME FROM RAW_DATA_FILE WHERE FILETYPE LIKE '%tiff%' LIMIT 5")
+        filenames = cursor.fetchall()
+        print(f"  → [DEBUG] Sample FILENAMES from RAW_DATA_FILE: {filenames}")
+
+        # Query using FILENAME
         cursor.execute("""
             SELECT rdf.FILENAME, ra.DATA, ra.RAW_ANNOTATION_TYPE 
             FROM RAW_ANNOTATION ra
@@ -102,17 +107,22 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     debug_printed = False
     for filename, geom_data, ann_type in annotations:
         try:
-            # Try parsing DATA as WKB (or skip parsing until format is confirmed)
+            # Try parsing DATA as WKB
             geom = wkb.loads(geom_data)
-            # Use filename without extension for matching
             fname_key = Path(filename).stem
             ann_dict.setdefault(fname_key, []).append(geom)
         except Exception as e:
-            if not debug_printed:
-                # Print sample DATA as hex for debugging
-                print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
-                debug_printed = True
-            print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e}")
+            # Fallback: Try decoding as text (Latin-1)
+            try:
+                geom_wkt = geom_data.decode('latin-1')
+                geom = wkt.loads(geom_wkt)
+                fname_key = Path(filename).stem
+                ann_dict.setdefault(fname_key, []).append(geom)
+            except Exception as e2:
+                if not debug_printed:
+                    print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
+                    debug_printed = True
+                print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e} (text decode: {e2})")
 
     image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(".tiff")]
     total = len(image_files)
@@ -121,7 +131,6 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         print(f"[PROCESS] File {idx}/{total}: {image_file}")
 
         image_path = os.path.join(image_dir, image_file)
-        # Use filename without extension for matching
         fname_key = Path(image_file).stem
         if fname_key not in ann_dict:
             print(f"  → [SKIP] No annotations for {image_file}")
