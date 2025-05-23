@@ -77,12 +77,18 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        # Query with RAW_ANNOTATION_TYPE filter (assume 1 for Polygons)
+
+        # Print distinct RAW_ANNOTATION_TYPE values
+        cursor.execute("SELECT DISTINCT RAW_ANNOTATION_TYPE FROM RAW_ANNOTATION")
+        types = cursor.fetchall()
+        print(f"  → [DEBUG] Available RAW_ANNOTATION_TYPE values: {types}")
+
+        # Query using FILENAME for matching
         cursor.execute("""
-            SELECT rdf.MD5, ra.DATA, ra.RAW_ANNOTATION_TYPE 
+            SELECT rdf.FILENAME, ra.DATA, ra.RAW_ANNOTATION_TYPE 
             FROM RAW_ANNOTATION ra
             JOIN RAW_DATA_FILE rdf ON ra.RAW_DATA_FILE_ID = rdf.RAW_DATA_FILE_ID
-            WHERE ra.DATA IS NOT NULL AND ra.RAW_ANNOTATION_TYPE = 1
+            WHERE ra.DATA IS NOT NULL
         """)
         annotations = cursor.fetchall()
     except sqlite3.Error as e:
@@ -91,20 +97,22 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     finally:
         conn.close()
 
-    # Group annotations by image hash
+    # Group annotations by filename (without extension)
     ann_dict = {}
     debug_printed = False
-    for image_md5, geom_data, ann_type in annotations:
+    for filename, geom_data, ann_type in annotations:
         try:
-            # Try parsing DATA as WKB
+            # Try parsing DATA as WKB (or skip parsing until format is confirmed)
             geom = wkb.loads(geom_data)
-            ann_dict.setdefault(image_md5, []).append(geom)
+            # Use filename without extension for matching
+            fname_key = Path(filename).stem
+            ann_dict.setdefault(fname_key, []).append(geom)
         except Exception as e:
             if not debug_printed:
                 # Print sample DATA as hex for debugging
-                print(f"  → [DEBUG] Sample DATA (hex) for MD5 {image_md5}: {geom_data.hex()[:100]}...")
+                print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
                 debug_printed = True
-            print(f"  → [WARNING] Invalid geometry for {image_md5}: {e}")
+            print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e}")
 
     image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(".tiff")]
     total = len(image_files)
@@ -113,8 +121,9 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         print(f"[PROCESS] File {idx}/{total}: {image_file}")
 
         image_path = os.path.join(image_dir, image_file)
-        md5 = compute_md5(image_path)
-        if md5 is None or md5 not in ann_dict:
+        # Use filename without extension for matching
+        fname_key = Path(image_file).stem
+        if fname_key not in ann_dict:
             print(f"  → [SKIP] No annotations for {image_file}")
             continue
 
@@ -136,7 +145,7 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
             continue
 
         valid_polygons = []
-        for poly in ann_dict[md5]:
+        for poly in ann_dict[fname_key]:
             is_valid, error_msg = validate_polygon(poly, width, height)
             if not is_valid:
                 print(f"  → [WARNING] Skipping polygon: {error_msg}")
