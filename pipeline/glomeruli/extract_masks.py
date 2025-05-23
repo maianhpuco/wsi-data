@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 import os
 import yaml
-from shapely import wkt
+from shapely import wkt, wkb
 from shapely.geometry import Polygon
 import numpy as np
 from PIL import Image
@@ -77,12 +77,12 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        # Query using correct column names
+        # Query with RAW_ANNOTATION_TYPE filter (assume 1 for Polygons)
         cursor.execute("""
-            SELECT rdf.MD5, ra.DATA 
+            SELECT rdf.MD5, ra.DATA, ra.RAW_ANNOTATION_TYPE 
             FROM RAW_ANNOTATION ra
             JOIN RAW_DATA_FILE rdf ON ra.RAW_DATA_FILE_ID = rdf.RAW_DATA_FILE_ID
-            WHERE ra.DATA IS NOT NULL
+            WHERE ra.DATA IS NOT NULL AND ra.RAW_ANNOTATION_TYPE = 1
         """)
         annotations = cursor.fetchall()
     except sqlite3.Error as e:
@@ -93,14 +93,18 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
 
     # Group annotations by image hash
     ann_dict = {}
-    for image_md5, geom_data in annotations:
+    debug_printed = False
+    for image_md5, geom_data, ann_type in annotations:
         try:
-            # Decode BLOB to string (assuming WKT is stored as text in BLOB)
-            geom_wkt = geom_data.decode('utf-8') if isinstance(geom_data, bytes) else geom_data
-            geom = wkt.loads(geom_wkt)
+            # Try parsing DATA as WKB
+            geom = wkb.loads(geom_data)
             ann_dict.setdefault(image_md5, []).append(geom)
         except Exception as e:
-            print(f"  → [WARNING] Invalid WKT for {image_md5}: {e}")
+            if not debug_printed:
+                # Print sample DATA as hex for debugging
+                print(f"  → [DEBUG] Sample DATA (hex) for MD5 {image_md5}: {geom_data.hex()[:100]}...")
+                debug_printed = True
+            print(f"  → [WARNING] Invalid geometry for {image_md5}: {e}")
 
     image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(".tiff")]
     total = len(image_files)
