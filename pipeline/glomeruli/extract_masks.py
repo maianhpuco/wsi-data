@@ -11,6 +11,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 def compute_md5(file_path):
+    """Compute MD5 hash of a file."""
     try:
         with open(file_path, "rb") as f:
             return hashlib.md5(f.read()).hexdigest()
@@ -19,6 +20,7 @@ def compute_md5(file_path):
         return None
 
 def load_yaml_config(config_path):
+    """Load YAML configuration file."""
     try:
         with open(config_path, "r") as f:
             return yaml.safe_load(f)
@@ -27,6 +29,7 @@ def load_yaml_config(config_path):
         return None
 
 def validate_polygon(poly, width, height):
+    """Validate a polygon: check if it's a valid Polygon and within image bounds."""
     if not isinstance(poly, Polygon) or not poly.is_valid:
         return False, "Invalid or non-Polygon geometry"
     bounds = poly.bounds
@@ -35,29 +38,54 @@ def validate_polygon(poly, width, height):
     return True, ""
 
 def estimate_memory(width, height):
+    """Estimate memory required for a mask in MB."""
     return (width * height * 1) / (1024 * 1024)
 
-def preview_annotations(image, polygons, title="Preview"):
+def preview_annotations(image, polygons, title="Preview", max_size=1000):
+    """Preview annotations overlaid on a downscaled image."""
+    # Convert PIL image to numpy array for display
+    img_array = np.array(image)
+    
+    # Downscale image for preview if too large
+    height, width = img_array.shape[:2]
+    if max(width, height) > max_size:
+        scale = max_size / max(width, height)
+        new_width, new_height = int(width * scale), int(height * scale)
+        img_array = cv2.resize(img_array, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        # Scale polygon coordinates
+        scaled_polygons = []
+        for poly in polygons:
+            scaled_coords = [(x * scale, y * scale) for x, y in poly.exterior.coords]
+            scaled_polygons.append(Polygon(scaled_coords))
+    else:
+        scaled_polygons = polygons
+
     plt.figure(figsize=(8, 8))
-    plt.imshow(image)
-    for poly in polygons:
+    plt.imshow(img_array)
+    for poly in scaled_polygons:
         if isinstance(poly, Polygon):
             x, y = poly.exterior.xy
             plt.plot(x, y, color='red', linewidth=1)
     plt.title(title)
     plt.axis("off")
-    plt.show()
+    plt.savefig(f"{title.replace(' ', '_')}_preview.png")
+    plt.close()
 
 def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
+    """Extract annotations from database and save as binary PNG masks."""
     os.makedirs(annotation_dir, exist_ok=True)
 
+    # Connect to database
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        
-        print(cursor.fetchall())
-        cursor.execute("SELECT image_md5, geometry FROM RAW_ANNOTATION WHERE geometry IS NOT NULL;")
+        # Query to join RAW_ANNOTATION and RAW_DATA_FILE
+        cursor.execute("""
+            SELECT rdf.md5, ra.geometry 
+            FROM RAW_ANNOTATION ra
+            JOIN RAW_DATA_FILE rdf ON ra.image_id = rdf.id
+            WHERE ra.geometry IS NOT NULL
+        """)
         annotations = cursor.fetchall()
     except sqlite3.Error as e:
         print(f"  → [ERROR] Database error: {e}")
@@ -65,6 +93,7 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     finally:
         conn.close()
 
+    # Group annotations by image hash
     ann_dict = {}
     for image_md5, geom_wkt in annotations:
         try:
@@ -144,8 +173,8 @@ def main(config_path, preview=False):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Extract and preview glomeruli annotations as full-res masks")
+    parser = argparse.ArgumentParser(description="Extract and preview glomeruli annotations as full-res PNG masks")
     parser.add_argument("--config", type=str, required=True, help="Path to YAML config")
-    parser.add_argument("--preview", action="store_true", help="Show annotation overlays before saving")
+    parser.add_argument("--preview", action="store_true", help="Save annotation overlay previews")
     args = parser.parse_args()
     main(args.config, preview=args.preview)
