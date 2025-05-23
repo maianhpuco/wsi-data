@@ -57,7 +57,7 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         
         print(cursor.fetchall())
-        cursor.execute("SELECT image_md5, geometry FROM RAW_ANNOTATIONS WHERE geometry IS NOT NULL;")
+        cursor.execute("SELECT image_md5, geometry FROM RAW_ANNOTATION WHERE geometry IS NOT NULL;")
         annotations = cursor.fetchall()
     except sqlite3.Error as e:
         print(f"  → [ERROR] Database error: {e}")
