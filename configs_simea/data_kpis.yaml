@@ -3,7 +3,14 @@ paths:
     train: "/home/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level" 
     test:  "/home/mvu9/datasets/kidney_pathology_image/test/Task2_WSI_level" 
     validation: "/home/mvu9/datasets/kidney_pathology_image/validation/Task2_WSI_level" 
-  anno_xml_dir: ""
+  anno_xml_dir: 
+    train: "/home/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
+    test:  "/home/mvu9/datasets/kidney_pathology_image/test/Task2_WSI_level"
+    validation: "/home/mvu9/datasets/kidney_pathology_image/validation/Task2_WSI_level"  
+  sanity_downscale_dir: 
+    train: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/train"
+    test:  "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/test"
+    validation: "/home/mvu9/processing_datasets/kidney_pathology_image/downscale_sanity_check/validation" 
 
 patterns: 
   slide_dir: 
