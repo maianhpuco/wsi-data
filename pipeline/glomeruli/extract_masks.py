@@ -2,13 +2,17 @@ import sqlite3
 import hashlib
 import os
 import yaml
-from shapely import wkt, wkb
 from shapely.geometry import Polygon
 import numpy as np
 from PIL import Image
 import cv2
 from pathlib import Path
 import matplotlib.pyplot as plt
+try:
+    from jnius import autoclass
+except ImportError:
+    print("  → [WARNING] pyjnius not installed. Run: pip install pyjnius")
+    autoclass = None
 
 def compute_md5(file_path):
     """Compute MD5 hash of a file."""
@@ -69,6 +73,35 @@ def preview_annotations(image, polygons, title="Preview", max_size=1000):
     plt.savefig(f"{title.replace(' ', '_')}_preview.png")
     plt.close()
 
+def deserialize_java_object(geom_data):
+    """Deserialize Java serialized object and extract Polygon coordinates."""
+    if autoclass is None:
+        return None, "pyjnius not available"
+    
+    try:
+        # Use Java classes via pyjnius
+        ByteArrayInputStream = autoclass('java.io.ByteArrayInputStream')
+        ObjectInputStream = autoclass('java.io.ObjectInputStream')
+        
+        # Convert bytes to Java input stream
+        byte_stream = ByteArrayInputStream(geom_data)
+        object_stream = ObjectInputStream(byte_stream)
+        
+        # Read the object (assuming it's a java.awt.Polygon or similar)
+        java_obj = object_stream.readObject()
+        
+        # Check if it's a java.awt.Polygon
+        if java_obj.__class__.__name__ == 'Polygon':
+            xpoints = java_obj.xpoints
+            ypoints = java_obj.ypoints
+            npoints = java_obj.npoints
+            coords = [(xpoints[i], ypoints[i]) for i in range(npoints)]
+            return Polygon(coords), ""
+        
+        return None, f"Unsupported Java object: {java_obj.__class__.__name__}"
+    except Exception as e:
+        return None, f"Java deserialization failed: {e}"
+
 def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     """Extract annotations from database and save as binary PNG masks."""
     os.makedirs(annotation_dir, exist_ok=True)
@@ -83,10 +116,10 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
         types = cursor.fetchall()
         print(f"  → [DEBUG] RAW_ANNOTATION_TYPE and DESCRIPTION: {types}")
 
-        # Debug: Print sample FILENAMES
-        cursor.execute("SELECT FILENAME FROM RAW_DATA_FILE WHERE FILETYPE LIKE '%tiff%' LIMIT 5")
+        # Debug: Print all FILENAMES
+        cursor.execute("SELECT FILENAME FROM RAW_DATA_FILE WHERE FILETYPE LIKE '%tiff%'")
         filenames = cursor.fetchall()
-        print(f"  → [DEBUG] Sample FILENAMES from RAW_DATA_FILE: {filenames}")
+        print(f"  → [DEBUG] FILENAMES from RAW_DATA_FILE: {[f[0] for f in filenames]}")
 
         # Query using FILENAME
         cursor.execute("""
@@ -107,22 +140,17 @@ def extract_annotations(db_path, image_dir, annotation_dir, preview=False):
     debug_printed = False
     for filename, geom_data, ann_type in annotations:
         try:
-            # Try parsing DATA as WKB
-            geom = wkb.loads(geom_data)
+            # Try deserializing as Java object
+            geom, error = deserialize_java_object(geom_data)
+            if geom is None:
+                raise Exception(error)
             fname_key = Path(filename).stem
             ann_dict.setdefault(fname_key, []).append(geom)
         except Exception as e:
-            # Fallback: Try decoding as text (Latin-1)
-            try:
-                geom_wkt = geom_data.decode('latin-1')
-                geom = wkt.loads(geom_wkt)
-                fname_key = Path(filename).stem
-                ann_dict.setdefault(fname_key, []).append(geom)
-            except Exception as e2:
-                if not debug_printed:
-                    print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
-                    debug_printed = True
-                print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e} (text decode: {e2})")
+            if not debug_printed:
+                print(f"  → [DEBUG] Sample DATA (hex) for {filename}: {geom_data.hex()[:100]}...")
+                debug_printed = True
+            print(f"  → [WARNING] Invalid geometry for {filename} (type {ann_type}): {e}")
 
     image_files = [f for f in os.listdir(image_dir) if f.lower().endswith(".tiff")]
     total = len(image_files)
