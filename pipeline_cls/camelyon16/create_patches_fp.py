@@ -158,7 +158,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				wsi = WSI_object.getOpenSlide()
 				best_level = wsi.get_best_level_for_downsample(64)
 				current_vis_params['vis_level'] = best_level
-
+		print("=======> WSI_object.level_dim", WSI_object.level_dim) 
 		if current_seg_params['seg_level'] < 0:
 			if len(WSI_object.level_dim) == 1:
 				current_seg_params['seg_level'] = 0
@@ -199,7 +199,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		if save_mask:
 			mask = WSI_object.visWSI(**current_vis_params)
 			mask_path = os.path.join(mask_save_dir, slide_id+'.jpg')
-			mask.save(mask_path)
+			# mask.save(mask_path)
 
 		patch_time_elapsed = -1 # Default time
 		if patch:
@@ -213,7 +213,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 			if os.path.isfile(file_path):
 				heatmap, stitch_time_elapsed = stitching(file_path, WSI_object, downscale=64)
 				stitch_path = os.path.join(stitch_save_dir, slide_id+'.jpg')
-				heatmap.save(stitch_path)
+				# heatmap.save(stitch_path)
 
 		print("segmentation took {} seconds".format(seg_time_elapsed))
 		print("patching took {} seconds".format(patch_time_elapsed))
