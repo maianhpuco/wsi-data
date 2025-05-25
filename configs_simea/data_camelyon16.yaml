@@ -26,7 +26,7 @@ paths:
   anno_xml_dir: "/home/mvu9/datasets/camelyon16/raw_data/camelyon16/annotations"
   label_file: 'datasets/camelyon16/camelyon16_csv_splits_camil/splits_0.csv'
   save_dir: "/home/mvu9/processing_datasets/processing_camelyon16"
-  # patch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
+  patch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
   patch_png_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_png"
   patch_h5_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
   mask_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/masks"
