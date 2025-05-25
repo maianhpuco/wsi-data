@@ -1,7 +1,10 @@
 paths: 
+  raw_slide_dir: 
+    train: "/home/mvu9/datasets/glomeruli_pyramidal/train"
+    test: "/home/mvu9/datasets/glomeruli_pyramidal/test"  
   slide_dir: 
     train: "/home/mvu9/datasets/glomeruli/train"
-    test: "/home/mvu9/datasets/glomeruli/test"
+    test: "/home/mvu9/datasets/glomeruli/test" 
   orbit_db : "/home/mvu9/datasets/glomeruli/orbit.db"  
   patch_dir: 
     train: "/home/mvu9/processing_datasets/glomeruli/patches/train"
