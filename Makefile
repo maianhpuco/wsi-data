@@ -7,47 +7,47 @@ pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea
 
 #--------SIMAE --------- 
 # metadata_kich_simea:
-# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kich.yaml
+# 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kich.yaml
 # metadata_kirp_simea:
-# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kirp.yaml 
+# 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kirp.yaml 
 # metadata_kirc_simea:
-# 	python pipeline/tcga/generate_metadata.py --config configs_simea/data_kirc.yaml 
+# 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kirc.yaml 
 
 ##--------SIMAE --------- PREPROCESSING  
 gen_split_camelyon16:
-	python pipeline/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
+	python pipeline_cls/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
 gen_split_tcga_renal:
-	python pipeline/tcga/generate_split_csv.py --config configs_simea/data_tcga_renal.yaml 
+	python pipeline_cls/tcga/generate_split_csv.py --config configs_simea/data_tcga_renal.yaml 
 
 
 #--------SIMAE --------- PREPROCESSING 
 pp_camelyon16_simea:
-	python pipeline/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
-
+	python pipeline_cls/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
 pp_kich_simea: 
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml 
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml 
 pp_kirp_simea:
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 pp_kirc_simea:
-	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml
-	 
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml
+pp_glomeruli_simea:
+	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	 
 #====== 
 # check_missing_file:
-# 	python pipeline/tcga/count_missing_file.py
+# 	python pipeline_cls/tcga/count_missing_file.py
 # rerun_pp_kich_simea: 
-# 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames yes
+# 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kich.yaml --csv_filenames yes
 # rerun_pp_kirp_simea: 
-# 	python pipeline/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml --csv_filenames yes 
+# 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml --csv_filenames yes 
 
 #--------SIMAE --------- FAST PROCESSING, H5 FEATURES | GENERATION  
 ef_camelyon16_simea: 
-	python pipeline/camelyon16/extract_features_fp.py --config configs_simea/data_camelyon16.yaml
+	python pipeline_cls/camelyon16/extract_features_fp.py --config configs_simea/data_camelyon16.yaml
 ef_kich_simea: 
-	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kich.yaml
+	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kich.yaml
 ef_kirc_simea: 
-	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirc.yaml
+	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirc.yaml
 ef_kirp_simea: 
-	python pipeline/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
+	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
 
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
@@ -57,8 +57,8 @@ gen_patches_kirc_simea:
 gen_patches_kirp_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kirp.yaml 
 gen_patches_camelyon16_simea:
-	# python pipeline/camelyon16/generate_patches.py --config configs_simea/data_camelyon16.yaml
-	python pipeline/camelyon16/create_and_generate_patches.py --config configs_simea/data_camelyon16.yaml
+	# python pipeline_cls/camelyon16/generate_patches.py --config configs_simea/data_camelyon16.yaml
+	python pipeline_cls/camelyon16/create_and_generate_patches.py --config configs_simea/data_camelyon16.yaml
  
 #--------MAUI--------- 
 metadata_kich:
@@ -87,18 +87,18 @@ get_split:
 		--output_dir /project/hnguyen2/mvu9/processing_datasets/tcga_renal_fewshot
 
 cam_anno_process:
-	python pipeline/camelyon16/anno_processing.py \
+	python pipeline_cls/camelyon16/anno_processing.py \
 	--config configs_simea/data_camelyon16.yaml
 
 #---------fixing / sanity check 
 check_downscale_kpi:
-	python pipeline/kpis/sanity_check_downscale.py \
+	python pipeline_cls/kpis/sanity_check_downscale.py \
 	--config configs_simea/data_kpis.yaml 
 
 check_downscale_glo:
-	python pipeline/glomeruli/sanity_check_downscale.py \
+	python pipeline_cls/glomeruli/sanity_check_downscale.py \
 	--config configs_simea/data_glomeruli.yaml
  
 extract_glomeruli_masks:
-	python pipeline/glomeruli/extract_anno.py \
+	python pipeline_cls/glomeruli/extract_anno.py \
 	--config configs_simea/data_glomeruli.yaml

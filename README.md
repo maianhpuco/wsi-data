@@ -175,3 +175,8 @@ RAW_ANNOTATION: RAW_ANNOTATION_ID, RAW_DATA_FILE_ID, RAW_ANNOTATION_TYPE, DESCRI
 RAW_DATA_FILE: RAW_DATA_FILE_ID, FILENAME, MD5, PATH, etc.
 DATA is a BLOB, expected to contain geometry data (likely Polygons for glomeruli annotations).
 RAW_ANNOTATION_TYPE determines the annotation type, but 0 is likely not Polygons. 
+
+
+conda install -c conda-forge openjdk
+
+export JAVA_HOME=$(dirname $(dirname $(which javac)))

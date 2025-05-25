@@ -3,6 +3,10 @@ paths:
     train: "/home/mvu9/datasets/glomeruli/train"
     test: "/home/mvu9/datasets/glomeruli/test"
   orbit_db : "/home/mvu9/datasets/glomeruli/orbit.db"  
+  patch_dir: 
+    train: "/home/mvu9/processing_datasets/glomeruli/patches/train"
+    test: "/home/mvu9/processing_datasets/glomeruli/patches/test"
+
   anno_dir:
     train: "/home/mvu9/processing_datasets/glomeruli/annotations/train"
     test: "/home/mvu9/processing_datasets/glomeruli/annotations/test"  
@@ -10,3 +14,37 @@ paths:
     train: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/train"
     test: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/test"
   json_save_path: "/home/mvu9/processing_datasets/glomeruli/annotations.json" 
+
+
+processing:
+  patch_size: 256
+  step_size: 256
+  patch_level: 0
+  seg: true
+  patch: true
+  stitch: true
+  auto_skip: true
+
+segmentation:
+  seg_level: -1
+  sthresh: 8
+  mthresh: 7
+  close: 4
+  use_otsu: False
+  keep_ids: "none"
+  exclude_ids: "none"
+
+filtering:
+  a_t: 100
+  a_h: 16
+  max_n_holes: 8
+
+visualization:
+  vis_level: -1
+  line_thickness: 500
+
+patching:
+  use_padding: True
+  contour_fn: "four_pt"
+  white_thresh: 5
+  black_thresh: 50
