@@ -158,10 +158,10 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 				wsi = WSI_object.getOpenSlide()
 				best_level = wsi.get_best_level_for_downsample(64)
 				current_vis_params['vis_level'] = best_level
-        print("=======> WSI_object.level_dim", WSI_object.level_dim)
+		print("=======> WSI_object.level_dim", WSI_object.level_dim)
 		if current_seg_params['seg_level'] < 0:
-        
-        
+		
+		
 			if len(WSI_object.level_dim) == 1:
 				current_seg_params['seg_level'] = 0
 			
@@ -241,7 +241,7 @@ def load_config(config_path):
 
     """Load YAML configuration file."""
     with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
+		return yaml.safe_load(f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Segmentation and patching pipeline")
@@ -258,41 +258,41 @@ if __name__ == "__main__":
     patch_params = config['patching']
 
     for split in ['train', 'test']:
-        source = paths['slide_dir'][split]
-        save_dir = os.path.join(paths['patch_dir'][split], 'logs')
-        patch_save_dir = paths['patch_dir'][split]
-        mask_save_dir = paths['sanity_downscale_dir'][split]
-        stitch_save_dir = os.path.join(paths['patch_dir'][split], 'stitched')
-        os.makedirs(save_dir, exist_ok=True)
-        os.makedirs(mask_save_dir, exist_ok=True)
-        os.makedirs(stitch_save_dir, exist_ok=True)
+		source = paths['slide_dir'][split]
+		save_dir = os.path.join(paths['patch_dir'][split], 'logs')
+		patch_save_dir = paths['patch_dir'][split]
+		mask_save_dir = paths['sanity_downscale_dir'][split]
+		stitch_save_dir = os.path.join(paths['patch_dir'][split], 'stitched')
+		os.makedirs(save_dir, exist_ok=True)
+		os.makedirs(mask_save_dir, exist_ok=True)
+		os.makedirs(stitch_save_dir, exist_ok=True)
 
-        print(f"\n🔧 Processing: {split.upper()}")
-        print(f"Slide source     : {source}")
-        print(f"Patch save dir   : {patch_save_dir}")
-        print(f"Mask save dir    : {mask_save_dir}")
-        print(f"Stitch save dir  : {stitch_save_dir}")
+		print(f"\n🔧 Processing: {split.upper()}")
+		print(f"Slide source     : {source}")
+		print(f"Patch save dir   : {patch_save_dir}")
+		print(f"Mask save dir    : {mask_save_dir}")
+		print(f"Stitch save dir  : {stitch_save_dir}")
 
-        seg_times, patch_times = seg_and_patch(
-            source=source,
-            save_dir=save_dir,
-            patch_save_dir=patch_save_dir,
-            mask_save_dir=mask_save_dir,
-            stitch_save_dir=stitch_save_dir,
-            patch_size=proc['patch_size'],
-            step_size=proc['step_size'],
-            seg_params=seg_params,
-            filter_params=filter_params,
-            vis_params=vis_params,
-            patch_params=patch_params,
-            patch_level=proc['patch_level'],
-            use_default_params=False,
-            seg=proc['seg'],
-            save_mask=True,
-            stitch=proc['stitch'],
-            patch=proc['patch'],
-            process_list=None,
-            auto_skip=proc['auto_skip']
-        )
+		seg_times, patch_times = seg_and_patch(
+		    source=source,
+		    save_dir=save_dir,
+		    patch_save_dir=patch_save_dir,
+		    mask_save_dir=mask_save_dir,
+		    stitch_save_dir=stitch_save_dir,
+		    patch_size=proc['patch_size'],
+		    step_size=proc['step_size'],
+		    seg_params=seg_params,
+		    filter_params=filter_params,
+		    vis_params=vis_params,
+		    patch_params=patch_params,
+		    patch_level=proc['patch_level'],
+		    use_default_params=False,
+		    seg=proc['seg'],
+		    save_mask=True,
+		    stitch=proc['stitch'],
+		    patch=proc['patch'],
+		    process_list=None,
+		    auto_skip=proc['auto_skip']
+		)
 
-        print(f"\n {split.upper()} Done. Avg Seg Time: {seg_times:.2f}s, Avg Patch Time: {patch_times:.2f}s") 
+		print(f"\n {split.upper()} Done. Avg Seg Time: {seg_times:.2f}s, Avg Patch Time: {patch_times:.2f}s") 
