@@ -46,5 +46,5 @@ visualization:
 patching:
   use_padding: True
   contour_fn: "four_pt"
-  white_thresh: 5
-  black_thresh: 50
+  # white_thresh: 5
+  # black_thresh: 50
