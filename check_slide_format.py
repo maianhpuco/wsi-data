@@ -15,8 +15,6 @@ for filename in sorted(tiff_files):
         print(f"  Dimensions at each level: {slide.level_dimensions}")
         if slide.level_count < 5:
             print(f"  Warning: {filename} has less than 5 levels.") 
-        if slide.level_count > 5:
-            print(f"  Warning: {filename} has more than 5 levels.") 
             break  
     except Exception as e:
         print(f"===> Failed to open {filename}: {e}")
