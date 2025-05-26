@@ -1,5 +1,5 @@
 paths:
-  ori_source_dir: "/home/mvu9/datasets/TCGA-datasets/LUAD"
+  ori_source_dir: "/home/mvu9/datasets/TCGA-datasets/LUSC"
   source_dir: "/home/mvu9/datasets/processing_datasets/processing_tcga_256/luad/pyramidal_images"
   save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc"
   patch_h5_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/patches_h5"
