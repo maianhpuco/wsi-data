@@ -31,6 +31,9 @@ pp_kirc_simea:
 metadata_luad_simea:
 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_luad.yaml 
 
+metadata_lusc_simea:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_lusc.yaml 
+
 
 
 #--------SIMAE --------- 
