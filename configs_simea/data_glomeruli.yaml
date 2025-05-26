@@ -7,6 +7,7 @@ paths:
     train: "/home/mvu9/processing_datasets/processing_glomeruli/patches/train"
     test: "/home/mvu9/processing_datasets/processing_glomeruli/patches/test"
   save_dir: "/home/mvu9/processing_datasets/processing_glomeruli/"
+  
   anno_dir:
     train: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/train"
     test: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/test"  

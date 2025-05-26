@@ -155,7 +155,7 @@ def process_split(split, cfg):
     # Set paths from config
     source = cfg['paths']['slide_dir'][split]
     patch_h5_dir = cfg['paths']['patch_dir'][split]
-    feat_dir = os.path.join(cfg['paths']['save_dir'], split, 'features_fp')
+    feat_dir = os.path.join(cfg['paths']['save_dir'],'features_fp', split) 
     csv_path = os.path.join(cfg['paths']['save_dir'], split, 'slide_list.csv')
 
     # Create necessary directories
@@ -282,7 +282,7 @@ def main():
         print(f"\n Processing {split.upper()} split")
         print(f"Slide source: {cfg['paths']['slide_dir'][split]}")
         print(f"Patch H5 dir: {cfg['paths']['patch_dir'][split]}")
-        print(f"Feature save dir: {os.path.join(cfg['paths']['save_dir'], split, 'features_fp')}")
+        print(f"Feature save dir: {os.path.join(cfg['paths']['save_dir'],'features_fp', split)}")
         process_split(split, cfg)
 
 if __name__ == "__main__":
