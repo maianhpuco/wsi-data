@@ -20,7 +20,7 @@ def convert_to_pyramidal(input_dir, output_dir):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to convert: {filename}\n{e}")
+            print(f"Failed to convert: {filename}\n{e}")
 
 # Define paths
 source_dirs = {
@@ -28,8 +28,8 @@ source_dirs = {
     "test": "/home/mvu9/datasets/glomeruli/test"
 }
 output_dirs = {
-    "train": "/home/mvu9/datasets/glomeruli_pyramidal/train",
-    "test": "/home/mvu9/datasets/glomeruli_pyramidal/test"
+    "train": "/home/mvu9/processing_datasets/glomeruli_pyramidal/train",
+    "test": "/home/mvu9/processing_datasets/glomeruli_pyramidal/test"
 }
 
 # Run conversion

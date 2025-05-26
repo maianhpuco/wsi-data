@@ -45,7 +45,7 @@ def generate_patch(h5_file_name, slide_dir, patch_h5_dir, patch_png_dir, magnifi
     slide_patch_dir = os.path.join(patch_png_dir, slide_id)
     os.makedirs(slide_patch_dir, exist_ok=True)
 
-    for coord in tqdm(coords, desc=f"🔄 {slide_id}", leave=False):
+    for coord in tqdm(coords, desc=f" ===> Running {slide_id}", leave=False):
         x, y = map(int, coord)
         patch = slide.read_region((x, y), patch_level, (input_size, input_size)).convert('RGB')
         patch = patch.resize((output_size, output_size))

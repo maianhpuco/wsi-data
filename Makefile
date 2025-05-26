@@ -29,6 +29,8 @@ pp_kirp_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 pp_kirc_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml
+
+# glomeruli data need to process get multiple magnification level before create patches 
 pyramidal_pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/pyramidal_processing.py 
 pp_glomeruli_simea:
