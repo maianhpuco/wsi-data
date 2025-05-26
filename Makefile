@@ -19,6 +19,18 @@ generate_split:
 
 
 # ====== Processing pipeline for Glomeruli dataset 
+# TCGA Lung LUAD: 
+pp_kirc_simea:
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_luad.yaml
+
+
+ 
+
+
+# TCGA Lung LUAD:
+metadata_luad_simea:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_luad.yaml 
+
 
 
 #--------SIMAE --------- 

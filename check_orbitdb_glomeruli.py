@@ -27,7 +27,7 @@ cursor = conn.cursor()
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 tables = cursor.fetchall()
 table_names = [t[0] for t in tables]
-print("✅ Tables found in orbit.db:")
+print("Tables found in orbit.db:")
 for name in table_names:
     print(f" - {name}")
 
@@ -45,7 +45,7 @@ for table in table_names:
     # Step 3: Load the table into a DataFrame
     df = pd.read_sql_query(f"SELECT * FROM {table}", conn)
     dfs[table] = df
-    print(f"✅ Loaded {len(df)} rows into DataFrame for table '{table}'.")
+    print(f"Loaded {len(df)} rows into DataFrame for table '{table}'.")
 
     # Step 4: Print first 3 rows
     # print("Sample rows:")
@@ -66,10 +66,10 @@ for table in table_names:
                 json.dump(clean_record, f, ensure_ascii=False)
                 f.write("\n")
             except Exception as e:
-                print(f"⚠️ Skipped a record in {table} due to: {e}")
+                print(f" Skipped a record in {table} due to: {e}")
 
-    print(f"📁 Exported to {json_path}")
+    print(f" Exported to {json_path}")
 
 # Step 6: Close the connection
 conn.close()
-print("\n🎉 Done! All tables exported and inspected.")
+print("\n Done! All tables exported and inspected.")
