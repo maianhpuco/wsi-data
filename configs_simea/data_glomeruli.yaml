@@ -1,22 +1,22 @@
 paths: 
   raw_slide_dir: 
-    train: "/home/mvu9/datasets/glomeruli/train"
-    test: "/home/mvu9/datasets/glomeruli/test"  
+    train: "/home/mvu9/datasets/processing_glomeruli/train"
+    test: "/home/mvu9/datasets/processing_glomeruli/test"  
   slide_dir: 
-    train: "/home/mvu9/processing_datasets/glomeruli_pyramidal/train"
-    test: "/home/mvu9/processing_datasets/glomeruli_pyramidal/test" 
-  orbit_db : "/home/mvu9/datasets/glomeruli/orbit.db"  
+    train: "/home/mvu9/processing_datasets/processing_glomeruli_pyramidal/train"
+    test: "/home/mvu9/processing_datasets/processing_glomeruli_pyramidal/test" 
+  orbit_db : "/home/mvu9/datasets/processing_glomeruli/orbit.db"  
   patch_dir: 
-    train: "/home/mvu9/processing_datasets/glomeruli/patches/train"
-    test: "/home/mvu9/processing_datasets/glomeruli/patches/test"
-
+    train: "/home/mvu9/processing_datasets/processing_glomeruli/patches/train"
+    test: "/home/mvu9/processing_datasets/processing_glomeruli/patches/test"
+  save_dir: "/home/mvu9/processing_datasets/processing_glomeruli/"
   anno_dir:
-    train: "/home/mvu9/processing_datasets/glomeruli/annotations/train"
-    test: "/home/mvu9/processing_datasets/glomeruli/annotations/test"  
+    train: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/train"
+    test: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/test"  
   sanity_downscale_dir: 
-    train: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/train"
-    test: "/home/mvu9/processing_datasets/glomeruli/downscale_sanity_check/test"
-  json_save_path: "/home/mvu9/processing_datasets/glomeruli/annotations.json" 
+    train: "/home/mvu9/processing_datasets/processing_glomeruli/downscale_sanity_check/train"
+    test: "/home/mvu9/processing_datasets/processing_glomeruli/downscale_sanity_check/test"
+  json_save_path: "/home/mvu9/processing_datasets/processing_glomeruli/annotations.json" 
 
 
 processing:

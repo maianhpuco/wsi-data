@@ -35,8 +35,10 @@ pyramidal_pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/pyramidal_processing.py 
 pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	
-pp_kpis_simea:
+pp_kpis_simea: #run 
+	@echo make sureu run python pipeline_cls/kpis/pyramidal_processing.py  
 	python pipeline_cls/kpis/create_patches_fp.py --config configs_simea/data_kpis.yaml 
+
 #====== 
 # check_missing_file:
 # 	python pipeline_cls/tcga/count_missing_file.py
@@ -54,6 +56,8 @@ ef_kirc_simea:
 	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirc.yaml
 ef_kirp_simea: 
 	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
+ef_glomeruli_simea: 
+	python pipeline_cls/glomeruli/extract_features_fp.py --config configs_simea/data_glomeruli.yaml
 
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
