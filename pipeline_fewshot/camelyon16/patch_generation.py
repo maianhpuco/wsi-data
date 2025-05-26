@@ -52,7 +52,7 @@ def save_patch_pngs(slide_path, coords, save_dir, patch_size, level, magnificati
 def main(args, config):
     slide_dir = config['paths']['slide_dir']
     patch_h5_dir = config['paths']['patch_save_dir']
-    patch_png_map = config.get('patch_png_dir', {})
+    patch_png_map = config['paths'].get('patch_png_dir', {})
     print(patch_png_map)
     key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
     patch_png_dir = patch_png_map.get(key, None)
