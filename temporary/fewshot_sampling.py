@@ -6,12 +6,15 @@ import random
 source_root = '/home/mvu9/processing_datasets/processing_tgca'
 
 # Destination directory
-dest_root = '/home/mvu9/processing_datasets/fewshot_tgca_16_shots'
-
+# dest_root = '/home/mvu9/processing_datasets/fewshot_tgca_16_shots'
+dest_root = '/home/mvu9/processing_datasets/validation'
+if os.path.exists(dest_root):
+    # Remove the directory if it exists
+    shutil.rmtree(dest_root) 
 os.makedirs(dest_root, exist_ok=True)
 
 classes = ['kich', 'kirc', 'kirp']
-num_samples = 16 
+num_samples = 2 
 
 for cls in classes:
     src_patch_dir = os.path.join(source_root, cls, 'patches_png')
