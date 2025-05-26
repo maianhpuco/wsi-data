@@ -24,13 +24,13 @@ def convert_to_pyramidal(input_dir, output_dir):
 
 # Define paths
 source_dirs = {
-    "train": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/train", 
-    "test":  "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/test", 
-    "validation": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/image/validation", 
+    # "train": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/train", 
+    # "test":  "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/test", 
+    "validation": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/validation", 
 }
 output_dirs = {
-    "train": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/pyramidal_images/train", 
-    "test":  "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/pyramidal_images/test", 
+    # "train": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/pyramidal_images/train", 
+    # "test":  "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/pyramidal_images/test", 
     "validation": "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/pyramidal_images/validation", 
 }
 
