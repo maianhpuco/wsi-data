@@ -4,7 +4,7 @@ import glob
 from pathlib import Path
 
 # Set your annotation root directory
-ANN_ROOT = "/datasets/glomeruli/annotations"  # update if needed
+ANN_ROOT = "/home/mvu9/datasets/glomeruli/annotations"  # update if needed
 
 # Get the first JSON file
 json_files = sorted(glob.glob(os.path.join(ANN_ROOT, "*.json")))
