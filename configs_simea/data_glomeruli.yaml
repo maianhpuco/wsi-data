@@ -7,7 +7,7 @@ paths:
     train: "/home/mvu9/processing_datasets/processing_glomeruli/patches/train"
     test: "/home/mvu9/processing_datasets/processing_glomeruli/patches/test"
   save_dir: "/home/mvu9/processing_datasets/processing_glomeruli/"
-  
+
   anno_dir:
     train: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/train"
     test: "/home/mvu9/processing_datasets/processing_glomeruli/annotations/test"  
@@ -50,3 +50,12 @@ patching:
   contour_fn: "four_pt"
   # white_thresh: 5
   # black_thresh: 50
+
+    # black_thresh: 50
+
+feature_extraction:
+  model_name: resnet50_trunc
+  batch_size: 256
+  target_patch_size: 224
+  slide_ext: .tiff
+  no_auto_skip: False
