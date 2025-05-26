@@ -15,6 +15,8 @@ table_names = [t[0] for t in tables]
 print("Tables found in orbit.db:")
 for name in table_names:
     print(f" - {name}")
+pd.set_option("display.max_columns", None)  # Show all columns
+pd.set_option("display.max_colwidth", None)  # Show full content in each cell
 
 # Step 2: Print column names for each table and convert to DataFrame
 dfs = {}
