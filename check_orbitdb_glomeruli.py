@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 
 # Path to your orbit.db
-db_path = "/home/mvu9/datasets/glomeruli/orbit.db"  # Update this path
+db_path = "/home/mvu9/datasets/glomeruli/orbit.db"
 
 # Connect to SQLite database
 conn = sqlite3.connect(db_path)
@@ -30,8 +30,9 @@ for table in table_names:
     dfs[table] = df
     print(f"Loaded {len(df)} rows into DataFrame.")
 
-# Optional: Save to CSV or preview DataFrame
-# dfs["label"].head().to_csv("label_preview.csv", index=False)
+    # Step 4: Print first 3 rows
+    print("Sample rows:")
+    print(df.head(3))
 
 # Close connection
 conn.close()
