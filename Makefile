@@ -1,8 +1,24 @@
 metadata_all: metadata_kirc metadata_kirp metadata_kich
 
-
 metadata_all_simea: metadata_kich_simea metadata_kirp_simea metadata_kirc_simea
 pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea 
+
+
+# ====== Processing pipeline for KPIS dataset 
+pipeline_kpis_simea: metadata_kpis_simea move_file_kpis_simea pp_kpis_simea ef_kpis_simea
+move_file_kpis_simea:
+	python pipeline_cls/kpis/move_file.py 
+prm_kpis_simea: 
+	pipeline_cls/kpis/pyramidal_processing.py 
+pp_kpis_simea: #run 
+	python pipeline_cls/kpis/create_patches_fp.py --config configs_simea/data_kpis.yaml 
+ef_kpis_simea:
+	python pipeline_cls/kpis/extract_features_fp.py --config configs_simea/data_kpis.yaml
+generate_split:
+	python pipeline_cls/kpis/generate_split_csv.py --config configs_simea/data_kpis.yaml
+
+
+# ====== Processing pipeline for Glomeruli dataset 
 
 
 #--------SIMAE --------- 
@@ -35,9 +51,6 @@ pyramidal_pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/pyramidal_processing.py 
 pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	
-pp_kpis_simea: #run 
-	@echo make sureu run python pipeline_cls/kpis/pyramidal_processing.py  
-	python pipeline_cls/kpis/create_patches_fp.py --config configs_simea/data_kpis.yaml 
 
 #====== 
 # check_missing_file:
@@ -58,8 +71,7 @@ ef_kirp_simea:
 	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
 ef_glomeruli_simea: 
 	python pipeline_cls/glomeruli/extract_features_fp.py --config configs_simea/data_glomeruli.yaml
-ef_kpis_simea:
-	python pipeline_cls/kpis/extract_features_fp.py --config configs_simea/data_kpis.yaml
+
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
