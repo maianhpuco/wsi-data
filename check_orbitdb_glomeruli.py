@@ -1,7 +1,13 @@
 import sqlite3
 import pandas as pd
 import os
+import base64
 
+def serialize_bytes(obj):
+    if isinstance(obj, bytes):
+        return base64.b64encode(obj).decode('utf-8')  # Convert bytes → base64 → utf8 str
+    return obj
+ 
 # Path to your Orbit SQLite database
 db_path = "/home/mvu9/datasets/glomeruli/orbit.db"
 output_dir = "/home/mvu9/datasets/glomeruli/orbit_json_exports"
@@ -55,10 +61,13 @@ for table in table_names:
     with open(json_path, "w", encoding="utf-8") as f:
         for record in records:
             try:
-                json.dump(record, f, ensure_ascii=False)
+                # Convert all byte fields in the record
+                clean_record = {k: serialize_bytes(v) for k, v in record.items()}
+                json.dump(clean_record, f, ensure_ascii=False)
                 f.write("\n")
             except Exception as e:
-                print(f"⚠️ Skipped a record in {table} due to encoding error: {e}") 
+                print(f"⚠️ Skipped a record in {table} due to: {e}")
+
     print(f"📁 Exported to {json_path}")
 
 # Step 6: Close the connection
