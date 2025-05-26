@@ -149,7 +149,8 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
             for key in patch_params.keys():
                 current_patch_params.update({key: df.loc[idx, key]})
-
+        
+        print("=======> WSI_object.level_dim", WSI_object.level_dim)
         if current_vis_params['vis_level'] < 0:
             if len(WSI_object.level_dim) == 1:
                 current_vis_params['vis_level'] = 0
@@ -159,9 +160,8 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
                 best_level = wsi.get_best_level_for_downsample(64)
                 current_vis_params['vis_level'] = best_level
                 
-        print("=======> WSI_object.level_dim", WSI_object.level_dim)
-        if current_seg_params['seg_level'] < 0:
         
+        if current_seg_params['seg_level'] < 0:
         
             if len(WSI_object.level_dim) == 1:
                 current_seg_params['seg_level'] = 0
