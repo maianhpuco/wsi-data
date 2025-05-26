@@ -35,5 +35,5 @@ output_dirs = {
 }
 
 # Run conversion
-for split in ["train", "test", "validation"]:
+for split in ["validation"]:
     convert_to_pyramidal(source_dirs[split], output_dirs[split])
