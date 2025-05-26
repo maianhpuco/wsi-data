@@ -35,7 +35,7 @@ if __name__ == "__main__":
     with open(args.config, "r") as f:
         config = yaml.safe_load(f)
 
-    source = config["ori_source_dir"]
-    target = config["source_dir"]
+    source = config["paths"]["ori_source_dir"]
+    target = config["paths"]["source_dir"]
 
     convert_to_pyramidal(source, target)
