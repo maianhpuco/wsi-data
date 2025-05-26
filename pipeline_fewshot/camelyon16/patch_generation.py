@@ -31,6 +31,7 @@ def get_patch_params(patch_size, magnification):
         raise ValueError(f"Unsupported patch size: {patch_size}")
 
     output_size = patch_size // scale
+    print("output_size", output_size)
     return output_size  # should always return 256 if set up correctly
 
 def save_patch_pngs(slide_path, coords, save_dir, patch_size, level, magnification):
