@@ -71,7 +71,7 @@ def patching(WSI_object, **kwargs):
 	start_time = time.time()
 
 	# Patch
- 	magnification = WSI_object.wsi.properties.get('aperio.AppMag', '20')  # default to 20x
+	magnification = WSI_object.wsi.properties.get('aperio.AppMag', '20')  # default to 20x
 	# magnification = WSI_object.wsi.properties['aperio.AppMag']
 	kwargs['mag'] = str(magnification)
 	file_path = WSI_object.process_contours(**kwargs)
@@ -238,44 +238,44 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
   
 		#===================== ADDED ====================== 
 		# try:
-		# 	import cv2
-		# 	from PIL import Image
+		#	import cv2
+		#	from PIL import Image
 
-		# 	downsample_factor = 2
-		# 	w, h = WSI_object.level_dim[0]
+		#	downsample_factor = 2
+		#	w, h = WSI_object.level_dim[0]
 
-		# 	print(f"Safely reading {w}x{h} in tiles...")
-		# 	full_image = safe_read_wsi_thumbnail(WSI_object.wsi, level=0, tile_size=4096)
+		#	print(f"Safely reading {w}x{h} in tiles...")
+		#	full_image = safe_read_wsi_thumbnail(WSI_object.wsi, level=0, tile_size=4096)
 
-		# 	np_image = np.array(full_image)
-		# 	resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
-		# 	resized_img = Image.fromarray(resized_np)
+		#	np_image = np.array(full_image)
+		#	resized_np = cv2.resize(np_image, (w // downsample_factor, h // downsample_factor), interpolation=cv2.INTER_AREA)
+		#	resized_img = Image.fromarray(resized_np)
 
-		# 	# Continue as before
-		# 	WSI_object._resized_image = resized_img
-		# 	WSI_object._resized_dim = resized_img.size
-		# 	WSI_object._resized_downsample = (
-		# 		WSI_object.level_downsamples[0][0] * downsample_factor,
-		# 		WSI_object.level_downsamples[0][1] * downsample_factor,
-		# 	)
+		#	# Continue as before
+		#	WSI_object._resized_image = resized_img
+		#	WSI_object._resized_dim = resized_img.size
+		#	WSI_object._resized_downsample = (
+		#		WSI_object.level_downsamples[0][0] * downsample_factor,
+		#		WSI_object.level_downsamples[0][1] * downsample_factor,
+		#	)
 
-		# 	def _read_resized_region(location, level, size):
-		# 		if level == 1:
-		# 			return WSI_object._resized_image.crop((0, 0, size[0], size[1]))
-		# 		else:
-		# 			return WSI_object.wsi.read_region(location, level, size)
+		#	def _read_resized_region(location, level, size):
+		#		if level == 1:
+		#			return WSI_object._resized_image.crop((0, 0, size[0], size[1]))
+		#		else:
+		#			return WSI_object.wsi.read_region(location, level, size)
 
-		# 	WSI_object.wsi.read_region = _read_resized_region
-		# 	WSI_object.level_dim = list(WSI_object.level_dim) + [WSI_object._resized_dim]
-		# 	WSI_object.level_downsamples = list(WSI_object.level_downsamples) + [WSI_object._resized_downsample]
-		# 	current_seg_params['seg_level'] = len(WSI_object.level_dim) - 1
+		#	WSI_object.wsi.read_region = _read_resized_region
+		#	WSI_object.level_dim = list(WSI_object.level_dim) + [WSI_object._resized_dim]
+		#	WSI_object.level_downsamples = list(WSI_object.level_downsamples) + [WSI_object._resized_downsample]
+		#	current_seg_params['seg_level'] = len(WSI_object.level_dim) - 1
 
-		# 	print(f"Using virtual resized seg_level={current_seg_params['seg_level']}")
+		#	print(f"Using virtual resized seg_level={current_seg_params['seg_level']}")
 
 		# except Exception as e:
-		# 	print(f"Failed resizing: {e}")
-		# 	df.loc[idx, 'status'] = 'failed_resize'
-		# 	continue
+		#	print(f"Failed resizing: {e}")
+		#	df.loc[idx, 'status'] = 'failed_resize'
+		#	continue
 		#===================== ADDED ======================  
   
   
