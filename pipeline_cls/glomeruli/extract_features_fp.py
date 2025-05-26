@@ -6,14 +6,12 @@ import time
 from functools import partial
 import torch
 import torch.nn as nn
-import timm
 from torch.utils.data import DataLoader
 from PIL import Image
 import h5py
 import openslide
 from tqdm import tqdm
 import numpy as np
-import pandas as pd
 
 # Ensure CLAM is in the import path
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
