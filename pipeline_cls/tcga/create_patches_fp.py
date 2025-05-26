@@ -343,7 +343,7 @@ if __name__ == '__main__':
 
 	# Extract paths from config
 	paths = config['paths']
-	source = paths['source_dir']
+	source = paths['ori_source_dir']
 	save_dir = paths['save_dir']
 	patch_save_dir = paths['patch_h5_dir']  # Use patch_h5_dir instead of constructing patches_<patch_size>
 	mask_save_dir = paths['mask_save_dir']
@@ -368,7 +368,7 @@ if __name__ == '__main__':
 		csv_filter_path = paths["missing_patches_h5"]
 		if csv_filter_path is None:
 			raise ValueError("Config is missing 'paths.missing_patches_h5'")
-		print(f"✅ Using slide filter from: {csv_filter_path}")
+		print(f" Using slide filter from: {csv_filter_path}")
 		csv_slide_filter = load_csv_slide_filter(csv_filter_path)
 	else:
 		csv_slide_filter = load_csv_slide_filter(args.csv_filenames) if args.csv_filenames else None
