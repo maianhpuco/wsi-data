@@ -1,10 +1,7 @@
 paths: 
-  raw_slide_dir: 
-    train: "/home/mvu9/datasets/processing_glomeruli/train"
-    test: "/home/mvu9/datasets/processing_glomeruli/test"  
   slide_dir: 
-    train: "/home/mvu9/processing_datasets/processing_glomeruli_pyramidal/train"
-    test: "/home/mvu9/processing_datasets/processing_glomeruli_pyramidal/test" 
+    train: "/home/mvu9/processing_datasets/processing_glomeruli/pyramidal_images/train"
+    test: "/home/mvu9/processing_datasets/processing_glomeruli/pyramidal_images/test" 
   orbit_db : "/home/mvu9/datasets/processing_glomeruli/orbit.db"  
   patch_dir: 
     train: "/home/mvu9/processing_datasets/processing_glomeruli/patches/train"
@@ -17,8 +14,9 @@ paths:
     train: "/home/mvu9/processing_datasets/processing_glomeruli/downscale_sanity_check/train"
     test: "/home/mvu9/processing_datasets/processing_glomeruli/downscale_sanity_check/test"
   json_save_path: "/home/mvu9/processing_datasets/processing_glomeruli/annotations.json" 
-
-
+  raw_slide_dir_not_used: 
+    train: "/home/mvu9/datasets/processing_glomeruli/train"
+    test: "/home/mvu9/datasets/processing_glomeruli/test"   
 processing:
   patch_size: 256
   step_size: 256
