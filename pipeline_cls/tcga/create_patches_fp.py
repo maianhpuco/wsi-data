@@ -71,7 +71,8 @@ def patching(WSI_object, **kwargs):
 	start_time = time.time()
 
 	# Patch
-	magnification = WSI_object.wsi.properties['aperio.AppMag']
+ 	magnification = WSI_object.wsi.properties.get('aperio.AppMag', '20')  # default to 20x
+	# magnification = WSI_object.wsi.properties['aperio.AppMag']
 	kwargs['mag'] = str(magnification)
 	file_path = WSI_object.process_contours(**kwargs)
 
