@@ -19,12 +19,20 @@ def find_svs_files_recursive(input_dir):
     return svs_files
 
 def convert_to_pyramidal(input_dir, output_dir):
-    os.makedirs(output_dir, exist_ok=True)
     svs_files = find_svs_files_recursive(input_dir)
     print(len(svs_files), "SVS files found in", input_dir)
+    
     for svs_path in tqdm(svs_files, desc=f"Converting {input_dir}"):
-        filename = os.path.basename(svs_path)
-        output_path = os.path.join(output_dir, filename.replace(".svs", ".tiff"))
+        # Extract relative path from UUID subfolder
+        rel_path = os.path.relpath(svs_path, start=input_dir)  # e.g., uuid-123/slide_001.svs
+        rel_dir = os.path.dirname(rel_path)                    # e.g., uuid-123
+        filename = os.path.basename(svs_path).replace(".svs", ".tiff")
+
+        # Create output directory <target>/<uuid> if not exists
+        target_dir = os.path.join(output_dir, rel_dir)
+        os.makedirs(target_dir, exist_ok=True)
+
+        output_path = os.path.join(target_dir, filename)
 
         cmd = [
             "vips", "tiffsave", svs_path, output_path,
@@ -35,7 +43,7 @@ def convert_to_pyramidal(input_dir, output_dir):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            print(f"Failed to convert: {filename}\n{e}")
+            print(f"Failed to convert: {svs_path}\n{e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

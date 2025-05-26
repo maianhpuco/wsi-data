@@ -28,7 +28,7 @@ pp_kirc_simea:
 
 
 #  ====== TCGA Lung LUAD ====== 
-metadata_luad_simea:
+metadata_luad_simea: #done 
 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_luad.yaml 
 pp_luad_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_luad.yaml
@@ -37,7 +37,7 @@ pyramidal_luad_simea:
 
 
 #  ====== TCGA Lung LUAD  ====== 
-metadata_lusc_simea:
+metadata_lusc_simea: #done 
 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_lusc.yaml 
 pyramidal_lusc_simea:
 	python pipeline_cls/tcga/pyramidal_processing.py --config configs_simea/data_lusc.yaml
