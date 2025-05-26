@@ -35,7 +35,8 @@ pyramidal_pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/pyramidal_processing.py 
 pp_glomeruli_simea:
 	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	
-
+pp_kpis_simea:
+	python pipeline_cls/kpis/create_patches_fp.py --config configs_simea/data_kpis.yaml 
 #====== 
 # check_missing_file:
 # 	python pipeline_cls/tcga/count_missing_file.py
