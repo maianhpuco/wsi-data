@@ -27,7 +27,10 @@ paths:
   label_file: 'datasets/camelyon16/camelyon16_csv_splits_camil/splits_0.csv'
   save_dir: "/home/mvu9/processing_datasets/processing_camelyon16"
   patch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
-  patch_png_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_png"
+  # patch_png_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches_png"
+  patch_png_dir:
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_camelyon16/png_patches/patch_256x256_10x"
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_camelyon16/png_patches/patch_256x256_5x"
   patch_h5_dir: "/home/mvu9/processing_datasets/processing_camelyon16/patches"
   mask_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/masks"
   stitch_save_dir: "/home/mvu9/processing_datasets/processing_camelyon16/stitches"
