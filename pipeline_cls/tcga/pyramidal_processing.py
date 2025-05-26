@@ -1,11 +1,13 @@
 # pipeline_cls/tcga/pyramidal_processing.py
 
 import os
+import sys
 import subprocess
 import argparse
 import yaml
 from tqdm import tqdm
-
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(base_path)
 def convert_to_pyramidal(input_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     tif_files = [f for f in os.listdir(input_dir) if f.endswith(".tif") or f.endswith(".tiff")]
