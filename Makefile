@@ -29,8 +29,11 @@ pp_kirp_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirp.yaml  
 pp_kirc_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_kirc.yaml
+pyramidal_pp_glomeruli_simea:
+	python pipeline_cls/glomeruli/pyramidal_processing.py 
 pp_glomeruli_simea:
-	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	 
+	python pipeline_cls/glomeruli/create_patches_fp.py --config configs_simea/data_glomeruli.yaml	
+
 #====== 
 # check_missing_file:
 # 	python pipeline_cls/tcga/count_missing_file.py
@@ -102,3 +105,12 @@ check_downscale_glo:
 extract_glomeruli_masks:
 	python pipeline_cls/glomeruli/extract_anno.py \
 	--config configs_simea/data_glomeruli.yaml
+
+
+
+
+#FEW SHOT SETTING 
+# =========preprocessing========= 
+patch_gen_camelyon16:
+	python pipeline_fewshot/camelyon16/patch_generation.py \
+	--config configs_simea/data_camelyon16.yaml	--patch_size 256 --magnification 10x   
