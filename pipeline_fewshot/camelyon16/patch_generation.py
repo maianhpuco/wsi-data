@@ -10,29 +10,25 @@ def load_config(path):
     with open(path, 'r') as f:
         return yaml.safe_load(f)
 
-def get_patch_params(patch_size, magnification):
+def get_patch_params(magnification):
     """
-    Return the resized output patch size based on target patch size and magnification.
-    This simulates:
-    - 2048 → 5x → 256
-    - 1024 → 10x → 256
-    - 512 → 20x → 256
+    Return the patch read size (input size) based on magnification.
+    Output patch is always resized to 256x256.
     """
+    output_size = 256
+
     if magnification == '5x':
-        scale = 8
+        input_size = 2048
     elif magnification == '10x':
-        scale = 4
+        input_size = 1024
     elif magnification == '20x':
-        scale = 2
+        input_size = 512
     else:
         raise ValueError(f"Unsupported magnification: {magnification}")
 
-    if patch_size not in [2048, 1024, 512]:
-        raise ValueError(f"Unsupported patch size: {patch_size}")
+    print(f"[INFO] Reading input patch of {input_size}x{input_size} → resized to {output_size}x{output_size}")
+    return input_size, output_size
 
-    output_size = patch_size // scale
-    print("output_size", output_size)
-    return output_size  # should always return 256 if set up correctly
 
 def save_patch_pngs(slide_path, coords, save_dir, patch_size, level, magnification):
     slide = openslide.OpenSlide(slide_path)
