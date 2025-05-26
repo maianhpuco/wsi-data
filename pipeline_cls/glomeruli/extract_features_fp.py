@@ -44,7 +44,7 @@ def process_split(split, cfg):
     source = cfg['paths']['slide_dir'][split]
     patch_h5_dir = cfg['paths']['patch_dir'][split]
     feat_dir = os.path.join(cfg['paths']['save_dir'], 'features_fp', split)
-    csv_path = os.path.join(cfg['paths']['save_dir'], split, 'slide_list.csv')
+    csv_path = os.path.join(cfg['paths']['save_dir'], f'{split}_slide_list.csv')
 
     os.makedirs(feat_dir, exist_ok=True)
     os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
