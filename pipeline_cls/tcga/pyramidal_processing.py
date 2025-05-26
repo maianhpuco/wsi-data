@@ -6,19 +6,28 @@ import subprocess
 import argparse
 import yaml
 from tqdm import tqdm
+
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
+
+def find_svs_files_recursive(input_dir):
+    svs_files = []
+    for root, _, files in os.walk(input_dir):
+        for f in files:
+            if f.endswith(".svs"):
+                svs_files.append(os.path.join(root, f))
+    return svs_files
+
 def convert_to_pyramidal(input_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
-    tif_files = [f for f in os.listdir(input_dir) if f.endswith(".tif") or f.endswith(".tiff")]
-    print(len(tif_files), "TIFF files found in", input_dir)
-    
-    for filename in tqdm(tif_files, desc=f"Converting {input_dir}"):
-        input_path = os.path.join(input_dir, filename)
-        output_path = os.path.join(output_dir, filename)
+    svs_files = find_svs_files_recursive(input_dir)
+    print(len(svs_files), "SVS files found in", input_dir)
+    for svs_path in tqdm(svs_files, desc=f"Converting {input_dir}"):
+        filename = os.path.basename(svs_path)
+        output_path = os.path.join(output_dir, filename.replace(".svs", ".tiff"))
 
         cmd = [
-            "vips", "tiffsave", input_path, output_path,
+            "vips", "tiffsave", svs_path, output_path,
             "--tile", "--pyramid", "--compression", "deflate",
             "--tile-width", "512", "--tile-height", "512"
         ]
