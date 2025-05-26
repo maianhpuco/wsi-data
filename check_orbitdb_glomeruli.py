@@ -42,12 +42,23 @@ for table in table_names:
     print(f"✅ Loaded {len(df)} rows into DataFrame for table '{table}'.")
 
     # Step 4: Print first 3 rows
-    print("Sample rows:")
-    print(df.head(3))
+    # print("Sample rows:")
+    # print(df.head(3))
 
     # Step 5: Save to JSON
     json_path = os.path.join(output_dir, f"{table}.json")
-    df.to_json(json_path, orient="records", lines=True)
+    # df.to_json(json_path, orient="records", lines=True)
+    records = df.to_dict(orient="records")
+
+    # Save safely using built-in json with error handling
+    import json 
+    with open(json_path, "w", encoding="utf-8") as f:
+        for record in records:
+            try:
+                json.dump(record, f, ensure_ascii=False)
+                f.write("\n")
+            except Exception as e:
+                print(f"⚠️ Skipped a record in {table} due to encoding error: {e}") 
     print(f"📁 Exported to {json_path}")
 
 # Step 6: Close the connection
