@@ -58,7 +58,8 @@ ef_kirp_simea:
 	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_kirp.yaml
 ef_glomeruli_simea: 
 	python pipeline_cls/glomeruli/extract_features_fp.py --config configs_simea/data_glomeruli.yaml
-
+ef_kpis_simea:
+	python pipeline_cls/kpis/extract_features_fp.py --config configs_simea/data_kpis.yaml
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_simea:
 	python feature_extraction/generate_patches.py --config configs_simea/data_kich.yaml
