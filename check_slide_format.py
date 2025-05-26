@@ -1,8 +1,8 @@
 import openslide
 import os
 
-slide_dir = "/home/mvu9/processing_datasets/glomeruli_pyramidal/test"
-
+# slide_dir = "/home/mvu9/processing_datasets/glomeruli_pyramidal/test"
+slide_dir = "/home/mvu9/processing_datasets/kidney_pathology_image/reorganized_rawdata/images/train"
 tiff_files = [f for f in os.listdir(slide_dir) if f.endswith(".tif") or f.endswith(".tiff")]
 print(f"🔍 Found {len(tiff_files)} TIFF files in {slide_dir}")
 
