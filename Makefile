@@ -35,7 +35,7 @@ pyramidal_luad_simea:
 pp_luad_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_luad.yaml
 ef_luad_simea: 
-	python pipeline_cls/glomeruli/extract_features_fp.py --config configs_simea/data_glomeruli.yaml
+	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_luad.yaml
 #  ====== TCGA Lung LUSC  ====== 
 metadata_lusc_simea: #done 
 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_lusc.yaml 
@@ -43,7 +43,8 @@ pyramidal_lusc_simea:
 	python pipeline_cls/tcga/pyramidal_processing.py --config configs_simea/data_lusc.yaml
 pp_lusc_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_lusc.yaml
-
+ef_lusc_simea: 
+	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_lusc.yaml
 #--------SIMAE --------- 
 # metadata_kich_simea:
 # 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kich.yaml
