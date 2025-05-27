@@ -63,6 +63,7 @@ gen_split_tcga_renal:
 gen_split_tcga_lung:
 	python pipeline_cls/tcga/generate_split_csv_lung.py --config configs_simea/data_tcga_lung.yaml 
 
+
 #--------SIMAE --------- PREPROCESSING 
 pp_camelyon16_simea:
 	python pipeline_cls/camelyon16/create_patches_fp.py --config configs_simea/data_camelyon16.yaml
