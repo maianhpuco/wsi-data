@@ -45,6 +45,8 @@ pp_lusc_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_lusc.yaml
 ef_lusc_simea: 
 	python pipeline_cls/tcga/extract_features_fp.py --config configs_simea/data_lusc.yaml
+
+	
 #--------SIMAE --------- 
 # metadata_kich_simea:
 # 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kich.yaml
