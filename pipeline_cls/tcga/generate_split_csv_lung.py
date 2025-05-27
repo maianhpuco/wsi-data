@@ -7,7 +7,7 @@ from sklearn.model_selection import KFold, train_test_split
 
 def count_labels(df):
     counts = df['label'].value_counts().to_dict()
-    return ', '.join([f'{label}: {counts.get(label, 0)}' for label in ['LUAD', 'LUSC', 'KIRC']])
+    return ', '.join([f'{label}: {counts.get(label, 0)}' for label in ['LUAD', 'LUSC']])
 
 def generate_tcga_splits(config):
     luad_path = config['paths']['metadata']['luad']
@@ -18,7 +18,8 @@ def generate_tcga_splits(config):
     num_folds = int(config.get('fold_number', 5))
 
     all_pt_files = set()
-    for cancer_type in ['luad', 'lusc', 'kirc']:
+    for cancer_type in ['luad', 'lusc']:
+
         pt_dir = pt_dirs[cancer_type]
         pt_files = [os.path.splitext(f)[0] for f in os.listdir(pt_dir) if f.endswith('.pt')]
         all_pt_files.update(pt_files)
