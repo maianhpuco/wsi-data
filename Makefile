@@ -59,8 +59,9 @@ ef_lusc_simea:
 gen_split_camelyon16:
 	python pipeline_cls/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
 gen_split_tcga_renal:
-	python pipeline_cls/tcga/generate_split_csv.py --config configs_simea/data_tcga_renal.yaml 
-
+	python pipeline_cls/tcga/generate_split_csv_renal.py --config configs_simea/data_tcga_renal.yaml 
+gen_split_tcga_lung:
+	python pipeline_cls/tcga/generate_split_csv_lung.py --config configs_simea/data_tcga_lung.yaml 
 
 #--------SIMAE --------- PREPROCESSING 
 pp_camelyon16_simea:
