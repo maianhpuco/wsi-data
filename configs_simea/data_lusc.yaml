@@ -4,7 +4,10 @@ paths:
   source_dir: "/home/mvu9/datasets/processing_datasets/processing_tcga_256/luad/pyramidal_images"
   save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc"
   patch_h5_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/patches_h5"
-  patch_png_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/patches_png"
+  # patch_png_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/patches_png"
+  patch_png_dir:
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/png_patches/patch_256x256_10x"
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/lusc/png_patches/patch_256x256_5x" 
   mask_save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/masks"
   only_mask_save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/only_masks"
   stitch_save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/graph_1024"
