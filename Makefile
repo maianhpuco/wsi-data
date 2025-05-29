@@ -161,4 +161,12 @@ extract_glomeruli_masks:
 # =========preprocessing========= 
 patch_gen_camelyon16:
 	python pipeline_fewshot/camelyon16/patch_generation.py \
-	--config configs_simea/data_camelyon16.yaml	--patch_size 256 --magnification 10x   
+	--config configs_simea/data_camelyon16.yaml	--patch_size 256 --magnification 10x  
+
+
+
+#======================================FEW SHOT LEARNING ========================================== 
+create_csv_lung:
+	python pipeline_fewshot/tcga/create_csv_lung.py 
+create_csv_renal:
+	python pipeline_fewshot/tcga/create_csv_renal.py 
