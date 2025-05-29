@@ -4,7 +4,7 @@ import os
 # Define input Excel files for each subtype
 subtypes = {
     "LUAD": "/home/mvu9/datasets/TCGA-metadata/LUAD/uuids.xlsx",
-    "LUSC": "/home/mvu9/datasets/TCGA-metadata/LUSD/uuids.xlsx",
+    "LUSC": "/home/mvu9/datasets/TCGA-metadata/LUSC/uuids.xlsx",
 }
 
 # Mapping to standard names
