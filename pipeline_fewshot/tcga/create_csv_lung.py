@@ -3,8 +3,8 @@ import os
 
 # Define input Excel files for each subtype
 subtypes = {
-    "KIRC": "/home/mvu9/datasets/TCGA-metadata/LUAD/uuids.xlsx",
-    "KIRP": "/home/mvu9/datasets/TCGA-metadata/LUSD/uuids.xlsx",
+    "LUAD": "/home/mvu9/datasets/TCGA-metadata/LUAD/uuids.xlsx",
+    "LUSC": "/home/mvu9/datasets/TCGA-metadata/LUSD/uuids.xlsx",
 }
 
 # Mapping to standard names
