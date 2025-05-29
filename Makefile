@@ -159,14 +159,48 @@ extract_glomeruli_masks:
 
 #FEW SHOT SETTING 
 # =========preprocessing========= 
-patch_gen_camelyon16:
-	python pipeline_fewshot/camelyon16/patch_generation.py \
-	--config configs_simea/data_camelyon16.yaml	--patch_size 256 --magnification 10x  
 
 
 
 #======================================FEW SHOT LEARNING ========================================== 
+patch_gen_camelyon16:
+	python pipeline_fewshot/camelyon16/patch_generation.py \
+	--config configs_simea/data_camelyon16.yaml	--patch_size 256 --magnification 10x  
+ 
+
+#TCGA 
 create_csv_lung:
 	python pipeline_fewshot/tcga/create_csv_lung.py 
+
 create_csv_renal:
 	python pipeline_fewshot/tcga/create_csv_renal.py 
+
+# KICH patch generation
+patch_gen_kich:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_kich.yaml --patch_size 256 --magnification 10x  
+ 
+# KICH patch generation
+patch_gen_kich:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_kich.yaml --patch_size 256 --magnification 10x
+
+# KIRP patch generation
+patch_gen_kirp:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_kirp.yaml --patch_size 256 --magnification 10x
+
+# KIRC patch generation
+patch_gen_kirc:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_kirc.yaml --patch_size 256 --magnification 10x
+
+# LUAD patch generation
+patch_gen_luad:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_luad.yaml --patch_size 256 --magnification 10x
+
+# LUSC patch generation
+patch_gen_lusc:
+	python pipeline_fewshot/tcga/patch_generation.py \
+	--config configs_simea/data_lusc.yaml --patch_size 256 --magnification 10x
