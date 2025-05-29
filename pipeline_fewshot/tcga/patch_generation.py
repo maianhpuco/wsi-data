@@ -70,7 +70,7 @@ def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magni
     print(f"[DONE] {slide_id}: {len(coords)} patches saved in {slide_patch_dir}")
 
 def main(args, config):
-    patch_h5_dir = config['paths']['patch_save_dir']
+    patch_h5_dir = config['paths']['patch_h5_dir']
     patch_png_map = config['paths'].get('patch_png_dir', {})
     slide_dir = config['paths']['source_dir']
     slide_name_file = config['paths']['slide_name_file']

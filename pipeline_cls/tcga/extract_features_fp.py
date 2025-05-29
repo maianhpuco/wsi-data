@@ -97,11 +97,11 @@ def main():
     try:
         slide_df = pd.read_excel(slide_name_file)
         if 'Filename' not in slide_df.columns:
-            print(f"❌ 'Filename' column not found in {slide_name_file}. Available columns: {slide_df.columns.tolist()}")
+            print(f" 'Filename' column not found in {slide_name_file}. Available columns: {slide_df.columns.tolist()}")
             sys.exit(1)
         slide_files = slide_df['Filename'].tolist()
     except Exception as e:
-        print(f"❌ Error reading {slide_name_file}: {str(e)}")
+        print(f" Error reading {slide_name_file}: {str(e)}")
         sys.exit(1)
 
     # Read UUID mapping
@@ -109,11 +109,11 @@ def main():
     try:
         uuid_df = pd.read_excel(uuid_name_file)
         if 'Filename' not in uuid_df.columns or 'UUID' not in uuid_df.columns:
-            print(f"❌ 'Filename' or 'UUID' column not found in {uuid_name_file}. Available columns: {uuid_df.columns.tolist()}")
+            print(f" 'Filename' or 'UUID' column not found in {uuid_name_file}. Available columns: {uuid_df.columns.tolist()}")
             sys.exit(1)
         uuid_map = dict(zip(uuid_df['Filename'], uuid_df['UUID']))
     except Exception as e:
-        print(f"❌ Error reading {uuid_name_file}: {str(e)}")
+        print(f" Error reading {uuid_name_file}: {str(e)}")
         sys.exit(1)
 
     slide_ext = cfg.get("feature_extraction", {}).get("slide_ext", ".svs")
@@ -122,7 +122,7 @@ def main():
     # Filter slides to those present in both slides.xlsx and uuids.xlsx
     slide_files = [f for f in slide_files if f in uuid_map]
     if not slide_files:
-        print(f"❌ No slides found in {slide_name_file} that match {uuid_name_file}")
+        print(f" No slides found in {slide_name_file} that match {uuid_name_file}")
         sys.exit(1)
 
     # Find slide paths using UUID mapping
@@ -134,12 +134,12 @@ def main():
             if os.path.exists(slide_path):
                 slide_paths[slide_id.replace(slide_ext, '')] = slide_path
             else:
-                print(f"❌ Slide file not found: {slide_path}")
+                print(f" Slide file not found: {slide_path}")
         else:
-            print(f"⚠️ UUID not found for {slide_id}")
+            print(f" UUID not found for {slide_id}")
 
     if not slide_paths:
-        print(f"❌ No valid slide files found in {source}")
+        print(f" No valid slide files found in {source}")
         sys.exit(1)
     print(f"Found {len(slide_paths)} slides: {list(slide_paths.keys())[:5]}")
 
@@ -150,7 +150,7 @@ def main():
             for slide_base in slide_paths.keys():
                 f.write(slide_base + slide_ext + '\n')
     except Exception as e:
-        print(f"❌ Error writing {csv_path}: {str(e)}")
+        print(f" Error writing {csv_path}: {str(e)}")
         sys.exit(1)
 
     # Feature extraction config
@@ -170,12 +170,12 @@ def main():
     try:
         bags_dataset = Dataset_All_Bags(csv_path)
     except Exception as e:
-        print(f"❌ Error initializing dataset: {str(e)}")
+        print(f" Error initializing dataset: {str(e)}")
         sys.exit(1)
 
     total = len(bags_dataset)
     if total == 0:
-        print(f"❌ No slides found in dataset from {csv_path}")
+        print(f" No slides found in dataset from {csv_path}")
         sys.exit(1)
     print(f"Total slides in dataset: {total}")
 
@@ -185,7 +185,7 @@ def main():
         model.eval()
         model = model.to(device)
     except Exception as e:
-        print(f"❌ Error loading model {model_name}: {str(e)}")
+        print(f" Error loading model {model_name}: {str(e)}")
         sys.exit(1)
 
     # Check for existing feature files
@@ -214,10 +214,10 @@ def main():
 
         # Verify H5 and slide file existence
         if not os.path.exists(h5_file_path):
-            print(f"❌ H5 file not found: {h5_file_path}")
+            print(f" H5 file not found: {h5_file_path}")
             continue
         if not slide_file_path or not os.path.exists(slide_file_path):
-            print(f"❌ Slide file not found: {slide_file_path or 'Unknown'}")
+            print(f" Slide file not found: {slide_file_path or 'Unknown'}")
             continue
 
         # Process slide
@@ -232,7 +232,7 @@ def main():
                                         patch_size=patch_size)
             
             if len(dataset) == 0:
-                print(f"❌ No patches found in {h5_file_path}")
+                print(f" No patches found in {h5_file_path}")
                 continue
 
             loader = DataLoader(dataset=dataset, batch_size=batch_size, **loader_kwargs)
@@ -252,7 +252,7 @@ def main():
             torch.save(features, os.path.join(feat_dir, 'pt_files', bag_base + '.pt'))
         
         except Exception as e:
-            print(f"❌ Error processing {slide_id}: {str(e)}")
+            print(f" Error processing {slide_id}: {str(e)}")
             continue
 
 if __name__ == "__main__":
