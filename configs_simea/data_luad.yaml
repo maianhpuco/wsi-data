@@ -1,7 +1,7 @@
 paths:
   source_dir: "/home/mvu9/datasets/TCGA-datasets/LUAD"
   error_files: "/home/mvu9/processing_datasets/processing_tcga_256/luad/error_files.txt" 
-  source_dir: "/home/mvu9/datasets/processing_datasets/processing_tcga_256/luad/pyramidal_images"
+  new_source_dir: "/home/mvu9/datasets/processing_datasets/processing_tcga_256/luad/pyramidal_images"
   save_dir: "/home/mvu9/processing_datasets/processing_tcga_256/luad"
   patch_h5_dir: "/home/mvu9/processing_datasets/processing_tcga_256/luad/patches_h5"
   # patch_png_dir: "/home/mvu9/processing_datasets/processing_tcga_256/luad/patches_png"
