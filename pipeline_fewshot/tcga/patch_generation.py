@@ -47,7 +47,7 @@ def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magni
     slide_id = h5_file_name.replace('.h5', '')
     slide_path = slide_paths.get(slide_id)
     h5_path = os.path.join(patch_h5_dir, h5_file_name)
-    print("finding", slide_path)
+    # print("finding", slide_path)
     if not slide_path or not os.path.exists(slide_path):
         print(f"[SKIP] Slide not found for: {slide_id}")
         return
