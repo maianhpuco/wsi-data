@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
 	# Extract paths from config
 	paths = config['paths']
-	source = paths['ori_source_dir']
+	source = paths['source_dir']
 	save_dir = paths['save_dir']
 	patch_save_dir = paths['patch_h5_dir']  # Use patch_h5_dir instead of constructing patches_<patch_size>
 	mask_save_dir = paths['mask_save_dir']
