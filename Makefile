@@ -204,7 +204,7 @@ patch_gen_lusc:
 
 
 #------------------- maui processing pipeline -------------------
-# --- generate metadata for TCGA datasets 
+# --- generate metadata for TCGA datasets:  no need sbatch 
 tcga_metadata_maui: metadata_kich_maui metadata_kirp_maui metadata_kirc_maui metadata_luad_maui metadata_lusc_maui 
 metadata_kich_maui:
 	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_kich.yaml
@@ -222,13 +222,18 @@ metadata_lusc_maui:
 #--------PREPROCESSING 
 sb_pp_camelyon16_maui:
 	sbatch ./sbatch_scripts/pp_camelyon16_maui.sbatch 
-pp_kich_maui: 
-	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kich.yaml 
-pp_kirp_maui:
-	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirp.yaml  
-pp_kirc_maui:
-	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirc.yaml
- 
+sb_pp_kich_maui:
+	sbatch ./sbatch_scripts/pp_kich_maui.sbatch
+sb_pp_kirc_maui:
+	sbatch ./sbatch_scripts/pp_kirc_maui.sbatch
+sb_pp_kirp_maui:
+	sbatch ./sbatch_scripts/pp_kirp_maui.sbatch
+sb_pp_luad_maui:
+	sbatch ./sbatch_scripts/pp_luad_maui.sbatch
+sb_pp_lusc_maui:
+	sbatch ./sbatch_scripts/pp_lusc_maui.sbatch	
+
+
 # -- sbatch 
 pp_camelyon16_maui:
 	python pipeline_cls/camelyon16/create_patches_fp.py --config configs_maui/data_camelyon16.yaml

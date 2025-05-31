@@ -1,0 +1,53 @@
+mkdir -p sbatch_scripts logs
+
+# KIRC
+touch sbatch_scripts/pp_kirc_maui.sbatch
+echo '#!/bin/bash
+#SBATCH --job-name=pp_kirc
+#SBATCH --output=logs/pp_kirc.log
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=4
+
+echo "Starting KIRC patching"
+python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirc.yaml
+echo "Done"
+' > sbatch_scripts/pp_kirc_maui.sbatch
+
+# KIRP
+touch sbatch_scripts/pp_kirp_maui.sbatch
+echo '#!/bin/bash
+#SBATCH --job-name=pp_kirp
+#SBATCH --output=logs/pp_kirp.log
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=4
+
+echo "Starting KIRP patching"
+python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirp.yaml
+echo "Done"
+' > sbatch_scripts/pp_kirp_maui.sbatch
+
+# LUAD
+touch sbatch_scripts/pp_luad_maui.sbatch
+echo '#!/bin/bash
+#SBATCH --job-name=pp_luad
+#SBATCH --output=logs/pp_luad.log
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=4
+
+echo "Starting LUAD patching"
+python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_luad.yaml
+echo "Done"
+' > sbatch_scripts/pp_luad_maui.sbatch
+
+# LUSC
+touch sbatch_scripts/pp_lusc_maui.sbatch
+echo '#!/bin/bash
+#SBATCH --job-name=pp_lusc
+#SBATCH --output=logs/pp_lusc.log
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=4
+
+echo "Starting LUSC patching"
+python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_lusc.yaml
+echo "Done"
+' > sbatch_scripts/pp_lusc_maui.sbatch
