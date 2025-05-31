@@ -1,8 +1,9 @@
+
+#------------------- simea processing pipeline ------------------- 
 metadata_all: metadata_kirc metadata_kirp metadata_kich
 
 metadata_all_simea: metadata_kich_simea metadata_kirp_simea metadata_kirc_simea
 pp_all_simea: pp_kirp_simea pp_kich_simea pp_kirc_simea 
-
 
 # ====== Processing pipeline for KPIS dataset 
 pipeline_kpis_simea: metadata_kpis_simea move_file_kpis_simea pp_kpis_simea ef_kpis_simea
@@ -22,10 +23,6 @@ generate_split:
 # TCGA Lung LUAD: 
 pp_kirc_simea:
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_simea/data_luad.yaml
-
-
- 
-
 
 #  ====== TCGA Lung LUAD ====== 
 metadata_luad_simea: #done 
@@ -56,11 +53,11 @@ ef_lusc_simea:
 # 	python pipeline_cls/tcga/generate_metadata.py --config configs_simea/data_kirc.yaml 
 
 ##--------SIMAE --------- PREPROCESSING  
-gen_split_camelyon16:
+gen_split_camelyon16_simea:
 	python pipeline_cls/camelyon16/generate_split_csv.py --config configs_simea/data_camelyon16.yaml 
-gen_split_tcga_renal:
+gen_split_tcga_renal_simea:
 	python pipeline_cls/tcga/generate_split_csv_renal.py --config configs_simea/data_tcga_renal.yaml 
-gen_split_tcga_lung:
+gen_split_tcga_lung_simea:
 	python pipeline_cls/tcga/generate_split_csv_lung.py --config configs_simea/data_tcga_lung.yaml 
 
 
@@ -204,3 +201,25 @@ patch_gen_luad:
 patch_gen_lusc:
 	python pipeline_fewshot/tcga/patch_generation.py \
 	--config configs_simea/data_lusc.yaml --patch_size 256 --magnification 10x
+
+
+#------------------- maui processing pipeline -------------------
+
+#--------PREPROCESSING 
+pp_camelyon16_maui:
+	python pipeline_cls/camelyon16/create_patches_fp.py --config configs_maui/data_camelyon16.yaml
+pp_kich_maui: 
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kich.yaml 
+pp_kirp_maui:
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirp.yaml  
+pp_kirc_maui:
+	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kirc.yaml
+
+##--------GEN SPLIT 
+gen_split_camelyon16_maui:
+	python pipeline_cls/camelyon16/generate_split_csv.py --config configs_maui/data_camelyon16.yaml 
+gen_split_tcga_renal_maui:
+	python pipeline_cls/tcga/generate_split_csv_renal.py --config configs_maui/data_tcga_renal.yaml 
+gen_split_tcga_lung_maui:
+	python pipeline_cls/tcga/generate_split_csv_lung.py --config configs_maui/data_tcga_lung.yaml 
+
