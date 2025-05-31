@@ -204,9 +204,22 @@ patch_gen_lusc:
 
 
 #------------------- maui processing pipeline -------------------
+# --- generate metadata for TCGA datasets 
+tcga_metadata: metadata_kich_maui metadata_kirp_maui metadata_kirc_maui metadata_luad_maui metadata_lusc_maui 
+metadata_kich_maui:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_kich.yaml
+metadata_kirp_maui:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_kirp.yaml 
+metadata_kirc_maui:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_kirc.yaml 
+metadata_luad_maui:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_luad.yaml 
+metadata_lusc_maui:
+	python pipeline_cls/tcga/generate_metadata.py --config configs_maui/data_lusc.yaml 
+
+
 
 #--------PREPROCESSING 
-
 sb_pp_camelyon16_maui:
 	sbatch ./sbatch_scripts/pp_camelyon16_maui.sbatch 
 pp_kich_maui: 
