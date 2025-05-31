@@ -209,8 +209,6 @@ patch_gen_lusc:
 
 sb_pp_camelyon16_maui:
 	sbatch sbatch_scripts/pp_camelyon16_maui.sbatch 
-	# python pipeline_cls/camelyon16/create_patches_fp.py --config configs_maui/data_camelyon16.yaml
-
 pp_kich_maui: 
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kich.yaml 
 pp_kirp_maui:
@@ -221,7 +219,6 @@ pp_kirc_maui:
 # -- sbatch 
 pp_camelyon16_maui:
 	python pipeline_cls/camelyon16/create_patches_fp.py --config configs_maui/data_camelyon16.yaml
-
 pp_kich_maui: 
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kich.yaml 
 pp_kirp_maui:
