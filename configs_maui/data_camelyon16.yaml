@@ -5,7 +5,7 @@ paths:
   anno_xml_dir: "/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations"
   
   label_file: "/project/hnguyen2/mvu9/processing_datasets_maui/camelyon16/camil_label_file/camelyon_17_splits/splits_0.csv"
-  save_dir: "/project/hnguyen2/mvu9/processing_datasets_maui/processing_camelyon16"
+  save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16"
   patch_save_dir: "/project/hnguyen2/mvu9/processing_datasets_maui/processing_camelyon16/patches"
   patch_png_dir:
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets_maui/processing_camelyon16/png_patches/patch_256x256_10x"
