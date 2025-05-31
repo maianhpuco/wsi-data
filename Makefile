@@ -208,7 +208,7 @@ patch_gen_lusc:
 #--------PREPROCESSING 
 
 sb_pp_camelyon16_maui:
-	sbatch sbatch_scripts/pp_camelyon16_maui.sbatch 
+	sbatch ./sbatch_scripts/pp_camelyon16_maui.sbatch 
 pp_kich_maui: 
 	python pipeline_cls/tcga/create_patches_fp.py --config configs_maui/data_kich.yaml 
 pp_kirp_maui:
