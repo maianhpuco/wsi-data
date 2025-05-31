@@ -76,7 +76,7 @@ def main():
     cfg = load_config(args.config)
 
     # Set paths from config
-    source = cfg['paths']['ori_source_dir']
+    source = cfg['paths']['source_dir']
     patch_h5_dir = cfg['paths']['patch_h5_dir']
     feat_dir = os.path.join(cfg['paths']['save_dir'], 'features_fp')
     slide_name_file = cfg['paths']['slide_name_file']
