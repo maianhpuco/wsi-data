@@ -255,3 +255,15 @@ gen_split_tcga_renal_maui:
 gen_split_tcga_lung_maui:
 	python pipeline_cls/tcga/generate_split_csv_lung.py --config configs_maui/data_tcga_lung.yaml 
 
+
+
+
+#---------------------------------
+#--------SIMAE --------- PATCHES GENERATION 
+gen_patches_kich_maui:
+	python feature_extraction/generate_patches.py --config configs_maui/data_kich.yaml
+gen_patches_kirc_maui:
+	python feature_extraction/generate_patches.py --config configs_maui/data_kirc.yaml
+gen_patches_kirp_maui:
+	python feature_extraction/generate_patches.py --config configs_maui/data_kirp.yaml 
+  
