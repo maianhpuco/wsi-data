@@ -261,9 +261,19 @@ gen_split_tcga_lung_maui:
 #---------------------------------
 #--------SIMAE --------- PATCHES GENERATION 
 gen_patches_kich_maui:
-	python feature_extraction/generate_patches.py --config configs_maui/data_kich.yaml
-gen_patches_kirc_maui:
-	python feature_extraction/generate_patches.py --config configs_maui/data_kirc.yaml
+	sbatch sbatch_scripts/pg_kich.sbatch
+
 gen_patches_kirp_maui:
-	python feature_extraction/generate_patches.py --config configs_maui/data_kirp.yaml 
-  
+	sbatch sbatch_scripts/pg_kirp.sbatch
+
+gen_patches_kirc_maui:
+	sbatch sbatch_scripts/pg_kirc.sbatch
+
+gen_patches_luad_maui:
+	sbatch sbatch_scripts/pg_luad.sbatch
+
+gen_patches_lusc_maui:
+	sbatch sbatch_scripts/pg_lusc.sbatch
+
+# Submit all jobs with one command
+gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui gen_patches_luad_maui gen_patches_lusc_maui 
