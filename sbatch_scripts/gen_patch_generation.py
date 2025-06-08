@@ -22,7 +22,7 @@ def create_sbatch_script(config_path, job_name, log_file):
 #SBATCH --cpus-per-task=4
 
 echo "Starting {job_name} job"
-python {script_path} --config {config_path}
+python {script_path} --config {config_path} --patch_size 256 --magnification 10x  
 echo "Done"
 """
 
