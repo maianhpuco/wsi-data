@@ -13,13 +13,48 @@ def load_config(path):
         return yaml.safe_load(f)
 
 def get_patch_params(magnification):
+    '''
+    At 20x, each pixel in the slide represents a small area of tissue. So reading a 512×512 region gives you a small field of view — high detail. 
+    
+    ):
+
+    Get patch extraction parameters based on target magnification level.
+
+    This function determines how large a region (in pixels) should be read from
+    a Whole Slide Image (WSI) scanned at 40x magnification, in order to simulate
+    patch extraction at a lower magnification (e.g., 5x, 10x, or 20x).
+
+    All extracted patches are resized to a fixed output size (e.g., 256x256 pixels)
+    regardless of the input magnification, for consistency during training or inference.
+
+    Parameters:
+    -----------
+    magnification : str
+        The desired magnification level as a string. Must be one of:
+        '5x', '10x', or '20x'.
+
+    Returns:
+    --------
+    input_size : int
+        The size (in pixels) of the region to read from the WSI at 40x,
+        such that it corresponds to the desired magnification's field of view.
+
+    output_size : int
+        The target size (in pixels) for the saved patch after resizing.
+        Fixed to 256x256 to ensure uniform patch size across magnifications.
+
+    Raises:
+    -------
+    ValueError:
+        If the provided magnification level is unsupported.
+    ''' 
     output_size = 256
     if magnification == '5x':
-        input_size = 2048
+        input_size = 2048  # Save all patches as 256x256 regardless of mag 
     elif magnification == '10x':
-        input_size = 1024
+        input_size = 1024 # Read 1024x1024 to simulate 10x 
     elif magnification == '20x':
-        input_size = 512
+        input_size = 512 # Read 512x512 to simulate 20x 
     else:
         raise ValueError(f"Unsupported magnification: {magnification}")
     return input_size, output_size
