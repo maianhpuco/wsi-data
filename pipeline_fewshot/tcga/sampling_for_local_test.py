@@ -26,12 +26,15 @@ def main(args, config):
     print(dataset_name)
     file_paths = glob.glob(f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/png_patches/patch_256x256_10x/patch_256x256_10x")
     num_file = len(file_paths)
-    sample_indexes = random.randint(0, NUM_FILES)
+    
+    sample_indexes = [random.randint(0, NUM_FILES) for i in range(0, NUM_FILES)] 
+    print(sample_indexes) 
     dest_folder = os.path.join(dest_parent_folder, config['dataset_name']) 
     
     os.mkdir(os.path.join(dest_folder))
     
     for idx in sample_indexes: 
+        
         src_file = file_paths[idx] 
         basename = os.path.basename(src_file) 
         dest_file = os.path.join(dest_folder, basename)
