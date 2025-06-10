@@ -27,8 +27,8 @@ def main(args, config):
     file_paths = glob.glob(f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/png_patches/patch_256x256_10x/*")
     print("Total file", len(file_paths))
     num_file = len(file_paths)
-    
-    sample_indexes = [random.randint(0, NUM_FILES) for i in range(0, NUM_FILES)] 
+    sample_indexes = random.sample(range(0, num_file), 3) 
+    # sample_indexes = [random.randint(0, NUM_FILES) for i in range(0, NUM_FILES)] 
     print(sample_indexes) 
     dest_folder = os.path.join(dest_parent_folder, config['dataset_name']) 
     os.makedirs(os.path.join(dest_folder), exist_ok=True)
