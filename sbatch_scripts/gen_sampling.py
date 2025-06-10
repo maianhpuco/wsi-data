@@ -32,7 +32,7 @@ echo "Done"
 # Generate scripts
 for dataset in datasets:
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = f"pg_{dataset}"
+    job_name = f"s_{dataset}"
     log_file = os.path.join(log_dir, f"{job_name}.log")
     sbatch_content = create_sbatch_script(config_path, job_name, log_file)
 

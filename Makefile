@@ -280,14 +280,14 @@ gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui 
 
 
 sampling_kich: 
-	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kich.yaml
+	sbatch_scripts/s_kich.sbatch
 sampling_kirp: 
-	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kirp.yaml  
+	sbatch_scripts/s_kirp.sbatch 
 sampling_kirc:
-	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kirc.yaml  
+	sbatch_scripts/s_kirc.sbatch 
 sampling_luad:
-	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_luad.yaml   
+	sbatch_scripts/s_luad.sbatch  
 sampling_lusc:
-	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_lusc.yaml
+	sbatch_scripts/s_lusc.sbatch
 
 sampling: sampling_kich sampling_kirc sampling_kirp sampling_luad sampling_lusc
