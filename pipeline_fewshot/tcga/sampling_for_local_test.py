@@ -24,7 +24,7 @@ def main(args, config):
     # for name in data_names: 
     dataset_name = config['dataset_name']
     print(dataset_name)
-    file_paths = glob(f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/png_patches/patch_256x256_10x/patch_256x256_10x")
+    file_paths = glob.glob(f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/png_patches/patch_256x256_10x/patch_256x256_10x")
     num_file = len(file_paths)
     sample_indexes = random.randint(0, NUM_FILES)
     dest_folder = os.path.join(dest_parent_folder, config['dataset_name']) 
