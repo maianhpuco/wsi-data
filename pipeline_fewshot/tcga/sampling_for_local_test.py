@@ -40,7 +40,8 @@ def main(args, config):
         dest_file = os.path.join(dest_folder, basename)
         print("src: ", src_file)
         print("dest: ", dest_file)
-        
+        if os.path.exists(dest_file):
+            shutil.rmtree(dest_file)
         shutil.copytree(src_file, dest_file)
         
         
