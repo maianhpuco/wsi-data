@@ -52,7 +52,7 @@ def main(args, config):
         if os.path.exists(dest_patch):
             shutil.rmtree(dest_patch)
         # shutil.copytree(src_folder, dest_patch)
-        print(f"\n ---Copied PNG patches from : {src_folder}")
+        print(f"---Copied PNG patches from : {src_folder}")
         print(f">>> Copied PNG patches to: {dest_patch}")
 
         # === Copy corresponding .h5 and .pt file
