@@ -280,14 +280,14 @@ gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui 
 
 
 sampling_kich: 
-	sbatch_scripts/s_kich.sbatch
+	sbatch sbatch_scripts/s_kich.sbatch
 sampling_kirp: 
-	sbatch_scripts/s_kirp.sbatch 
+	sbatch sbatch_scripts/s_kirp.sbatch 
 sampling_kirc:
-	sbatch_scripts/s_kirc.sbatch 
+	sbatch sbatch_scripts/s_kirc.sbatch 
 sampling_luad:
-	sbatch_scripts/s_luad.sbatch  
+	sbatch sbatch_scripts/s_luad.sbatch  
 sampling_lusc:
-	sbatch_scripts/s_lusc.sbatch
+	sbatch sbatch_scripts/s_lusc.sbatch
 
 sampling: sampling_kich sampling_kirc sampling_kirp sampling_luad sampling_lusc
