@@ -44,9 +44,6 @@ def main(args, config):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
-    parser.add_argument('--patch_size', type=int, required=True)
-    parser.add_argument('--magnification', type=str, required=True)
-
     args = parser.parse_args()
     config = load_config(args.config)
     main(args, config)
