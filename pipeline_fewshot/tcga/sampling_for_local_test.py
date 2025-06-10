@@ -38,7 +38,7 @@ def main(args, config):
         print("src: ", src_file)
         print("dest: ", dest_file)
         
-        files = shutil.copytree(src_file, dest_file)
+        # files = shutil.copytree(src_file, dest_file)
          
         
 if __name__ == "__main__":
