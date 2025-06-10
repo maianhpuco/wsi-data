@@ -277,3 +277,11 @@ gen_patches_lusc_maui:
 
 # Submit all jobs with one command
 gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui gen_patches_luad_maui gen_patches_lusc_maui 
+
+
+sampling: 
+	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kich.yaml
+	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kirp.yaml  
+	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kipc.yaml  
+	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_luad.yaml   
+	python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_lusc.yaml
