@@ -30,7 +30,7 @@ def main(args, config):
     sample_indexes = [random.randint(0, NUM_FILES) for i in range(0, NUM_FILES)] 
     print(sample_indexes) 
     dest_folder = os.path.join(dest_parent_folder, config['dataset_name']) 
-    os.mkdir(os.path.join(dest_folder), exist_ok=True)
+    os.makedirs(os.path.join(dest_folder), exist_ok=True)
     
     for idx in sample_indexes: 
         
