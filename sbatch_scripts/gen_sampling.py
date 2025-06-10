@@ -4,7 +4,7 @@ import os
 datasets = ["kich", "kirp", "kirc", "luad", "lusc"]
 
 # Paths
-script_path = "pipeline_fewshot/tcga/patch_generation.py"
+script_path = "pipeline_fewshot/tcga/sampling_for_local_test.py"
 sbatch_dir = "sbatch_scripts"
 log_dir = "logs"
 
@@ -20,12 +20,12 @@ def create_sbatch_script(config_path, job_name, log_file):
 #SBATCH --output={log_file}
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
-#SBATCH --time=5-00:00:00  # 5 days (format: D-HH:MM:SS)
+#SBATCH --time=1-00:00:00  # 5 days (format: D-HH:MM:SS)
  
  
 echo "Starting {job_name} job"
 
-python {script_path} --config {config_path} --patch_size 256 --magnification 10x  
+python {script_path} --config {config_path} 
 echo "Done"
 """
 
