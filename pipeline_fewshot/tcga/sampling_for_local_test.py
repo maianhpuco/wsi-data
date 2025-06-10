@@ -51,7 +51,7 @@ def main(args, config):
         dest_patch = os.path.join(dest_png_folder, slide_name)
         if os.path.exists(dest_patch):
             shutil.rmtree(dest_patch)
-        # shutil.copytree(src_folder, dest_patch)
+        shutil.copytree(src_folder, dest_patch)
         print(f"---Copied PNG patches from : {src_folder}")
         print(f">>> Copied PNG patches to: {dest_patch}")
 
