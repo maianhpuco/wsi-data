@@ -278,6 +278,20 @@ gen_patches_lusc_maui:
 # Submit all jobs with one command
 gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui gen_patches_luad_maui gen_patches_lusc_maui 
 
+#--------SIMAE --------- PATCHES GENERATION 
+gen_patches_5x_kich_maui:
+	sbatch sbatch_scripts/pg_kich_5x.sbatch
+gen_patches_5x_kirp_maui:
+	sbatch sbatch_scripts/pg_kirp_5x.sbatch
+gen_patches_5x_kirc_maui:
+	sbatch sbatch_scripts/pg_kirc_5x.sbatch
+gen_patches_5x_luad_maui:
+	sbatch sbatch_scripts/pg_luad_5x.sbatch
+gen_patches_5x_lusc_maui:
+	sbatch sbatch_scripts/pg_lusc_5x.sbatch
+gen_all_5x_maui: gen_patches_5x_kich_maui gen_patches_5x_kirp_maui gen_patches_5x_kirc_maui gen_patches_5x_luad_maui gen_patches_5x_lusc_maui
+ 
+#------------------------------------------
 
 sampling_kich: 
 	sbatch sbatch_scripts/s_kich.sbatch
