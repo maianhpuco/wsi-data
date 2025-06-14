@@ -347,7 +347,6 @@ sampling_h5pt_lusc:
 sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc  #sampling_h5pt_luad sampling_h5pt_lusc
 
 
-# ==== Patch extraction jobs ====
 # ==== Patch extraction jobs (10x) ====
 pextract_kich_10x:
 	sbatch sbatch_scripts/pextract_kich_10x.sbatch
@@ -361,3 +360,17 @@ pextract_lusc_10x:
 	sbatch sbatch_scripts/pextract_lusc_10x.sbatch
 
 pextract_all_10x: pextract_kich_10x pextract_kirp_10x pextract_kirc_10x pextract_luad_10x pextract_lusc_10x
+
+
+pextract_kich_5x:
+	sbatch sbatch_scripts/pextract_kich_5x.sbatch
+pextract_kirp_5x:
+	sbatch sbatch_scripts/pextract_kirp_5x.sbatch
+pextract_kirc_5x:
+	sbatch sbatch_scripts/pextract_kirc_5x.sbatch
+pextract_luad_5x:
+	sbatch sbatch_scripts/pextract_luad_5x.sbatch
+pextract_lusc_5x:
+	sbatch sbatch_scripts/pextract_lusc_5x.sbatch
+
+pextract_all_5x: pextract_kich_5x pextract_kirp_5x pextract_kirc_5x pextract_luad_5x pextract_lusc_5x

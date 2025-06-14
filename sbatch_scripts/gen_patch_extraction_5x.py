@@ -36,7 +36,7 @@ echo "Done"
 # Generate SBATCH files
 for i, dataset in enumerate(datasets):
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = f"pextract_{dataset}"
+    job_name = f"pextract_5x_{dataset}"
     log_file = os.path.join(log_dir, f"{job_name}.log")
     node = nodes[i % len(nodes)]  # Assign node in round-robin
     sbatch_content = create_sbatch_script(config_path, job_name, log_file, node)
