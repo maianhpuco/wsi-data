@@ -349,28 +349,28 @@ sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc  #sampli
 
 # ==== Patch extraction jobs (10x) ====
 pextract_kich_10x:
-	sbatch sbatch_scripts/pextract_kich_10x.sbatch
+	sbatch sbatch_scripts/pextract_10x_kich.sbatch
 pextract_kirp_10x:
-	sbatch sbatch_scripts/pextract_kirp_10x.sbatch
+	sbatch sbatch_scripts/pextract_10x_kirp.sbatch
 pextract_kirc_10x:
-	sbatch sbatch_scripts/pextract_kirc_10x.sbatch
+	sbatch sbatch_scripts/pextract_10x_kirc.sbatch
 pextract_luad_10x:
-	sbatch sbatch_scripts/pextract_luad_10x.sbatch
+	sbatch sbatch_scripts/pextract_10x_luad.sbatch
 pextract_lusc_10x:
-	sbatch sbatch_scripts/pextract_lusc_10x.sbatch
+	sbatch sbatch_scripts/pextract_10x_lusc.sbatch
 
 pextract_all_10x: pextract_kich_10x pextract_kirp_10x pextract_kirc_10x pextract_luad_10x pextract_lusc_10x
 
 
 pextract_kich_5x:
-	sbatch sbatch_scripts/pextract_kich_5x.sbatch
+	sbatch sbatch_scripts/pextract_5x_kich.sbatch
 pextract_kirp_5x:
-	sbatch sbatch_scripts/pextract_kirp_5x.sbatch
+	sbatch sbatch_scripts/pextract_5x_kirp.sbatch
 pextract_kirc_5x:
-	sbatch sbatch_scripts/pextract_kirc_5x.sbatch
+	sbatch sbatch_scripts/pextract_5x_kirc.sbatch
 pextract_luad_5x:
-	sbatch sbatch_scripts/pextract_luad_5x.sbatch
+	sbatch sbatch_scripts/pextract_5x_luad.sbatch
 pextract_lusc_5x:
-	sbatch sbatch_scripts/pextract_lusc_5x.sbatch
+	sbatch sbatch_scripts/pextract_5x_lusc.sbatch
 
 pextract_all_5x: pextract_kich_5x pextract_kirp_5x pextract_kirc_5x pextract_luad_5x pextract_lusc_5x
