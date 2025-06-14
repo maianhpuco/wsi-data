@@ -10,12 +10,13 @@ def load_config(path):
     with open(path, 'r') as f:
         return yaml.safe_load(f)
 
-def copy_if_exists(src_file, dest_file):
+def copy_if_exists(src_file, dest_file, file_type=""):
     if os.path.exists(src_file):
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
         shutil.copy2(src_file, dest_file)
+        print(f"[✓] Copied {file_type}: {os.path.basename(src_file)}")
     else:
-        print(f"[Warning] File not found: {src_file}")
+        print(f"[✗] Missing {file_type}: {os.path.basename(src_file)}")
 
 def main(args, config): 
     dataset_name = config['dataset_name']
@@ -52,17 +53,23 @@ def main(args, config):
         if os.path.exists(dest_patch):
             shutil.rmtree(dest_patch)
         shutil.copytree(src_folder, dest_patch)
-        print(f"---Copied PNG patches from : {src_folder}")
-        print(f">>> Copied PNG patches to: {dest_patch}")
+        print(f"[✓] Copied image folder: {slide_name}")
 
-        # === Copy corresponding .h5 and .pt file
+        # === Copy corresponding .h5 and .pt files ===
+        h5_file_name = f"{slide_name}.h5"
+        pt_file_name = f"{slide_name}.pt"
 
-        
+        src_h5_path = os.path.join(h5_dir, h5_file_name)
+        dest_h5_path = os.path.join(dest_h5_folder, h5_file_name)
+        copy_if_exists(src_h5_path, dest_h5_path, file_type=".h5")
+
+        src_pt_path = os.path.join(pt_dir, pt_file_name)
+        dest_pt_path = os.path.join(dest_pt_folder, pt_file_name)
+        copy_if_exists(src_pt_path, dest_pt_path, file_type=".pt")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
     args = parser.parse_args()
     config = load_config(args.config)
     main(args, config)
- 
-
