@@ -322,5 +322,5 @@ sampling_h5pt_luad:
 sampling_h5pt_lusc:
 	sbatch sbatch_scripts/s_h5pt_lusc.sbatch
 
-sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc sampling_h5pt_luad sampling_h5pt_lusc
+sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc  #sampling_h5pt_luad sampling_h5pt_lusc
 #------------------------------------------ 
