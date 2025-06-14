@@ -8,10 +8,9 @@ from PIL import Image, ImageFile
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
-import torchvision
 import clip
 import sys
-sys.path.append('src/externals/ViLa-MIL') 
+sys.path.append('src/externals/ViLa-MIL')
 
 from nn_encoder_arch.vision_transformer import vit_small
 from nn_encoder_arch.resnet_trunc import resnet50_trunc_baseline
@@ -118,15 +117,16 @@ def main(args):
         dataset = PatchesDataset(slide_path, transform=transform)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
-        out_path = os.path.join(args.library_path, slide)
+        out_path = os.path.join(args.clip_rn50_features_path, slide)
         if not os.path.exists(out_path + ".h5"):
             save_embeddings(model, out_path, dataloader, args.model_name)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=int, default=0)
-    parser.add_argument('--config', default='clam_camelyon16.yaml')
+    parser.add_argument('--config', required=True)
+    parser.add_argument('--magnification', type=str, required=True)
+    parser.add_argument('--patch_size', type=int, required=True)
     args = parser.parse_args()
 
     with open(args.config, 'r') as f:
@@ -139,12 +139,18 @@ if __name__ == "__main__":
             setattr(args, key, val)
 
     args.dataset_name = config['dataset_name']
-    args.patches_path = args.paths['patches_path']
-    args.library_path = args.paths['library_path']
+
+    # Dynamic patch folder selection
+    key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
+    if key not in args.paths:
+        raise ValueError(f"[✗] Missing key '{key}' in config['paths']")
+    args.patches_path = args.paths[key]
+
+    args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
     args.assets_dir = args.paths.get('assets_dir', './ckpts')
     args.device = getattr(args, 'device', 'cuda' if torch.cuda.is_available() else 'cpu')
 
-    os.makedirs(args.library_path, exist_ok=True)
+    os.makedirs(args.clip_rn50_features_path, exist_ok=True)
 
     print(" > Start feature extraction for dataset:", args.dataset_name)
     main(args)

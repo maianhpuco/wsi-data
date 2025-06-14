@@ -18,7 +18,8 @@ paths:
   missing_patches_h5: "/project/hnguyen2/mvu9/processing_datasets/missing_files/patches_h5/kich.csv"
   missing_pt_files: "/project/hnguyen2/mvu9/processing_datasets/missing_files/pt_files/kich.csv"
   manifest_dir: "/project/hnguyen2/mvu9/download_tcga/gdc-client/manifest/KICH"
-
+  
+  clip_rn50_features_path: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features" 
 
 # Processing parameters
 processing:
@@ -41,4 +42,4 @@ clip_feature_extraction:
   model_name: clip_RN50  # or clip_ViTB32, resnet50_trunc, model_dino, etc.
   batch_size: 64 
   assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models
- 
+
