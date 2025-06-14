@@ -9,6 +9,6 @@
 
 echo "Starting pextract_luad job on compute-0-4"
 
-python pipeline_fewshot/tcga/patch_extraction.py --config configs_maui/data_luad.yaml
+python pipeline_fewshot/tcga/patch_extraction.py --config configs_maui/data_luad.yaml --patch_size 256 --magnification 10x   
 
 echo "Done"

@@ -16,6 +16,9 @@ paths:
   uuid_name_file: "/project/hnguyen2/mvu9/datasets/TCGA-metadata/LUAD/uuids.xlsx"
   preset_file: "/project/hnguyen2/mvu9/folder_04_ma/wsi-data/presets/tcga_vilamil.csv"
   manifest_dir: "/project/hnguyen2/mvu9/download_tcga/gdc-client/manifest/LUAD"
+
+  clip_rn50_features_path: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/clip_rn50_features" 
+
 # Processing parameters
 processing:
   patch_size: 256
@@ -25,3 +28,12 @@ processing:
   patch: true
   stitch: false
   auto_skip: true
+
+
+
+clip_feature_extraction:
+  model_name: clip_RN50  # or clip_ViTB32, resnet50_trunc, model_dino, etc.
+  batch_size: 64 
+  assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models ckpt_path = os.path.join(args.assets_dir, f'{args.model_name}.pth')
+  cache_dir: /project/hnguyen2/mvu9/model_cache  # clip.load("ViT-B/32", download_root=args.cache_dir)
+ 
