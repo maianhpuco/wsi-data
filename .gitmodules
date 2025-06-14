@@ -1,3 +1,6 @@
 [submodule "src/externals/CLAM"]
 	path = src/externals/CLAM
 	url = https://github.com/mahmoodlab/CLAM.git
+[submodule "src/externals/ViLa-MIL"]
+	path = src/externals/ViLa-MIL
+	url = git@github.com:Jiangbo-Shi/ViLa-MIL.git
