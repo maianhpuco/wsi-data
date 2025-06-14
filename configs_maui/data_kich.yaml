@@ -7,7 +7,6 @@ paths:
   patch_png_dir:
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/png_patches/patch_256x256_10x"
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/png_patches/patch_256x256_5x" 
-  
   mask_save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/masks"
   only_mask_save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/only_masks"
   
@@ -19,6 +18,8 @@ paths:
   missing_patches_h5: "/project/hnguyen2/mvu9/processing_datasets/missing_files/patches_h5/kich.csv"
   missing_pt_files: "/project/hnguyen2/mvu9/processing_datasets/missing_files/pt_files/kich.csv"
   manifest_dir: "/project/hnguyen2/mvu9/download_tcga/gdc-client/manifest/KICH"
+
+
 # Processing parameters
 processing:
   patch_size: 1024
@@ -34,4 +35,10 @@ feature_extraction:
   batch_size: 256
   target_patch_size: 224
   slide_ext: ".svs"  # Adjust if TCGA-KICH uses .tif or other format
-  no_auto_skip: false  # Inverted from processing.auto_skip
+  no_auto_skip: false  # Inverted from processing.auto_skipi
+
+clip_feature_extraction:
+  model_name: clip_RN50  # or clip_ViTB32, resnet50_trunc, model_dino, etc.
+  batch_size: 64 
+  assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models
+ 
