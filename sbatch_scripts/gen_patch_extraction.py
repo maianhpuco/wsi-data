@@ -28,7 +28,7 @@ def create_sbatch_script(config_path, job_name, log_file, node):
 
 echo "Starting {job_name} job on {node}"
 
-python {script_path} --config {config_path}
+python {script_path} --config {config_path} --patch_size 256 --magnification 10x   
 
 echo "Done"
 """
