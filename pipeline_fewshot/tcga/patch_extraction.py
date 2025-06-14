@@ -10,10 +10,11 @@ from torchvision import transforms
 import torch
 import clip
 import sys
+
 sys.path.append('src/externals/ViLa-MIL')
 
-from nn_encoder_arch.vision_transformer import vit_small
-from nn_encoder_arch.resnet_trunc import resnet50_trunc_baseline
+from feature_extraction.nn_encoder_arch.vision_transformer import vit_small
+from feature_extraction.nn_encoder_arch.resnet_trunc import resnet50_trunc_baseline
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 torch.multiprocessing.set_sharing_strategy('file_system')
