@@ -304,7 +304,7 @@ sampling_luad:
 sampling_lusc:
 	sbatch sbatch_scripts/s_lusc.sbatch
 
-sampling: sampling_kich sampling_kirc sampling_kirp sampling_luad sampling_lusc
+sampling: sampling_kich sampling_kirc sampling_kirp # sampling_luad sampling_lusc
 
 
 sampling_h5pt_kich:
