@@ -23,7 +23,6 @@ def main(args, config):
     print(f"Dataset: {dataset_name}")
 
     # === Source folders ===
-    patch_dir = f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/png_patches/patch_256x256_10x"
     h5_dir = f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/features_fp/h5_files"
     pt_dir = f"/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/{dataset_name}/features_fp/pt_files"
 
@@ -32,31 +31,20 @@ def main(args, config):
     dest_h5_folder = f"/project/hnguyen2/mvu9/sample_data/{dataset_name}/features_fp/h5_files"
     dest_pt_folder = f"/project/hnguyen2/mvu9/sample_data/{dataset_name}/features_fp/pt_files"
 
-    os.makedirs(dest_png_folder, exist_ok=True)
     os.makedirs(dest_h5_folder, exist_ok=True)
     os.makedirs(dest_pt_folder, exist_ok=True)
 
-    # === Get all patch folder paths ===
-    patch_folders = glob.glob(os.path.join(patch_dir, "*"))
-    print("Total patch folders found:", len(patch_folders))
+    # === Get list of slide folders already copied into dest_png_folder ===
+    existing_slides = sorted([
+        f for f in os.listdir(dest_png_folder) 
+        if os.path.isdir(os.path.join(dest_png_folder, f))
+    ])
 
-    # === Random sampling ===
-    NUM_SAMPLES = 3
-    sampled_folders = random.sample(patch_folders, NUM_SAMPLES)
-    
-    for src_folder in sampled_folders:
-        slide_name = os.path.basename(src_folder)
-        print(f"\n[Sample] Slide: {slide_name}")
+    print(f"Found {len(existing_slides)} existing slides in {dest_png_folder}")
 
-        # === Copy PNG patch folder ===
-        dest_patch = os.path.join(dest_png_folder, slide_name)
-        if os.path.exists(dest_patch):
-            shutil.rmtree(dest_patch)
-        shutil.copytree(src_folder, dest_patch)
-        print(f"---Copied PNG patches from : {src_folder}")
-        print(f">>> Copied PNG patches to: {dest_patch}")
+    for slide_name in existing_slides:
+        print(f"\n[Slide] {slide_name}")
 
-        # === Copy corresponding .h5 and .pt files ===
         h5_file_name = f"{slide_name}.h5"
         pt_file_name = f"{slide_name}.pt"
 
