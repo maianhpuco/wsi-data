@@ -20,7 +20,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 torch.multiprocessing.set_sharing_strategy('file_system')
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-
 def eval_transforms_clip(pretrained=False):
     mean, std = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) if pretrained else ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     return transforms.Compose([
@@ -29,14 +28,12 @@ def eval_transforms_clip(pretrained=False):
         transforms.Normalize(mean=mean, std=std)
     ])
 
-
 def eval_transforms(pretrained=False):
     mean, std = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) if pretrained else ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     return transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std)
     ])
-
 
 class PatchesDataset(Dataset):
     def __init__(self, file_path, transform=None):
@@ -53,7 +50,6 @@ class PatchesDataset(Dataset):
 
     def __len__(self):
         return len(self.imgs)
-
 
 def save_embeddings(model, fname, dataloader, enc_name, overwrite=False):
     if os.path.isfile(f'{fname}.h5') and not overwrite:
@@ -77,7 +73,6 @@ def save_embeddings(model, fname, dataloader, enc_name, overwrite=False):
     with h5py.File(f'{fname}.h5', 'w') as f:
         f['features'] = embeddings
         f['coords'] = coords
-
 
 def main(args):
     print(f"Extracting features for: {args.dataset_name} via {args.model_name}")
@@ -118,10 +113,9 @@ def main(args):
         dataset = PatchesDataset(slide_path, transform=transform)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
-        out_path = os.path.join(args.clip_rn50_features_path, slide)
+        out_path = os.path.join(args.feature_output_path, slide)
         if not os.path.exists(out_path + ".h5"):
             save_embeddings(model, out_path, dataloader, args.model_name)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -133,25 +127,24 @@ if __name__ == "__main__":
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
 
-    for key, val in config.items():
-        if key == 'paths':
-            args.paths = val
-        else:
-            setattr(args, key, val)
-
     args.dataset_name = config['dataset_name']
+    args.paths = config['paths']
 
-    # Dynamic patch folder selection
-    key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
-    if key not in args.paths['patch_png_dir']:
-        raise ValueError(f"[✗] Missing key '{key}' in config['paths']")
-    args.patches_path = args.paths['patch_png_dir'][key]
+    # Load model config from clip_feature_extraction section
+    feature_cfg = config['clip_feature_extraction']
+    args.model_name = feature_cfg['model_name']
+    args.batch_size = feature_cfg['batch_size']
+    args.assets_dir = feature_cfg.get('assets_dir', './ckpts')
 
-    args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
-    args.assets_dir = args.paths.get('assets_dir', './ckpts')
-    args.device = getattr(args, 'device', 'cuda' if torch.cuda.is_available() else 'cpu')
+    # Set patch input path
+    patch_key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
+    if patch_key not in args.paths['patch_png_dir']:
+        raise ValueError(f"[✗] Missing key '{patch_key}' in config['paths']['patch_png_dir']")
+    args.patches_path = args.paths['patch_png_dir'][patch_key]
 
-    os.makedirs(args.clip_rn50_features_path, exist_ok=True)
+    # Set feature output path
+    args.feature_output_path = args.paths['clip_rn50_features_path']
+    os.makedirs(args.feature_output_path, exist_ok=True)
 
     print(" > Start feature extraction for dataset:", args.dataset_name)
     main(args)
