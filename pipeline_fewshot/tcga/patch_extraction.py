@@ -143,9 +143,9 @@ if __name__ == "__main__":
 
     # Dynamic patch folder selection
     key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
-    if key not in args.paths:
+    if key not in args.paths['png_patches']:
         raise ValueError(f"[✗] Missing key '{key}' in config['paths']")
-    args.patches_path = args.paths[key]
+    args.patches_path = args.paths['png_patches'][key]
 
     args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
     args.assets_dir = args.paths.get('assets_dir', './ckpts')
