@@ -8,6 +8,6 @@
 
 echo "Starting s_h5pt_kirp job"
 
-python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kirp.yaml
+python pipeline_fewshot/tcga/sampling_copy_h5_and_pt.py --config configs_maui/data_kirp.yaml
 
 echo "Done"

@@ -8,6 +8,6 @@
 
 echo "Starting s_h5pt_kich job"
 
-python pipeline_fewshot/tcga/sampling_for_local_test.py --config configs_maui/data_kich.yaml
+python pipeline_fewshot/tcga/sampling_copy_h5_and_pt.py --config configs_maui/data_kich.yaml
 
 echo "Done"
