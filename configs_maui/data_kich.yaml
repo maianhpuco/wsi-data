@@ -41,5 +41,6 @@ feature_extraction:
 clip_feature_extraction:
   model_name: clip_RN50  # or clip_ViTB32, resnet50_trunc, model_dino, etc.
   batch_size: 64 
-  assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models
-
+  assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models ckpt_path = os.path.join(args.assets_dir, f'{args.model_name}.pth')
+  cache_dir: /project/hnguyen2/mvu9/model_cache  # clip.load("ViT-B/32", download_root=args.cache_dir)
+ 

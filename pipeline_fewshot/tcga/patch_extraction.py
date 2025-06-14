@@ -16,9 +16,11 @@ sys.path.append('src/externals/ViLa-MIL')
 from feature_extraction.nn_encoder_arch.vision_transformer import vit_small
 from feature_extraction.nn_encoder_arch.resnet_trunc import resnet50_trunc_baseline
 
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 torch.multiprocessing.set_sharing_strategy('file_system')
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
 def eval_transforms_clip(pretrained=False):
     mean, std = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) if pretrained else ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -28,12 +30,14 @@ def eval_transforms_clip(pretrained=False):
         transforms.Normalize(mean=mean, std=std)
     ])
 
+
 def eval_transforms(pretrained=False):
     mean, std = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) if pretrained else ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     return transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std)
     ])
+
 
 class PatchesDataset(Dataset):
     def __init__(self, file_path, transform=None):
@@ -50,6 +54,7 @@ class PatchesDataset(Dataset):
 
     def __len__(self):
         return len(self.imgs)
+
 
 def save_embeddings(model, fname, dataloader, enc_name, overwrite=False):
     if os.path.isfile(f'{fname}.h5') and not overwrite:
@@ -74,6 +79,7 @@ def save_embeddings(model, fname, dataloader, enc_name, overwrite=False):
         f['features'] = embeddings
         f['coords'] = coords
 
+
 def main(args):
     print(f"Extracting features for: {args.dataset_name} via {args.model_name}")
 
@@ -82,11 +88,11 @@ def main(args):
         transform = eval_transforms(pretrained=True)
 
     elif args.model_name == 'clip_RN50':
-        model, _ = clip.load("RN50", device=device)
+        model, _ = clip.load("RN50", device=device, download_root=args.cache_dir)
         transform = eval_transforms_clip(pretrained=True)
 
     elif args.model_name == 'clip_ViTB32':
-        model, _ = clip.load("ViT-B/32", device=device)
+        model, _ = clip.load("ViT-B/32", device=device, download_root=args.cache_dir)
         transform = eval_transforms_clip(pretrained=True)
 
     elif args.model_name in ['model_dino', 'dino_HIPT']:
@@ -113,9 +119,10 @@ def main(args):
         dataset = PatchesDataset(slide_path, transform=transform)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
-        out_path = os.path.join(args.feature_output_path, slide)
+        out_path = os.path.join(args.clip_rn50_features_path, slide)
         if not os.path.exists(out_path + ".h5"):
             save_embeddings(model, out_path, dataloader, args.model_name)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -129,22 +136,21 @@ if __name__ == "__main__":
 
     args.dataset_name = config['dataset_name']
     args.paths = config['paths']
+    args.clip_args = config['clip_feature_extraction']
 
-    # Load model config from clip_feature_extraction section
-    feature_cfg = config['clip_feature_extraction']
-    args.model_name = feature_cfg['model_name']
-    args.batch_size = feature_cfg['batch_size']
-    args.assets_dir = feature_cfg.get('assets_dir', './ckpts')
+    key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
+    if key not in args.paths['patch_png_dir']:
+        raise ValueError(f"[✗] Missing key '{key}' in config['paths']")
+    args.patches_path = args.paths['patch_png_dir'][key]
 
-    # Set patch input path
-    patch_key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
-    if patch_key not in args.paths['patch_png_dir']:
-        raise ValueError(f"[✗] Missing key '{patch_key}' in config['paths']['patch_png_dir']")
-    args.patches_path = args.paths['patch_png_dir'][patch_key]
+    args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
+    os.makedirs(args.clip_rn50_features_path, exist_ok=True)
 
-    # Set feature output path
-    args.feature_output_path = args.paths['clip_rn50_features_path']
-    os.makedirs(args.feature_output_path, exist_ok=True)
+    args.model_name = args.clip_args['model_name']
+    args.batch_size = args.clip_args['batch_size']
+    args.assets_dir = args.clip_args.get('assets_dir', './ckpts')
+    args.cache_dir = args.clip_args.get('cache_dir', './clip_cache')
+    args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     print(" > Start feature extraction for dataset:", args.dataset_name)
     main(args)
