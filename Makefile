@@ -322,5 +322,45 @@ sampling_h5pt_luad:
 sampling_h5pt_lusc:
 	sbatch sbatch_scripts/s_h5pt_lusc.sbatch
 
+
 sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc  #sampling_h5pt_luad sampling_h5pt_lusc
+
 #------------------------------------------ 
+# GENERATE FEATURE FROM CLIP RN 50 
+
+# ==== Sampling h5 and pt files ====
+sampling_h5pt_kich:
+	sbatch sbatch_scripts/s_h5pt_kich.sbatch
+
+sampling_h5pt_kirp:
+	sbatch sbatch_scripts/s_h5pt_kirp.sbatch
+
+sampling_h5pt_kirc:
+	sbatch sbatch_scripts/s_h5pt_kirc.sbatch
+
+sampling_h5pt_luad:
+	sbatch sbatch_scripts/s_h5pt_luad.sbatch
+
+sampling_h5pt_lusc:
+	sbatch sbatch_scripts/s_h5pt_lusc.sbatch
+
+sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc  #sampling_h5pt_luad sampling_h5pt_lusc
+
+
+# ==== Patch extraction jobs ====
+pextract_kich:
+	sbatch sbatch_scripts/pextract_kich.sbatch
+
+pextract_kirp:
+	sbatch sbatch_scripts/pextract_kirp.sbatch
+
+pextract_kirc:
+	sbatch sbatch_scripts/pextract_kirc.sbatch
+
+pextract_luad:
+	sbatch sbatch_scripts/pextract_luad.sbatch
+
+pextract_lusc:
+	sbatch sbatch_scripts/pextract_lusc.sbatch
+
+pextract_all: pextract_kich pextract_kirp pextract_kirc pextract_luad pextract_lusc
