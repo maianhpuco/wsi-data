@@ -305,3 +305,22 @@ sampling_lusc:
 	sbatch sbatch_scripts/s_lusc.sbatch
 
 sampling: sampling_kich sampling_kirc sampling_kirp sampling_luad sampling_lusc
+
+
+sampling_h5pt_kich:
+	sbatch sbatch_scripts/s_h5pt_kich.sbatch
+
+sampling_h5pt_kirp:
+	sbatch sbatch_scripts/s_h5pt_kirp.sbatch
+
+sampling_h5pt_kirc:
+	sbatch sbatch_scripts/s_h5pt_kirc.sbatch
+
+sampling_h5pt_luad:
+	sbatch sbatch_scripts/s_h5pt_luad.sbatch
+
+sampling_h5pt_lusc:
+	sbatch sbatch_scripts/s_h5pt_lusc.sbatch
+
+sampling_h5pt: sampling_h5pt_kich sampling_h5pt_kirp sampling_h5pt_kirc sampling_h5pt_luad sampling_h5pt_lusc
+#------------------------------------------ 

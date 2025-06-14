@@ -14,8 +14,9 @@ def copy_if_exists(src_file, dest_file):
     if os.path.exists(src_file):
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
         shutil.copy2(src_file, dest_file)
+        print(f"[✓] Copied: {os.path.basename(src_file)}")
     else:
-        print(f"[Warning] File not found: {src_file}")
+        print(f"[✗] Missing: {src_file}")
 
 def main(args, config): 
     dataset_name = config['dataset_name']
@@ -55,14 +56,21 @@ def main(args, config):
         print(f"---Copied PNG patches from : {src_folder}")
         print(f">>> Copied PNG patches to: {dest_patch}")
 
-        # === Copy corresponding .h5 and .pt file
+        # === Copy corresponding .h5 and .pt files ===
+        h5_file_name = f"{slide_name}.h5"
+        pt_file_name = f"{slide_name}.pt"
 
-        
+        src_h5_path = os.path.join(h5_dir, h5_file_name)
+        dest_h5_path = os.path.join(dest_h5_folder, h5_file_name)
+        copy_if_exists(src_h5_path, dest_h5_path)
+
+        src_pt_path = os.path.join(pt_dir, pt_file_name)
+        dest_pt_path = os.path.join(dest_pt_folder, pt_file_name)
+        copy_if_exists(src_pt_path, dest_pt_path)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
     args = parser.parse_args()
     config = load_config(args.config)
     main(args, config)
- 
-
