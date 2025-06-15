@@ -159,7 +159,8 @@ if __name__ == "__main__":
     args.clip_rn50_features_path = args.paths['clip_rn50_features_path'][key]
     os.makedirs(args.clip_rn50_features_path, exist_ok=True)
         
- 
+    print(">>> result will be saved to: ", args.clip_rn50_features_path)
+    
     args.model_name = args.clip_args['model_name']
     args.batch_size = args.clip_args['batch_size']
     args.assets_dir = args.clip_args.get('assets_dir', './ckpts')
