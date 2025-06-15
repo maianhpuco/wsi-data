@@ -143,9 +143,23 @@ if __name__ == "__main__":
         raise ValueError(f"[✗] Missing key '{key}' in config['paths']")
     args.patches_path = args.paths['patch_png_dir'][key]
 
-    args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
-    os.makedirs(args.clip_rn50_features_path, exist_ok=True)
+    # args.clip_rn50_features_path = args.paths['clip_rn50_features_path']
+    # os.makedirs(args.clip_rn50_features_path, exist_ok=True)
+    # Determine the patch key based on magnification and patch size
+    key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
 
+    # Validate patch image path
+    if key not in args.paths['patch_png_dir']:
+        raise ValueError(f"[✗] Missing key '{key}' in config['paths']['patch_png_dir']")
+    args.patches_path = args.paths['patch_png_dir'][key]
+
+    # Validate and assign clip feature output path
+    if key not in args.paths['clip_rn50_features_path']:
+        raise ValueError(f"[✗] Missing key '{key}' in config['paths']['clip_rn50_features_path']")
+    args.clip_rn50_features_path = args.paths['clip_rn50_features_path'][key]
+    os.makedirs(args.clip_rn50_features_path, exist_ok=True)
+        
+ 
     args.model_name = args.clip_args['model_name']
     args.batch_size = args.clip_args['batch_size']
     args.assets_dir = args.clip_args.get('assets_dir', './ckpts')
