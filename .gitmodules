@@ -4,3 +4,6 @@
 [submodule "src/externals/ViLa-MIL"]
 	path = src/externals/ViLa-MIL
 	url = https://github.com/Jiangbo-Shi/ViLa-MIL.git
+[submodule "src/externals/CONCH"]
+	path = src/externals/CONCH
+	url = https://github.com/mahmoodlab/CONCH.git
