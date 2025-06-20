@@ -9,6 +9,8 @@ sys.path.append("src/externals/CONCH")
 
 from conch.open_clip_custom import create_model_from_pretrained
 
+os.environ['HF_HOME'] = '/project/hnguyen2/mvu9/folder_04_ma/wsi-data/cache_folder/.cache/huggingface'
+ 
 def main():
     # Load Hugging Face token from environment
     hf_token = os.environ.get("HF_TOKEN")
