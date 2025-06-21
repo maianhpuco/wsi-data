@@ -7,7 +7,7 @@ datasets = ["kich", "kirp", "kirc", "luad", "lusc"]
 nodes = [f"compute-0-{i}" for i in range(1, 6)]
 
 # Paths
-script_path = "pipeline_fewshot/tcga/patch_extraction.py"
+script_path = "pipeline_fewshot/tcga/patch_extraction_conch.py"
 sbatch_dir = "sbatch_scripts"
 log_dir = "logs"
 
@@ -21,14 +21,14 @@ def create_sbatch_script(config_path, job_name, log_file, node):
 
 #SBATCH --job-name={job_name}
 #SBATCH --output={log_file}
-#SBATCH --nodelist={node}5
+#SBATCH --nodelist={node}
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --time=1-00:00:00  # 1 day
 
 echo "Starting {job_name} job on {node}"
 
-python {script_path} --config {config_path} --patch_size 256 --magnification 5x   
+python {script_path} --config {config_path} --patch_size 256 --magnification 10x   
 
 echo "Done"
 """
@@ -36,7 +36,7 @@ echo "Done"
 # Generate SBATCH files
 for i, dataset in enumerate(datasets):
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = f"pextract_5x_{dataset}"
+    job_name = f"pextract_conch_10x_{dataset}"
     log_file = os.path.join(log_dir, f"{job_name}.log")
     node = nodes[i % len(nodes)]  # Assign node in round-robin
     sbatch_content = create_sbatch_script(config_path, job_name, log_file, node)

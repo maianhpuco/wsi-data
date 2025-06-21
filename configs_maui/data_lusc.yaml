@@ -21,6 +21,9 @@ paths:
   clip_rn50_features_path: 
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_10x" 
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_5x" 
+  conch_features_path: 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_5x" 
  
 # Processing parameters
 processing:
@@ -39,3 +42,14 @@ clip_feature_extraction:
   assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models ckpt_path = os.path.join(args.assets_dir, f'{args.model_name}.pth')
   cache_dir: /project/hnguyen2/mvu9/model_cache  # clip.load("ViT-B/32", download_root=args.cache_dir)
  
+
+conch_feature_extraction:
+  model_name: conch_v1
+  batch_size: 64
+  target_patch_size: 224
+  slide_ext: .svs
+  no_auto_skip: false
+  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/conch_checkpoints/pytorch_model.bin
+
+quilt_feature_extraction:
+  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/QuiltNet-B-32  
