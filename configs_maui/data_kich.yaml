@@ -31,7 +31,7 @@ paths:
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/quilt_features_fp/patch_256x256_5x" 
   
 # Processing parameters
-processiilt
+processing:
   patch_size: 1024
   step_size: 1024
   patch_level: 0
