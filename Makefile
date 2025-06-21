@@ -358,7 +358,6 @@ pextract_luad_10x:
 	sbatch sbatch_scripts/pextract_10x_luad.sbatch
 pextract_lusc_10x:
 	sbatch sbatch_scripts/pextract_10x_lusc.sbatch
-
 pextract_all_10x: pextract_kich_10x pextract_kirp_10x pextract_kirc_10x pextract_luad_10x pextract_lusc_10x
 
 
@@ -372,8 +371,46 @@ pextract_luad_5x:
 	sbatch sbatch_scripts/pextract_5x_luad.sbatch
 pextract_lusc_5x:
 	sbatch sbatch_scripts/pextract_5x_lusc.sbatch
-
 pextract_all_5x: pextract_kich_5x pextract_kirp_5x pextract_kirc_5x pextract_luad_5x pextract_lusc_5x
 
 
 #------- 
+# ==== Patch extraction jobs using CONCH (10x) ====
+pextract_conch_kich_10x:
+	sbatch sbatch_scripts/pextract_conch_10x_kich.sbatch
+pextract_conch_kirp_10x:
+	sbatch sbatch_scripts/pextract_conch_10x_kirp.sbatch
+pextract_conch_kirc_10x:
+	sbatch sbatch_scripts/pextract_conch_10x_kirc.sbatch
+pextract_conch_luad_10x:
+	sbatch sbatch_scripts/pextract_conch_10x_luad.sbatch
+pextract_conch_lusc_10x:
+	sbatch sbatch_scripts/pextract_conch_10x_lusc.sbatch
+
+pextract_conch_all_10x: \
+	pextract_conch_kich_10x \
+	pextract_conch_kirp_10x \
+	pextract_conch_kirc_10x \
+	pextract_conch_luad_10x \
+	pextract_conch_lusc_10x
+
+
+# ==== Patch extraction jobs using CONCH (5x) ====
+pextract_conch_kich_5x:
+	sbatch sbatch_scripts/pextract_conch_5x_kich.sbatch
+pextract_conch_kirp_5x:
+	sbatch sbatch_scripts/pextract_conch_5x_kirp.sbatch
+pextract_conch_kirc_5x:
+	sbatch sbatch_scripts/pextract_conch_5x_kirc.sbatch
+pextract_conch_luad_5x:
+	sbatch sbatch_scripts/pextract_conch_5x_luad.sbatch
+pextract_conch_lusc_5x:
+	sbatch sbatch_scripts/pextract_conch_5x_lusc.sbatch
+
+pextract_conch_all_5x: \
+	pextract_conch_kich_5x \
+	pextract_conch_kirp_5x \
+	pextract_conch_kirc_5x \
+	pextract_conch_luad_5x \
+	pextract_conch_lusc_5x
+
