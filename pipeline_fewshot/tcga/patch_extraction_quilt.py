@@ -9,7 +9,8 @@ from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 import torch
 from transformers import AutoModel, AutoImageProcessor
-
+from transformers import AutoProcessor, AutoModel
+ 
 # Handle corrupted PNGs
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 torch.multiprocessing.set_sharing_strategy('file_system')
@@ -41,7 +42,12 @@ class PatchesDataset(Dataset):
         return len(self.imgs)
 
 
-def save_embeddings(model, fname, dataloader):
+def save_embeddings(model, fname, dataloader, assets_dir):
+    processor = AutoProcessor.from_pretrained(
+        assets_dir,
+        local_files_only=True
+    )
+    
     if os.path.isfile(f'{fname}.h5'):
         print(f"Already exists: {fname}.h5")
         return
@@ -51,7 +57,11 @@ def save_embeddings(model, fname, dataloader):
     for batch, coord in dataloader:
         with torch.no_grad():
             batch = batch.to(device)
-            feats = model({"pixel_values": batch}).last_hidden_state[:, 0, :]
+            inputs = processor(images=batch, return_tensors="pt").to(device)
+            outputs = model(**inputs)
+            feats = outputs.last_hidden_state[:, 0, :]
+            print("Features shape: ", feats.shape)
+            # feats = model({"pixel_values": batch}).last_hidden_state[:, 0, :]
             # feats = model(batch).last_hidden_state[:, 0, :]  # CLS token
             embeddings.append(feats.detach().cpu().numpy())
 
