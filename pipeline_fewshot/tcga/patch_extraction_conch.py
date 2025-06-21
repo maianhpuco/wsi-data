@@ -18,7 +18,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 _path = os.path.abspath(os.path.join(current_dir, "../../src/externals/CONCH")) 
 
 sys.path.append(_path)
-# from conch.models.utils import get_transforms
+from conch.models.utils import get_transforms
 from conch.open_clip_custom import create_model_from_pretrained
 
 # Handle corrupted PNGs
@@ -26,7 +26,15 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 torch.multiprocessing.set_sharing_strategy('file_system')
 
-
+def eval_transforms_clip(pretrained=False):
+    mean, std = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) if pretrained else ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    return transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize((224, 224)),
+        transforms.Normalize(mean=mean, std=std)
+    ])
+ 
+ 
 class PatchesDataset(Dataset):
     def __init__(self, file_path, transform=None):
         self.imgs = [os.path.join(file_path, f) for f in os.listdir(file_path) if f.endswith('.png')]
@@ -77,7 +85,7 @@ def main(args):
     model.forward = partial(model.encode_image, proj_contrast=False, normalize=False)
     model = model.to(device).eval()
 
-    transform = get_transforms(args.target_patch_size)
+    transform = eval_transforms_clip(args.target_patch_size)
 
     for slide in tqdm(os.listdir(args.patches_path)):
         slide_path = os.path.join(args.patches_path, slide)
