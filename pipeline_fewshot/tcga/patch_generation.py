@@ -52,9 +52,11 @@ def get_patch_params(magnification):
     if magnification == '5x':
         input_size = 2048  # Save all patches as 256x256 regardless of mag 
     elif magnification == '10x':
-        input_size = 1024 # Read 1024x1024 to simulate 10x 
+        input_size = 1024 # Read 1024x1024 to simulate410x 
     elif magnification == '20x':
-        input_size = 512 # Read 512x512 to simulate 20x 
+        input_size = 512 # Read 512x512 to simulate 20x
+    elif magnification == '40x':
+        input_size = 256 # Read 512x512 to simulate 40x  
     else:
         raise ValueError(f"Unsupported magnification: {magnification}")
     return input_size, output_size
