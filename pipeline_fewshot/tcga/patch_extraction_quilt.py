@@ -70,7 +70,12 @@ def main(args):
     print(f"Extracting Quilt features for: {args.dataset_name}")
 
     print("Loading Quilt model from:", args.model_name)
-    model = AutoModel.from_pretrained(args.assets_dir).to(device).eval()
+    model = AutoModel.from_pretrained(
+        args.assets_dir,
+        local_files_only=True  # tells HF to load from disk only
+    ).to(device).eval()
+
+    # model = AutoModel.from_pretrained(args.assets_dir).to(device).eval()
     transform = quilt_transforms(args.target_patch_size)
 
     for slide in tqdm(os.listdir(args.patches_path)):
