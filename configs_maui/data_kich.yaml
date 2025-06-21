@@ -63,7 +63,7 @@ conch_feature_extraction:
   assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/conch_checkpoints/pytorch_model.bin
 
 quilt_feature_extraction:
-  model_name: conch_v1
+  model_name: quilt
   batch_size: 64
   target_patch_size: 224
   slide_ext: .svs

@@ -51,7 +51,8 @@ def save_embeddings(model, fname, dataloader):
     for batch, coord in dataloader:
         with torch.no_grad():
             batch = batch.to(device)
-            feats = model(batch).last_hidden_state[:, 0, :]  # CLS token
+            feats = model({"pixel_values": batch}).last_hidden_state[:, 0, :]
+            # feats = model(batch).last_hidden_state[:, 0, :]  # CLS token
             embeddings.append(feats.detach().cpu().numpy())
 
         for name in coord:
