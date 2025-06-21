@@ -101,7 +101,8 @@ def main(args):
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
         if not os.path.exists(out_path + ".h5"):
-            save_embeddings(model, out_path, dataloader)
+            save_embeddings(model, out_path, dataloader, args.assets_dir)
+
 
 
 if __name__ == "__main__":
