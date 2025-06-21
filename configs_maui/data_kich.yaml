@@ -57,7 +57,7 @@ conch_feature_extraction:
   target_patch_size: 224
   slide_ext: .svs
   no_auto_skip: false
-  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/conch_checkpoints 
+  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/conch_checkpoints/pytorch_model.bin
 
 quilt_feature_extraction:
   assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/QuiltNet-B-32  
