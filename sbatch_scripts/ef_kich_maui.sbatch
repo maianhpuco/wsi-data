@@ -11,4 +11,3 @@ echo "Starting feature extraction for KICH"
 python pipeline_cls/tcga/extract_features_fp.py --config configs_maui/data_kich.yaml
 echo "Done"
 
-python pipeline_fs/tcga/extract_features_fp_conch.py --config configs_maui/data_kich.yaml

@@ -22,7 +22,11 @@ paths:
   clip_rn50_features_path: 
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_10x" 
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_5x" 
-
+  
+  conch_rn50_features_path: 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_5x" 
+ 
 # Processing parameters
 processing:
   patch_size: 1024
@@ -49,7 +53,11 @@ clip_feature_extraction:
 
 conch_feature_extraction:
   model_name: conch_v1
-  batch_size: 128
+  batch_size: 64
   target_patch_size: 224
   slide_ext: .svs
-  no_auto_skip: false 
+  no_auto_skip: false
+  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/conch_checkpoints 
+
+quilt_feature_extraction:
+  assets_dir:  /project/hnguyen2/mvu9/pretrained_checkpoints/QuiltNet-B-32  

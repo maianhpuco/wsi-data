@@ -1,181 +1,121 @@
 import os
-import sys
 import argparse
 import yaml
-import time
-import torch
-import h5py
-import openslide
-import pandas as pd
-import numpy as np
 from tqdm import tqdm
-from torch.utils.data import DataLoader
+import h5py
+import numpy as np
+from PIL import Image, ImageFile
+from torch.utils.data.dataset import Dataset
+from torchvision import transforms
+import torch
+import sys
 
-# Add CONCH and CLAM paths
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-sys.path.append(base_path)
-sys.path.append(os.path.join(base_path, "src/externals/CONCH"))
-
-
-from utils.file_utils import save_hdf5
-from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
-from conch.models.encoder import CONCHEncoder
+# Add CONCH to path
+sys.path.append('src/externals/CONCH')
 from conch.models.utils import get_transforms
-from huggingface_hub import login
+from conch.open_clip_custom import create_model_from_pretrained
 
-# from models import get_encoder 
+# Handle corrupted PNGs
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+torch.multiprocessing.set_sharing_strategy('file_system')
 
-# from conch.open_clip_custom import create_model_from_pretrained 
-# model, _ = create_model_from_pretrained("conch_ViT-B-16", CONCH_CKPT_PATH)
-#     model.forward = partial(model.encode_image, proj_contrast=False, normalize=False) 
 
-# Set custom Hugging Face cache directory
-os.environ['HF_HOME'] = '/project/hnguyen2/mvu9/folder_04_ma/wsi-data/cache_folder/.cache/huggingface'
+class PatchesDataset(Dataset):
+    def __init__(self, file_path, transform=None):
+        self.imgs = [os.path.join(file_path, f) for f in os.listdir(file_path) if f.endswith('.png')]
+        self.coords = [os.path.basename(f) for f in self.imgs]
+        self.transform = transform
 
-# Load Hugging Face token from environment and login
-hf_token = os.environ.get("HF_TOKEN")
-if hf_token is None:
-    raise ValueError("Please set HF_TOKEN in your environment (export HF_TOKEN=xxx)")
+    def __getitem__(self, index):
+        img = Image.open(self.imgs[index]).convert('RGB')
+        coord = self.coords[index]
+        if self.transform:
+            img = self.transform(img)
+        return img, coord
 
-login(token=hf_token) 
+    def __len__(self):
+        return len(self.imgs)
 
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-def load_config(config_path):
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
+def save_embeddings(model, fname, dataloader):
+    if os.path.isfile(f'{fname}.h5'):
+        print(f"Already exists: {fname}.h5")
+        return
 
-def compute_w_loader(output_path, loader, model, verbose=0):
-    if verbose > 0:
-        print(f'Processing {len(loader)} batches')
-    mode = 'w'
-    for count, data in enumerate(tqdm(loader)):
-        try:
-            with torch.inference_mode():
-                batch = data['img'].to(device, non_blocking=True)
-                coords = data['coord'].numpy().astype(np.int32)
+    embeddings, coords = [], []
 
-                features = model(batch)
-                features = features.cpu().numpy().astype(np.float32)
+    for batch, coord in dataloader:
+        with torch.no_grad():
+            batch = batch.to(device)
+            feats = model(batch)
+            embeddings.append(feats.detach().cpu().numpy())
 
-                asset_dict = {'features': features, 'coords': coords}
-                save_hdf5(output_path, asset_dict, attr_dict=None, mode=mode)
-                mode = 'a'
-        except Exception as e:
-            print(f"Error at batch {count}: {e}")
+        for name in coord:
+            x, y = map(int, name.replace('.png', '').split('_'))
+            coords.append([x, y])
+
+    embeddings = np.vstack(embeddings)
+    coords = np.vstack(coords)
+
+    with h5py.File(f'{fname}.h5', 'w') as f:
+        f['features'] = embeddings
+        f['coords'] = coords
+
+
+def main(args):
+    print(f"Extracting CONCH features for: {args.dataset_name}")
+
+    model, _ = create_model_from_pretrained("conch_ViT-B-16", args.assets_dir)
+    from functools import partial
+    model.forward = partial(model.encode_image, proj_contrast=False, normalize=False)
+    model = model.to(device).eval()
+
+    transform = get_transforms(args.target_patch_size)
+
+    for slide in tqdm(os.listdir(args.patches_path)):
+        slide_path = os.path.join(args.patches_path, slide)
+        if not os.path.isdir(slide_path):
             continue
-    return output_path
 
-def main():
-    parser = argparse.ArgumentParser(description='Feature Extraction using CONCH')
-    parser.add_argument('--config', type=str, required=True)
+        dataset = PatchesDataset(slide_path, transform=transform)
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
+
+        out_path = os.path.join(args.conch_features_path, slide)
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+        if not os.path.exists(out_path + ".h5"):
+            save_embeddings(model, out_path, dataloader)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', required=True)
+    parser.add_argument('--magnification', type=str, required=True)
+    parser.add_argument('--patch_size', type=int, required=True)
     args = parser.parse_args()
 
-    cfg = load_config(args.config)
+    with open(args.config, 'r') as f:
+        config = yaml.safe_load(f)
 
-    # Paths
-    source = cfg['paths']['source_dir']
-    patch_h5_dir = cfg['paths']['patch_h5_dir']
-    feat_dir = os.path.join(cfg['paths']['save_dir'], 'features_fp')
-    slide_name_file = cfg['paths']['slide_name_file']
-    uuid_name_file = cfg['paths']['uuid_name_file']
-    csv_path = cfg['paths'].get('slide_list', os.path.join(cfg['paths']['save_dir'], 'slide_list.csv'))
+    args.dataset_name = config['dataset_name']
+    args.paths = config['paths']
+    args.conch_args = config['conch_feature_extraction']
 
-    os.makedirs(feat_dir, exist_ok=True)
-    os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
-    os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
+    key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
+    if key not in args.paths['patch_png_dir']:
+        raise ValueError(f"[✗] Missing key '{key}' in config['paths']['patch_png_dir']")
+    args.patches_path = args.paths['patch_png_dir'][key]
 
-    # Slide name & UUID
-    slide_df = pd.read_excel(slide_name_file)
-    uuid_df = pd.read_excel(uuid_name_file)
-    uuid_map = dict(zip(uuid_df['Filename'], uuid_df['UUID']))
+    # Use slide-level feature dir for CONCH
+    args.conch_features_path = args.paths['conch_features_path'][key] 
+    os.makedirs(args.conch_features_path, exist_ok=True)
 
-    slide_ext = cfg['conch_feature_extraction'].get('slide_ext', '.svs')
-    slide_files = slide_df['Filename'].tolist()
-    slide_files = [f for f in slide_files if f in uuid_map]
+    print(">>> result will be saved to:", args.conch_features_path)
 
-    slide_paths = {}
-    for fname in slide_files:
-        uuid = uuid_map[fname]
-        path = os.path.join(source, uuid, fname)
-        if os.path.exists(path):
-            slide_paths[fname.replace(slide_ext, '')] = path
-        else:
-            print(f"Missing: {path}")
+    args.model_name = args.conch_args['model_name']
+    args.batch_size = args.conch_args['batch_size']
+    args.assets_dir = args.conch_args['assets_dir']
+    args.target_patch_size = args.conch_args['target_patch_size']
 
-    # Write slide list CSV
-    with open(csv_path, 'w') as f:
-        f.write("slide_id\n")
-        for k in slide_paths:
-            f.write(k + slide_ext + '\n')
-
-    # Config values
-    patch_size = cfg['processing']['patch_size']
-    patch_level = cfg['processing']['patch_level']
-    model_name = cfg['conch_feature_extraction'].get('model_name', 'conch_v1')
-    batch_size = cfg['conch_feature_extraction'].get('batch_size', 128)
-    target_patch_size = cfg['conch_feature_extraction'].get('target_patch_size', 224)
-    no_auto_skip = cfg['conch_feature_extraction'].get('no_auto_skip', False)
-
-    bags_dataset = Dataset_All_Bags(csv_path)
-    total = len(bags_dataset)
-
-    print(f"Loaded {total} slides")
-
-    # Load CONCH model
-    print("Loading CONCH model...")
-    model = CONCHEncoder(pretrained=True).eval().to(device)
-    img_transforms = get_transforms(target_patch_size)
-
-    dest_files = os.listdir(os.path.join(feat_dir, 'pt_files'))
-    loader_kwargs = {'num_workers': 8, 'pin_memory': True} if device.type == "cuda" else {}
-
-    for idx in tqdm(range(total)):
-        slide_id = bags_dataset[idx].split(slide_ext)[0]
-        bag_name = slide_id + '.h5'
-        h5_file_path = os.path.join(patch_h5_dir, bag_name)
-        slide_file_path = slide_paths.get(slide_id)
-
-        print(f"\n[{idx+1}/{total}] Slide: {slide_id}")
-
-        if not no_auto_skip and slide_id + '.pt' in dest_files:
-            print(f"Skipped {slide_id}")
-            continue
-        if not os.path.exists(h5_file_path) or not slide_file_path or not os.path.exists(slide_file_path):
-            print(f"Missing input for {slide_id}")
-            continue
-
-        output_path = os.path.join(feat_dir, 'h5_files', bag_name)
-        start = time.time()
-
-        try:
-            wsi = openslide.open_slide(slide_file_path)
-            dataset = Whole_Slide_Bag_FP(
-                file_path=h5_file_path,
-                wsi=wsi,
-                img_transforms=img_transforms,
-                patch_level=patch_level,
-                patch_size=patch_size
-            )
-            if len(dataset) == 0:
-                print(f"No patches found in {h5_file_path}")
-                continue
-
-            loader = DataLoader(dataset, batch_size=batch_size, **loader_kwargs)
-            output_file_path = compute_w_loader(output_path, loader=loader, model=model, verbose=1)
-
-            duration = time.time() - start
-            print(f"Feature extraction for {slide_id} took {duration:.2f}s")
-
-            with h5py.File(output_file_path, "r") as f:
-                features = f['features'][:]
-                print("Feature shape:", features.shape)
-
-            torch.save(torch.from_numpy(features), os.path.join(feat_dir, 'pt_files', slide_id + '.pt'))
-
-        except Exception as e:
-            print(f"Failed on {slide_id}: {e}")
-            continue
-
-if __name__ == '__main__':
-    main()
+    main(args)
