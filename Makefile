@@ -458,3 +458,42 @@ pextract_conch_all_5x: \
 	pextract_conch_luad_5x \
 	pextract_conch_lusc_5x
 
+# ==== Patch extraction jobs using QUILT (10x) ====
+pextract_quilt_kich_10x:
+	sbatch sbatch_scripts/pextract_quilt_10x_kich.sbatch
+pextract_quilt_kirp_10x:
+	sbatch sbatch_scripts/pextract_quilt_10x_kirp.sbatch
+pextract_quilt_kirc_10x:
+	sbatch sbatch_scripts/pextract_quilt_10x_kirc.sbatch
+pextract_quilt_luad_10x:
+	sbatch sbatch_scripts/pextract_quilt_10x_luad.sbatch
+pextract_quilt_lusc_10x:
+	sbatch sbatch_scripts/pextract_quilt_10x_lusc.sbatch
+
+pextract_quilt_all_10x: \
+	pextract_quilt_kich_10x \
+	pextract_quilt_kirp_10x \
+	pextract_quilt_kirc_10x \
+	pextract_quilt_luad_10x \
+	pextract_quilt_lusc_10x
+
+# ==== Patch extraction jobs using QUILT (5x) ====
+pextract_quilt_kich_5x:
+	sbatch sbatch_scripts/pextract_quilt_5x_kich.sbatch
+pextract_quilt_kirp_5x:
+	sbatch sbatch_scripts/pextract_quilt_5x_kirp.sbatch
+pextract_quilt_kirc_5x:
+	sbatch sbatch_scripts/pextract_quilt_5x_kirc.sbatch
+pextract_quilt_luad_5x:
+	sbatch sbatch_scripts/pextract_quilt_5x_luad.sbatch
+pextract_quilt_lusc_5x:
+	sbatch sbatch_scripts/pextract_quilt_5x_lusc.sbatch
+
+pextract_quilt_all_5x: \
+	pextract_quilt_kich_5x \
+	pextract_quilt_kirp_5x \
+	pextract_quilt_kirc_5x \
+	pextract_quilt_luad_5x \
+	pextract_quilt_lusc_5x
+
+

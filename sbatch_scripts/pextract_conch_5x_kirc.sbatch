@@ -9,6 +9,6 @@
 
 echo "Starting pextract_conch_5x_kirc job on compute-0-3"
 
-python pipeline_fewshot/tcga/patch_extraction_conch.py --config configs_maui/data_kirc.yaml --patch_size 256 --magnification 5x   
+python pipeline_fewshot/tcga/patch_extraction_quilt.py --config configs_maui/data_kirc.yaml --patch_size 256 --magnification 5x   
 
 echo "Done"

@@ -9,6 +9,6 @@
 
 echo "Starting pextract_conch_5x_lusc job on compute-0-5"
 
-python pipeline_fewshot/tcga/patch_extraction_conch.py --config configs_maui/data_lusc.yaml --patch_size 256 --magnification 5x   
+python pipeline_fewshot/tcga/patch_extraction_quilt.py --config configs_maui/data_lusc.yaml --patch_size 256 --magnification 5x   
 
 echo "Done"
