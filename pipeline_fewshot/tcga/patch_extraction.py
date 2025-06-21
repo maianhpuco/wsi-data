@@ -10,8 +10,14 @@ from torchvision import transforms
 import torch
 import clip
 import sys
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-sys.path.append('src/externals/ViLa-MIL')
+# Construct path to '../../src/externals/CONCH'
+_path = os.path.abspath(os.path.join(current_dir, "../../src/externals/CONCH")) 
+
+sys.path.append(_path) 
+
+# sys.path.append('src/externals/ViLa-MIL')
 
 from feature_extraction.nn_encoder_arch.vision_transformer import vit_small
 from feature_extraction.nn_encoder_arch.resnet_trunc import resnet50_trunc_baseline

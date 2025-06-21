@@ -11,7 +11,13 @@ import torch
 import sys
 
 # Add CONCH to path
-sys.path.append('src/externals/CONCH')
+# Get current file's directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct path to '../../src/externals/CONCH'
+_path = os.path.abspath(os.path.join(current_dir, "../../src/externals/CONCH")) 
+
+sys.path.append(_path)
 from conch.models.utils import get_transforms
 from conch.open_clip_custom import create_model_from_pretrained
 
