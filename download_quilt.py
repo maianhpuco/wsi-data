@@ -5,7 +5,7 @@ def download_model(repo_id, save_dir):
     """
     Downloads a Hugging Face model and saves it to a local directory.
     """
-    print(f"📥 Downloading: {repo_id}")
+    print(f"Downloading: {repo_id}")
     snapshot_download(
         repo_id=repo_id,
         cache_dir=os.path.join(save_dir, ".hf_cache"),
