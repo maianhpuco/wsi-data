@@ -12,7 +12,7 @@ def download_model(repo_id, save_dir):
         local_dir=save_dir,
         local_dir_use_symlinks=False
     )
-    print(f"✅ Saved to: {save_dir}\n")
+    print(f"Saved to: {save_dir}\n")
 
 if __name__ == "__main__":
     base_save_path = "/project/hnguyen2/mvu9/checkpoints"

@@ -10,6 +10,7 @@ from torchvision import transforms
 import torch
 from transformers import AutoModel, AutoImageProcessor
 from transformers import AutoProcessor, AutoModel
+from transformers import CLIPVisionModel
  
 # Handle corrupted PNGs
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -83,11 +84,15 @@ def main(args):
     print(f"Extracting Quilt features for: {args.dataset_name}")
 
     print("Loading Quilt model from:", args.model_name)
-    model = AutoModel.from_pretrained(
+    # model = AutoModel.from_pretrained(
+    #     args.assets_dir,
+    #     local_files_only=True  # tells HF to load from disk only
+    # ).to(device).eval()
+    model = CLIPVisionModel.from_pretrained(
         args.assets_dir,
-        local_files_only=True  # tells HF to load from disk only
-    ).to(device).eval()
-
+        local_files_only=True
+    ).to(device).eval() 
+    
     # model = AutoModel.from_pretrained(args.assets_dir).to(device).eval()
     transform = None # quilt_transforms(args.target_patch_size)
 
