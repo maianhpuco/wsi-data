@@ -293,6 +293,50 @@ gen_all_5x_maui: gen_patches_5x_kich_maui gen_patches_5x_kirp_maui gen_patches_5
  
 #------------------------------------------
 
+# ==== Prototype Generation Jobs (20x) ====
+pg_kich_20x:
+	sbatch sbatch_scripts/pg_20x_kich.sbatch
+pg_kirp_20x:
+	sbatch sbatch_scripts/pg_20x_kirp.sbatch
+pg_kirc_20x:
+	sbatch sbatch_scripts/pg_20x_kirc.sbatch
+pg_luad_20x:
+	sbatch sbatch_scripts/pg_20x_luad.sbatch
+pg_lusc_20x:
+	sbatch sbatch_scripts/pg_20x_lusc.sbatch
+
+pg_all_20x: \
+	pg_kich_20x \
+	pg_kirp_20x \
+	pg_kirc_20x \
+	pg_luad_20x \
+	pg_lusc_20x
+
+
+# ==== Prototype Generation Jobs (40x) ====
+pg_kich_40x:
+	sbatch sbatch_scripts/pg_40x_kich.sbatch
+pg_kirp_40x:
+	sbatch sbatch_scripts/pg_40x_kirp.sbatch
+pg_kirc_40x:
+	sbatch sbatch_scripts/pg_40x_kirc.sbatch
+pg_luad_40x:
+	sbatch sbatch_scripts/pg_40x_luad.sbatch
+pg_lusc_40x:
+	sbatch sbatch_scripts/pg_40x_lusc.sbatch
+
+pg_all_40x: \
+	pg_kich_40x \
+	pg_kirp_40x \
+	pg_kirc_40x \
+	pg_luad_40x \
+	pg_lusc_40x
+
+
+# ==== Run All Prototype Generation Jobs ====
+pg_all: pg_all_20x pg_all_40x
+
+
 sampling_kich: 
 	sbatch sbatch_scripts/s_kich.sbatch
 sampling_kirp: 
