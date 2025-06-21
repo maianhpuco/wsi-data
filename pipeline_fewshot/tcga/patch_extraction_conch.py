@@ -18,7 +18,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 _path = os.path.abspath(os.path.join(current_dir, "../../src/externals/CONCH")) 
 
 sys.path.append(_path)
-from conch.models.utils import get_transforms
+# from conch.models.utils import get_transforms
 from conch.open_clip_custom import create_model_from_pretrained
 
 # Handle corrupted PNGs
