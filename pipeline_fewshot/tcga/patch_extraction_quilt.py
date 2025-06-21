@@ -17,12 +17,12 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def quilt_transforms(target_size=224):
-    return transforms.Compose([
-        transforms.Resize((target_size, target_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-    ])
+# def quilt_transforms(target_size=224):
+#     return transforms.Compose([
+#         transforms.Resize((target_size, target_size)),
+#         transforms.ToTensor(),
+#         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+#     ])
 
 
 class PatchesDataset(Dataset):
@@ -87,7 +87,7 @@ def main(args):
     ).to(device).eval()
 
     # model = AutoModel.from_pretrained(args.assets_dir).to(device).eval()
-    transform = quilt_transforms(args.target_patch_size)
+    transform = None # quilt_transforms(args.target_patch_size)
 
     for slide in tqdm(os.listdir(args.patches_path)):
         slide_path = os.path.join(args.patches_path, slide)
