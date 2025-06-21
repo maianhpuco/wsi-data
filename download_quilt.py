@@ -24,8 +24,8 @@ if __name__ == "__main__":
     os.makedirs(quiltnet_dir, exist_ok=True)
     download_model(quiltnet_repo, quiltnet_dir)
 
-    # === Quilt-LLaVA-v1.5-7B ===
-    quilt_llava_repo = "wisdomik/Quilt-Llava-v1.5-7b"
-    quilt_llava_dir = os.path.join(base_save_path, "Quilt-Llava-v1.5-7b")
-    os.makedirs(quilt_llava_dir, exist_ok=True)
-    download_model(quilt_llava_repo, quilt_llava_dir)
+    # # === Quilt-LLaVA-v1.5-7B ===
+    # quilt_llava_repo = "wisdomik/Quilt-Llava-v1.5-7b"
+    # quilt_llava_dir = os.path.join(base_save_path, "Quilt-Llava-v1.5-7b")
+    # os.makedirs(quilt_llava_dir, exist_ok=True)
+    # download_model(quilt_llava_repo, quilt_llava_dir)
