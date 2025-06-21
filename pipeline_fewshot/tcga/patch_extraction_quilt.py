@@ -24,7 +24,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 #         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 #     ])
 
-
+def pil_collate(batch):
+    # batch: list of (PIL.Image, coord)
+    images, coords = zip(*batch)
+    return list(images), list(coords)
+ 
+ 
 class PatchesDataset(Dataset):
     def __init__(self, file_path, transform=None):
         self.imgs = [os.path.join(file_path, f) for f in os.listdir(file_path) if f.endswith('.png')]
@@ -53,24 +58,21 @@ def save_embeddings(model, fname, dataloader, assets_dir):
         return
 
     embeddings, coords = [], []
-
-    for batch, coord in dataloader:
+    for batch_imgs, batch_coords in dataloader:
         with torch.no_grad():
-            batch = batch.to(device)
-            inputs = processor(images=batch, return_tensors="pt").to(device)
+            # batch_imgs: list of PIL Images
+            inputs = processor(images=batch_imgs, return_tensors="pt").to(device)
             outputs = model(**inputs)
-            feats = outputs.last_hidden_state[:, 0, :]
-            print("Features shape: ", feats.shape)
-            # feats = model({"pixel_values": batch}).last_hidden_state[:, 0, :]
-            # feats = model(batch).last_hidden_state[:, 0, :]  # CLS token
-            embeddings.append(feats.detach().cpu().numpy())
+            feats = outputs.last_hidden_state[:, 0, :]  # CLS token
+            embeddings.append(feats.cpu().numpy())
 
-        for name in coord:
+        # parse coords
+        for name in batch_coords:
             x, y = map(int, name.replace('.png', '').split('_'))
             coords.append([x, y])
 
     embeddings = np.vstack(embeddings)
-    coords = np.vstack(coords)
+    coords = np.vstack(coords) 
 
     with h5py.File(f'{fname}.h5', 'w') as f:
         f['features'] = embeddings
@@ -95,8 +97,14 @@ def main(args):
             continue
 
         dataset = PatchesDataset(slide_path, transform=transform)
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
-
+        # dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
+        dataloader = torch.utils.data.DataLoader(
+            dataset,
+            batch_size=args.batch_size,
+            shuffle=False,
+            num_workers=4,
+            collate_fn=pil_collate
+        ) 
         out_path = os.path.join(args.quilt_features_path, slide)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
