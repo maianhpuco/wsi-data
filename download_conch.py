@@ -8,7 +8,7 @@ def download_conch_model(save_dir):
     """
     repo_id = "MahmoodLab/conch"
     
-    print(f"📥 Downloading CONCH model from Hugging Face ({repo_id})")
+    print(f"Downloading CONCH model from Hugging Face ({repo_id})")
     snapshot_download(
         repo_id=repo_id,
         cache_dir=os.path.join(save_dir, ".hf_cache"),
