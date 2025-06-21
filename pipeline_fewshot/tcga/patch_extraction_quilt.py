@@ -17,14 +17,6 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 torch.multiprocessing.set_sharing_strategy('file_system')
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-
-# def quilt_transforms(target_size=224):
-#     return transforms.Compose([
-#         transforms.Resize((target_size, target_size)),
-#         transforms.ToTensor(),
-#         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-#     ])
-
 def pil_collate(batch):
     # batch: list of (PIL.Image, coord)
     images, coords = zip(*batch)
