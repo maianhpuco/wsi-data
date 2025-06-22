@@ -25,14 +25,14 @@ def create_sbatch_script(config_path, job_name, log_file):
  
 echo "Starting {job_name} job"
 
-python {script_path} --config {config_path} --patch_size 256 --magnification 5x  
+python {script_path} --config {config_path} --patch_size 256 --magnification 10x  
 echo "Done"
 """
 
 # Generate scripts
 for dataset in datasets:
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = f"pg_5x_{dataset}"
+    job_name = f"pg_10x_{dataset}"
     log_file = os.path.join(log_dir, f"{job_name}.log")
     sbatch_content = create_sbatch_script(config_path, job_name, log_file)
 

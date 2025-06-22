@@ -84,27 +84,121 @@ def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magni
     slide_id = h5_file_name.replace('.h5', '')
     slide_path = slide_paths.get(slide_id)
     h5_path = os.path.join(patch_h5_dir, h5_file_name)
-    # print("finding", slide_path)
+
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    error_log_path = os.path.join(log_dir, f"error_path_gen_{magnification}.txt")
+
     if not slide_path or not os.path.exists(slide_path):
         print(f"[SKIP] Slide not found for: {slide_id}")
+        with open(error_log_path, 'a') as f:
+            f.write(f"{slide_id} - slide not found\n")
         return
 
-    with h5py.File(h5_path, 'r') as f:
-        coords = f['coords'][:]
-        patch_level = f['coords'].attrs.get('patch_level', 0)
+    try:
+        # Load coords first to know how many patches expected
+        with h5py.File(h5_path, 'r') as f:
+            coords = f['coords'][:]
+            patch_level = f['coords'].attrs.get('patch_level', 0)
 
-    input_size, output_size = get_patch_params(magnification)
-    slide = openslide.OpenSlide(slide_path)
-    slide_patch_dir = os.path.join(patch_png_dir, slide_id)
-    os.makedirs(slide_patch_dir, exist_ok=True)
+        slide_patch_dir = os.path.join(patch_png_dir, slide_id)
 
-    for coord in tqdm(coords, desc=f"==> {slide_id}", leave=False):
-        x, y = map(int, coord)
-        patch = slide.read_region((x, y), patch_level, (input_size, input_size)).convert('RGB')
-        patch = patch.resize((output_size, output_size))
-        patch.save(os.path.join(slide_patch_dir, f"{x}_{y}.png"))
+        # Skip if all patches already exist
+        if os.path.exists(slide_patch_dir):
+            existing_pngs = [f for f in os.listdir(slide_patch_dir) if f.endswith('.png')]
+            if len(existing_pngs) >= len(coords):  # Already processed
+                print(f"[SKIP] {slide_id}: Already processed ({len(existing_pngs)} patches exist)")
+                return
 
-    print(f"[DONE] {slide_id}: {len(coords)} patches saved in {slide_patch_dir}")
+        # Continue to process
+        input_size, output_size = get_patch_params(magnification)
+        slide = openslide.OpenSlide(slide_path)
+        os.makedirs(slide_patch_dir, exist_ok=True)
+
+        for coord in tqdm(coords, desc=f"==> {slide_id}", leave=False):
+            x, y = map(int, coord)
+            out_path = os.path.join(slide_patch_dir, f"{x}_{y}.png")
+            if os.path.exists(out_path):
+                continue  # Skip patch if already saved
+
+            patch = slide.read_region((x, y), patch_level, (input_size, input_size)).convert('RGB')
+            patch = patch.resize((output_size, output_size))
+            patch.save(out_path)
+
+        print(f"[DONE] {slide_id}: {len(coords)} patches saved in {slide_patch_dir}")
+
+    except Exception as e:
+        print(f"[ERROR] {slide_id}: {e}")
+        with open(error_log_path, 'a') as f:
+            f.write(f"{slide_id} - {str(e)}\n")
+ 
+ 
+# def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magnification):
+#     slide_id = h5_file_name.replace('.h5', '')
+#     slide_path = slide_paths.get(slide_id)
+#     h5_path = os.path.join(patch_h5_dir, h5_file_name)
+
+#     if not slide_path or not os.path.exists(slide_path):
+#         print(f"[SKIP] Slide not found for: {slide_id}")
+#         return
+
+#     # Load coords first to know how many patches expected
+#     with h5py.File(h5_path, 'r') as f:
+#         coords = f['coords'][:]
+#         patch_level = f['coords'].attrs.get('patch_level', 0)
+
+#     slide_patch_dir = os.path.join(patch_png_dir, slide_id)
+    
+#     # Skip if all patches already exist
+#     if os.path.exists(slide_patch_dir):
+#         existing_pngs = [f for f in os.listdir(slide_patch_dir) if f.endswith('.png')]
+#         if len(existing_pngs) >= len(coords):  # Already processed
+#             print(f"[SKIP] {slide_id}: Already processed ({len(existing_pngs)} patches exist)")
+#             return
+
+#     # Continue to process
+#     input_size, output_size = get_patch_params(magnification)
+#     slide = openslide.OpenSlide(slide_path)
+#     os.makedirs(slide_patch_dir, exist_ok=True)
+
+#     for coord in tqdm(coords, desc=f"==> {slide_id}", leave=False):
+#         x, y = map(int, coord)
+#         out_path = os.path.join(slide_patch_dir, f"{x}_{y}.png")
+#         if os.path.exists(out_path):
+#             continue  # Skip patch if already saved
+
+#         patch = slide.read_region((x, y), patch_level, (input_size, input_size)).convert('RGB')
+#         patch = patch.resize((output_size, output_size))
+#         patch.save(out_path)
+
+#     print(f"[DONE] {slide_id}: {len(coords)} patches saved in {slide_patch_dir}")
+ 
+# def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magnification):
+    
+#     slide_id = h5_file_name.replace('.h5', '')
+#     slide_path = slide_paths.get(slide_id)
+#     h5_path = os.path.join(patch_h5_dir, h5_file_name)
+#     # print("finding", slide_path)
+#     if not slide_path or not os.path.exists(slide_path):
+#         print(f"[SKIP] Slide not found for: {slide_id}")
+#         return
+
+#     with h5py.File(h5_path, 'r') as f:
+#         coords = f['coords'][:]
+#         patch_level = f['coords'].attrs.get('patch_level', 0)
+
+#     input_size, output_size = get_patch_params(magnification)
+#     slide = openslide.OpenSlide(slide_path)
+#     slide_patch_dir = os.path.join(patch_png_dir, slide_id)
+#     os.makedirs(slide_patch_dir, exist_ok=True)
+
+#     for coord in tqdm(coords, desc=f"==> {slide_id}", leave=False):
+#         x, y = map(int, coord)
+#         patch = slide.read_region((x, y), patch_level, (input_size, input_size)).convert('RGB')
+#         patch = patch.resize((output_size, output_size))
+#         patch.save(os.path.join(slide_patch_dir, f"{x}_{y}.png"))
+
+#     print(f"[DONE] {slide_id}: {len(coords)} patches saved in {slide_patch_dir}")
 
 def main(args, config):
     patch_h5_dir = config['paths']['patch_h5_dir']

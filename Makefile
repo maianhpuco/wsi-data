@@ -260,37 +260,44 @@ gen_split_tcga_lung_maui:
 
 #---------------------------------
 #--------SIMAE --------- PATCHES GENERATION 
-gen_patches_kich_maui:
-	sbatch sbatch_scripts/pg_kich.sbatch
-
-gen_patches_kirp_maui:
-	sbatch sbatch_scripts/pg_kirp.sbatch
-
-gen_patches_kirc_maui:
-	sbatch sbatch_scripts/pg_kirc.sbatch
-
-gen_patches_luad_maui:
-	sbatch sbatch_scripts/pg_luad.sbatch
-
-gen_patches_lusc_maui:
-	sbatch sbatch_scripts/pg_lusc.sbatch
-
-# Submit all jobs with one command
-gen_all_maui: gen_patches_kich_maui gen_patches_kirp_maui gen_patches_kirc_maui gen_patches_luad_maui gen_patches_lusc_maui 
-
-#--------SIMAE --------- PATCHES GENERATION 
-gen_patches_5x_kich_maui:
+# ==== Patch Generation Jobs (5x) ====
+pg_5x_kich:
 	sbatch sbatch_scripts/pg_kich_5x.sbatch
-gen_patches_5x_kirp_maui:
+pg_5x_kirp:
 	sbatch sbatch_scripts/pg_kirp_5x.sbatch
-gen_patches_5x_kirc_maui:
+pg_5x_kirc:
 	sbatch sbatch_scripts/pg_kirc_5x.sbatch
-gen_patches_5x_luad_maui:
+pg_5x_luad:
 	sbatch sbatch_scripts/pg_luad_5x.sbatch
-gen_patches_5x_lusc_maui:
+pg_5x_lusc:
 	sbatch sbatch_scripts/pg_lusc_5x.sbatch
-gen_all_5x_maui: gen_patches_5x_kich_maui gen_patches_5x_kirp_maui gen_patches_5x_kirc_maui gen_patches_5x_luad_maui gen_patches_5x_lusc_maui
- 
+
+pg_all_5x: \
+	pg_5x_kich \
+	pg_5x_kirp \
+	pg_5x_kirc \
+	pg_5x_luad \
+	pg_5x_lusc
+# ==== Patch Generation Jobs (10x) ====
+pg_10x_kich:
+	sbatch sbatch_scripts/pg_10x_kich.sbatch
+pg_10x_kirp:
+	sbatch sbatch_scripts/pg_10x_kirp.sbatch
+pg_10x_kirc:
+	sbatch sbatch_scripts/pg_10x_kirc.sbatch
+pg_10x_luad:
+	sbatch sbatch_scripts/pg_10x_luad.sbatch
+pg_10x_lusc:
+	sbatch sbatch_scripts/pg_10x_lusc.sbatch
+
+pg_all_10x: \
+	pg_10x_kich \
+	pg_10x_kirp \
+	pg_10x_kirc \
+	pg_10x_luad \
+	pg_10x_lusc
+
+
 #------------------------------------------
 
 # ==== Prototype Generation Jobs (20x) ====
