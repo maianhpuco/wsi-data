@@ -262,15 +262,15 @@ gen_split_tcga_lung_maui:
 #--------SIMAE --------- PATCHES GENERATION 
 # ==== Patch Generation Jobs (5x) ====
 pg_5x_kich:
-	sbatch sbatch_scripts/pg_kich_5x.sbatch
+	sbatch sbatch_scripts/pg_5x_kich.sbatch
 pg_5x_kirp:
-	sbatch sbatch_scripts/pg_kirp_5x.sbatch
+	sbatch sbatch_scripts/pg_5x_kirp.sbatch
 pg_5x_kirc:
-	sbatch sbatch_scripts/pg_kirc_5x.sbatch
+	sbatch sbatch_scripts/pg_5x_kirc.sbatch
 pg_5x_luad:
-	sbatch sbatch_scripts/pg_luad_5x.sbatch
+	sbatch sbatch_scripts/pg_5x_luad.sbatch
 pg_5x_lusc:
-	sbatch sbatch_scripts/pg_lusc_5x.sbatch
+	sbatch sbatch_scripts/pg_5x_lusc.sbatch
 
 pg_all_5x: \
 	pg_5x_kich \
@@ -278,6 +278,7 @@ pg_all_5x: \
 	pg_5x_kirc \
 	pg_5x_luad \
 	pg_5x_lusc
+ 
 # ==== Patch Generation Jobs (10x) ====
 pg_10x_kich:
 	sbatch sbatch_scripts/pg_10x_kich.sbatch
@@ -296,6 +297,7 @@ pg_all_10x: \
 	pg_10x_kirc \
 	pg_10x_luad \
 	pg_10x_lusc
+ 
 
 
 #------------------------------------------
