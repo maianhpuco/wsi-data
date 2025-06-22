@@ -506,3 +506,52 @@ pextract_quilt_all_5x: \
 	pextract_quilt_lusc_5x
 
 
+# === Root Paths ===
+BASE_DIR = /project/hnguyen2/mvu9/processing_datasets/processing_tcga_256
+
+# === Feature Types ===
+FEATURE_TYPES = clip_rn50_features_fp conch_features_fp quilt_features_fp
+
+# === Cancer Types ===
+CANCERS = kich kirc kirp
+
+# === Magnifications ===
+MAGS = 5x 10x
+
+# === Zip Commands for Each Combination ===
+$(foreach feature,$(FEATURE_TYPES),\
+  $(foreach cancer,$(CANCERS),\
+    $(foreach mag,$(MAGS),\
+      $(eval zip_$(feature)_$(cancer)_$(mag): ; \
+        zip -rq $(cancer)_$(feature)_$(mag).zip $(BASE_DIR)/$(cancer)/$(feature)/patch_256x256_$(mag))\
+  )))
+
+# === Grouped Targets ===
+
+# Zip all for a specific cancer
+zip_all_kich: \
+  zip_clip_rn50_features_fp_kich_5x \
+  zip_clip_rn50_features_fp_kich_10x \
+  zip_conch_features_fp_kich_5x \
+  zip_conch_features_fp_kich_10x \
+  zip_quilt_features_fp_kich_5x \
+  zip_quilt_features_fp_kich_10x
+
+zip_all_kirc: \
+  zip_clip_rn50_features_fp_kirc_5x \
+  zip_clip_rn50_features_fp_kirc_10x \
+  zip_conch_features_fp_kirc_5x \
+  zip_conch_features_fp_kirc_10x \
+  zip_quilt_features_fp_kirc_5x \
+  zip_quilt_features_fp_kirc_10x
+
+zip_all_kirp: \
+  zip_clip_rn50_features_fp_kirp_5x \
+  zip_clip_rn50_features_fp_kirp_10x \
+  zip_conch_features_fp_kirp_5x \
+  zip_conch_features_fp_kirp_10x \
+  zip_quilt_features_fp_kirp_5x \
+  zip_quilt_features_fp_kirp_10x
+
+# Zip everything
+zip_all: zip_all_kich zip_all_kirc zip_all_kirp
