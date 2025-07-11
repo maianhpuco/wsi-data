@@ -6,4 +6,23 @@ paths:
   pt_files_dir:
     luad: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/features_fp/pt_files"
     lusc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/features_fp/pt_files"
+
+conch_patch_256x256_5x:  
+  luad: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/conch_features_fp/patch_256x256_5x"
+  lusc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_5x"
+
+conch_patch_256x256_10x:  
+  luad: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/conch_features_fp/patch_256x256_10x"
+  lusc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_10x"
+
+clip_rn50_patch_256x256_5x:  
+  luad: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/clip_rn50_features_fp/patch_256x256_5x"
+  lusc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_5x"
+
+clip_rn50_patch_256x256_10x:  
+  luad: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/luad/clip_rn50_features_fp/patch_256x256_10x"
+  lusc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_10x"
+
+split_folder: "/project/hnguyen2/mvu9/folder_04_ma/wsi-fs/splits_csv_tcga_lung" 
+
 fold_number: 5

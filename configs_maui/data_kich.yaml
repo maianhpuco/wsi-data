@@ -7,6 +7,7 @@ paths:
   patch_png_dir:
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/png_patches/patch_256x256_10x"
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/png_patches/patch_256x256_5x" 
+    
   mask_save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/masks"
   only_mask_save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/only_masks"
   
