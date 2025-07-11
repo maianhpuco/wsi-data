@@ -34,20 +34,46 @@ def prepare_dataset(args, fold_id):
         return train_dataset, val_dataset, test_dataset  
     else:
         raise NotImplementedError(f"[✗] Dataset '{args.dataset_name}' not supported.")
-
-def main(args):
+    
+def check_data(fold_id, args):
+    import pandas as pd 
+    
+    train_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv") 
+    val_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/val.csv"),
+    test_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/test.csv") 
     # import json
+    train_df = pd.read_csv(train_csv_path)
+    val_df = pd.read_csv(val_csv_path)
+    test_df = pd.read_csv(test_csv_path) 
+    
+    train_df['split'] = 'train'
+    val_df['split'] = 'val'
+    test_df['split'] = 'test'
+     
+    df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
+    # Optional: check result
+    print(df_full.head())
+    print(f"Total samples: {len(df_full)}")
+
+    # You can save if needed
+    df_full.to_csv("logs/full_dataset.csv", index=False) 
+    
+def main(args):
+
+
+    # Concatenate them
+    
 
     # with open(args.text_prompts_path, "r") as f:
     #     args.text_prompts = json.load(f)
     # print(args.text_prompts)    
     
     # seed_torch(args.seed)
+#########
+    # all_test_auc, all_val_auc, all_test_acc, all_val_acc, all_test_f1, folds = [], [], [], [], [], []
 
-    all_test_auc, all_val_auc, all_test_acc, all_val_acc, all_test_f1, folds = [], [], [], [], [], []
-
-    for i in range(args.k_start, args.k_end + 1):
-        datasets = prepare_dataset(args, i)
+    # for i in range(args.k_start, args.k_end + 1):
+    #     datasets = prepare_dataset(args, i)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -71,5 +97,9 @@ if __name__ == "__main__":
             print(f"{k}: {v}")
     print("##############################################")
 
-    main(args)
+    # main(args)
+    for fold_id in range(args.k_start, args.k_end + 1):
+        print(f"Processing fold {fold_id}...")
+        check_data(fold_id, args) 
+        
 
