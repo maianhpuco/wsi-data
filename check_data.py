@@ -58,12 +58,11 @@ def check_data(fold_id, data_dir_map_config, args):
 
     # Combine all
     df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
-
-    # print(df_full.head())
     print(f"Total samples: {len(df_full)}")
 
     # Prepare output folder
-    os.makedirs("logs", exist_ok=True)
+    log_dir = os.path.join("logs", data_dir_map_config)
+    os.makedirs(log_dir, exist_ok=True)
 
     # Get path map for .h5 files
     data_dir_map = args.paths[data_dir_map_config]
@@ -92,11 +91,8 @@ def check_data(fold_id, data_dir_map_config, args):
         # Save per-label missing slide info
         if missing:
             df_missing = pd.DataFrame(missing, columns=['patient_id', 'slide_id'])
-            missing_records[label_lower] = df_missing
-            save_path = f"./logs/{data_dir_map_config}/missing_{label_lower}.csv"
-            os.makedirs(os.path.dirname(f"./logs/{data_dir_map_config}"), exist_ok=True)
+            save_path = os.path.join(log_dir, f"missing_{label_lower}.csv")
             df_missing.to_csv(save_path, index=False)
-            
             print(f"[INFO] Saved missing file list for {label} → {save_path}")
         else:
             print(f"[INFO] No missing slides for label: {label}")
@@ -109,9 +105,14 @@ def check_data(fold_id, data_dir_map_config, args):
     print("\n[Slide availability summary]")
     print(df_summary)
 
-    # df_summary.to_csv("logs/slide_availability_summary.csv", index=False)
- 
-  
+    summary_path = os.path.join(log_dir, "slide_availability_summary.csv")
+    df_summary.to_csv(summary_path, index=False)
+    print(f"[INFO] Saved summary to {summary_path}")
+
+    return df_summary
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
