@@ -158,9 +158,11 @@ def return_splits_custom(train_csv_path,
             label = row["label"]
 
             try:
-                path = os.path.join(data_dir_map[label]['5x'] if isinstance(data_dir_map[label], dict) else data_dir_map[label],
-                                    'h5_files' if use_h5 else 'pt_files',
-                                    f"{slide_id}.h5" if use_h5 else f"{slide_id}.pt")
+                path = os.path.join(data_dir_map[label])
+                print(path) 
+                # path = os.path.join(data_dir_map[label]['5x'] if isinstance(data_dir_map[label], dict) else data_dir_map[label],
+                #                     'h5_files' if use_h5 else 'pt_files',
+                #                     f"{slide_id}.h5" if use_h5 else f"{slide_id}.pt")
                 if os.path.exists(path):
                     kept.append(row)
                     kept_per_label[label].append(slide_id)
