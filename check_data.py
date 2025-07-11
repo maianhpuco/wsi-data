@@ -33,21 +33,22 @@ def seed_torch(seed=7):
 
 def prepare_dataset(args, fold_id):
     if args.dataset_name == 'tcga_renal':
-        from src.datasets.multiple_scales.tcga import return_splits_custom
-        patch_size = args.patch_size
-        data_dir_s_mapping= args.paths['data_folder_s']
-        data_dir_l_mapping =args.paths['data_folder_l'] 
+        from datasets.single_scale.tcga import return_splits_custom
         
+        patch_size = args.patch_size
+        data_dir_map = args.data_dir_map_config
+        data_dir_mapping= args.paths[data_dir_map]
+    
         train_dataset, val_dataset, test_dataset = return_splits_custom(
             train_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv"),
             val_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/val.csv"),
-            test_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/test.csv"),
-            data_dir_s=data_dir_s_mapping,
-            data_dir_l=data_dir_l_mapping,
-            label_dict=args.label_dict,
-            seed=args.seed,
-            use_h5=True,
-        )
+            test_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/test.csv"), 
+            data_dir_map=data_dir_mapping, 
+            label_dict=args.label_dict, 
+            seed=1, 
+            print_info=False, 
+            use_h5=False
+            ) 
         print(len(train_dataset))
         return train_dataset, val_dataset, test_dataset  
     else:
@@ -70,6 +71,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
+    parser.add_argument('--data_dir_map_config', type=str, default=None, help='Path to the data directory mapping file')
     args = parser.parse_args()
 
     with open(args.config, 'r') as f:
@@ -87,3 +89,4 @@ if __name__ == "__main__":
     print("##############################################")
 
     main(args)
+
