@@ -1,3 +1,4 @@
+dataset_name: lusc 
 paths:
   source_dir: "/home/mvu9/datasets/TCGA-datasets/LUSC"
   error_files: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/error_files.txt" 
@@ -15,6 +16,16 @@ paths:
   uuid_name_file: "/home/mvu9/datasets/TCGA-metadata/LUSC/uuids.xlsx"
   preset_file: "/home/mvu9/folder_04_ma/wsi-data/presets/tcga_vilamil.csv"
 
+  clip_rn50_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_5x" 
+  conch_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_5x" 
+  quilt_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_5x" 
+     
 # Processing parameters
 processing:
   patch_size: 256
