@@ -62,7 +62,7 @@ def check_data(fold_id, data_dir_map_config, args):
 
     # Set custom log directory
     root_log_dir = "/project/hnguyen2/mvu9/folder_04_ma/logs"
-    log_dir = os.path.join(root_log_dir, f"fold_{fold_id}", data_dir_map_config)
+    log_dir = os.path.join(root_log_dir, "missing_tcga", data_dir_map_config)
     os.makedirs(log_dir, exist_ok=True)
 
     # Get path map for .h5 files
