@@ -140,7 +140,9 @@ if __name__ == "__main__":
         print(f"Processing fold {fold_id}...")
         data_dir_map_configs=[
             'conch_patch_256x256_5x', 
-            'conch_patch_256x256_10x'] 
+            'conch_patch_256x256_10x', 
+            'clip_rn50_patch_256x256_5x',
+            'clip_rn50_patch_256x256_10x',] 
         for data_dir_map_config in data_dir_map_configs:  
             check_data(fold_id, data_dir_map_config, args)
             print("---------------------------------------")
