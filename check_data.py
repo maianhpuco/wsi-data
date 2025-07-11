@@ -52,8 +52,11 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required=True)
+    parser.add_argument('--k_start', type=int, required=True)
+    parser.add_argument('--k_end', type=int, required=True)
     parser.add_argument('--data_dir_map_config', type=str, default=None, help='Path to the data directory mapping file')
     args = parser.parse_args()
+    
 
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
