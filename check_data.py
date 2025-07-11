@@ -6,30 +6,11 @@ import numpy as np
 import pandas as pd
 import torch
 from datetime import datetime
-from utils.file_utils import save_pkl
-from utils.core_utils_desc import train  # Make sure this expects model as the first arg
 
-sys.path.append(os.path.join("src"))  
-sys.path.append("src")
-os.environ['HF_HOME'] = '/project/hnguyen2/mvu9/folder_04_ma/cache_folder/.cache/huggingface'
-from explainer_ver2 import Ver2f
-import ml_collections
 
 # === PATH SETUP ===
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(current_dir, 'src')))
-
-def seed_torch(seed=7):
-    import random
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
 
 def prepare_dataset(args, fold_id):
     if args.dataset_name == 'tcga_renal':
@@ -80,7 +61,6 @@ if __name__ == "__main__":
         setattr(args, k, v)
 
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    seed_torch(args.seed)
 
     print("################# SETTINGS ###################")
     for k, v in vars(args).items():
