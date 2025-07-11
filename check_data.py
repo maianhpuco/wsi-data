@@ -55,7 +55,22 @@ def check_data(fold_id, args):
 
     print(df_full.head())
     print(f"Total samples: {len(df_full)}")
+    
+    # Count slides per label
+    label_counts = df_full['label'].value_counts().reset_index()
+    label_counts.columns = ['label', 'slide_count']
+    print("\n[Slide count per label]")
+    print(label_counts)
 
+    # Count slides per label and split
+    label_split_counts = df_full.groupby(['label', 'split']).size().reset_index(name='count')
+    print("\n[Slide count per label and split]")
+    print(label_split_counts)
+
+    # os.makedirs("logs", exist_ok=True)
+    # df_full.to_csv("logs/full_dataset.csv", index=False)
+    # label_counts.to_csv("logs/slide_count_per_label.csv", index=False)
+    # label_split_counts.to_csv("logs/slide_count_per_label_split.csv", index=False) 
     # os.makedirs("logs", exist_ok=True)
     # df_full.to_csv("logs/full_daaset.csv", index=False)
 
