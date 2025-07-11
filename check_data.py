@@ -107,8 +107,8 @@ def check_data(fold_id, data_dir_map_config, args):
     print(df_summary)
 
     summary_path = os.path.join(log_dir, "slide_availability_summary.csv")
-    df_summary.to_csv(summary_path, index=False)
-    print(f"[INFO] Saved summary to {summary_path}")
+    # df_summary.to_csv(summary_path, index=False)
+    # print(f"[INFO] Saved summary to {summary_path}")
 
     return df_summary
 
