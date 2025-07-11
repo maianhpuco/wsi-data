@@ -94,6 +94,7 @@ def check_data(fold_id, data_dir_map_config, args):
             df_missing = pd.DataFrame(missing, columns=['patient_id', 'slide_id'])
             missing_records[label_lower] = df_missing
             save_path = f"logs/{data_dir_map_config}/missing_{label_lower}.csv"
+            os.mkdir(os.path.dirname(f"logs/{data_dir_map_config}"), exist_ok=True)
             df_missing.to_csv(save_path, index=False)
             
             print(f"[INFO] Saved missing file list for {label} → {save_path}")
