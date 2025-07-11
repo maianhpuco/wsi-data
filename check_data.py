@@ -58,7 +58,7 @@ def check_data(fold_id, args):
     # You can save if needed
     df_full.to_csv("logs/full_dataset.csv", index=False) 
     
-def main(args):
+# def main(args):
 
 
     # Concatenate them
