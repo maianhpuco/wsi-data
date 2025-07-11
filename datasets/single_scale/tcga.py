@@ -5,20 +5,20 @@ import h5py
 from collections import defaultdict
 from torch.utils.data import Dataset
 
+
 class Generic_MIL_Dataset(Dataset):
     def __init__(self,
-                 data_dir_map,
+                 data_dir_s,
                  patient_ids,
                  slides,
                  labels,
                  label_dict,
                  seed=1,
                  print_info=False,
-                 use_h5=False,
+                 use_h5=True,
                  ignore=[],
                  **kwargs):
-
-        self.data_dir_map = data_dir_map  # expects nested dict for multi-scale
+        self.data_dir_s = data_dir_s
         self.label_dict = label_dict
         self.ignore = ignore
         self.seed = seed
@@ -30,58 +30,38 @@ class Generic_MIL_Dataset(Dataset):
             'slide_id': slides,
             'label': labels
         })
-
+        # print("-------")
+        # print(self.slide_data)
         if print_info:
-            print("Loaded {} samples from {}".format(len(self.slide_data), data_dir_map))
-
-    def load_from_h5(self, toggle):
-        self.use_h5 = toggle
+            print(f"Loaded {len(self.slide_data)} slides.")
 
     def __len__(self):
         return len(self.slide_data)
 
+    def _resolve_subtype_path(self, slide_id, path_dict):
+        for key in path_dict:
+            if key.lower() in slide_id.lower():
+                return path_dict[key]
+        raise ValueError(f"Cannot match slide_id '{slide_id}' to any subtype in {list(path_dict.keys())}")
+    
     def __getitem__(self, idx):
-        slide_id = self.slide_data['slide_id'].iloc[idx]
-        label = self.slide_data['label'].iloc[idx]
+        row = self.slide_data.iloc[idx]
+        slide_id = row['slide_id']
+        label_str = row['label']
+        label = self.label_dict[label_str]
 
-        data_dir = self.data_dir_map[label.lower()]['5x']  # Default scale for __getitem__
+        folder_s = self.data_dir_s[label_str.lower()]
+        
+        h5_path_s = os.path.join(folder_s, f"{slide_id}.h5")
+        # print("h5 file large and small")
+        # print(h5_path_l)
+        # print(h5_path_s)
+        with h5py.File(h5_path_s, 'r') as f_s:
+            features_s = torch.from_numpy(f_s['features'][:])
+            coords_s = torch.from_numpy(f_s['coords'][:])
 
-        if not self.use_h5:
-            full_path = os.path.join(data_dir, 'pt_files', f"{slide_id}.pt")
-            features = torch.load(full_path, weights_only=True)
-            return features, self.label_dict[label], label
-        else:
-            full_path = os.path.join(data_dir, 'h5_files', f"{slide_id}.h5")
-            with h5py.File(full_path, 'r') as hdf5_file:
-                features = hdf5_file['features'][:]
-                coords = hdf5_file['coords'][:]
-            features = torch.from_numpy(features)
-            return features, self.label_dict[label], coords
-
-    def get_features_by_slide_id(self, slide_id):
-        row = self.slide_data[self.slide_data['slide_id'] == slide_id]
-        if row.empty:
-            raise ValueError(f"Slide ID {slide_id} not found in dataset.")
-
-        label = row.iloc[0]['label']
-        data_dir = self.data_dir_map[label.lower()]['5x']
-
-        if not self.use_h5:
-            full_path = os.path.join(data_dir, 'pt_files', f"{slide_id}.pt")
-            if not os.path.exists(full_path):
-                raise FileNotFoundError(f"Feature file not found: {full_path}")
-            feats = torch.load(full_path)
-        else:
-            full_path = os.path.join(data_dir, 'h5_files', f"{slide_id}.h5")
-            if not os.path.exists(full_path):
-                raise FileNotFoundError(f"H5 file not found: {full_path}")
-            with h5py.File(full_path, 'r') as hdf5_file:
-                feats = torch.from_numpy(hdf5_file['features'][:])
-
-        if feats.ndim == 1:
-            feats = feats.unsqueeze(0)
-
-        return feats
+        
+        return features_s, coords_s, label
 
 def return_splits_custom(train_csv_path,
                           val_csv_path,
@@ -107,7 +87,7 @@ def return_splits_custom(train_csv_path,
             label = row["label"].lower()
 
             try:
-                path = os.path.join(data_dir_map[label], '.h5')
+                path = os.path.join(data_dir_map[label], f"{slide_id}.h5")
                 if os.path.exists(path):
                     kept.append(row)
                     kept_per_label[label].append(slide_id)
