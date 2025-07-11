@@ -144,6 +144,7 @@ if __name__ == "__main__":
             'clip_rn50_patch_256x256_5x',
             'clip_rn50_patch_256x256_10x',] 
         for data_dir_map_config in data_dir_map_configs:  
+            print(f"Checking data for {data_dir_map_config}...")
             check_data(fold_id, data_dir_map_config, args)
             print("---------------------------------------")
 
