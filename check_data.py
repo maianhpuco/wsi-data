@@ -70,8 +70,8 @@ def check_data(fold_id, args):
 
     # Check for missing .h5 files
     missing_records = {}
-
-    data_dir_map = args.paths["data_dir_map"]
+     
+    data_dir_map = args.paths[args.data_dir_map]
 
     for label in df_full['label'].unique():
         label_lower = label.lower()
