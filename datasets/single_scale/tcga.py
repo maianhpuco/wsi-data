@@ -5,7 +5,6 @@ import h5py
 from collections import defaultdict
 from torch.utils.data import Dataset
 
-
 class Generic_MIL_Dataset(Dataset):
     def __init__(self,
                  data_dir_map,
@@ -15,10 +14,16 @@ class Generic_MIL_Dataset(Dataset):
                  label_dict,
                  seed=1,
                  print_info=False,
-                 use_h5=True,
+                 use_h5=False,
                  ignore=[],
                  **kwargs):
-        self.data_dir_map = data_dir_map
+
+        # Normalize single-scale dict input to nested format with '5x' key
+        self.data_dir_map = {
+            k: (v if isinstance(v, dict) else {'5x': v})
+            for k, v in data_dir_map.items()
+        }
+
         self.label_dict = label_dict
         self.ignore = ignore
         self.seed = seed
@@ -30,35 +35,58 @@ class Generic_MIL_Dataset(Dataset):
             'slide_id': slides,
             'label': labels
         })
-        # print("-------")
-        # print(self.slide_data)
+
         if print_info:
-            print(f"Loaded {len(self.slide_data)} slides.")
+            print("Loaded {} samples from {}".format(len(self.slide_data), data_dir_map))
+
+    def load_from_h5(self, toggle):
+        self.use_h5 = toggle
 
     def __len__(self):
         return len(self.slide_data)
 
-    def _resolve_subtype_path(self, slide_id, path_dict):
-        for key in path_dict:
-            if key.lower() in slide_id.lower():
-                return path_dict[key]
-        raise ValueError(f"Cannot match slide_id '{slide_id}' to any subtype in {list(path_dict.keys())}")
-    
     def __getitem__(self, idx):
-        row = self.slide_data.iloc[idx]
-        slide_id = row['slide_id']
-        label_str = row['label']
-        label = self.label_dict[label_str]
+        slide_id = self.slide_data['slide_id'].iloc[idx]
+        label = self.slide_data['label'].iloc[idx]
 
-        folder_data = self.data_dir_map[label_str.lower()]
-        
-        h5_path = os.path.join(folder_data, f"{slide_id}.h5")
-        with h5py.File(h5_path, 'r') as f_s:
-            features = torch.from_numpy(f_s['features'][:])
-            coords   = torch.from_numpy(f_s['coords'][:])
+        data_dir = self.data_dir_map[label.lower()]['5x']  # Default scale for __getitem__
 
-        
-        return features, coords, label
+        if not self.use_h5:
+            full_path = os.path.join(data_dir, 'pt_files', f"{slide_id}.pt")
+            features = torch.load(full_path, weights_only=True)
+            return features, self.label_dict[label], label
+        else:
+            full_path = os.path.join(data_dir, 'h5_files', f"{slide_id}.h5")
+            with h5py.File(full_path, 'r') as hdf5_file:
+                features = hdf5_file['features'][:]
+                coords = hdf5_file['coords'][:]
+            features = torch.from_numpy(features)
+            return features, self.label_dict[label], coords
+
+    def get_features_by_slide_id(self, slide_id):
+        row = self.slide_data[self.slide_data['slide_id'] == slide_id]
+        if row.empty:
+            raise ValueError(f"Slide ID {slide_id} not found in dataset.")
+
+        label = row.iloc[0]['label']
+        data_dir = self.data_dir_map[label.lower()]['5x']
+
+        if not self.use_h5:
+            full_path = os.path.join(data_dir, 'pt_files', f"{slide_id}.pt")
+            if not os.path.exists(full_path):
+                raise FileNotFoundError(f"Feature file not found: {full_path}")
+            feats = torch.load(full_path)
+        else:
+            full_path = os.path.join(data_dir, 'h5_files', f"{slide_id}.h5")
+            if not os.path.exists(full_path):
+                raise FileNotFoundError(f"H5 file not found: {full_path}")
+            with h5py.File(full_path, 'r') as hdf5_file:
+                feats = torch.from_numpy(hdf5_file['features'][:])
+
+        if feats.ndim == 1:
+            feats = feats.unsqueeze(0)
+
+        return feats
 
 def return_splits_custom(train_csv_path,
                           val_csv_path,
@@ -70,6 +98,9 @@ def return_splits_custom(train_csv_path,
                           use_h5=False,
                           args=None):
 
+    global_kept_per_label = defaultdict(list)
+    global_missing_log = defaultdict(list)
+
     def filter_df(df, name):
         print("------------------")
         kept, missing = [], []
@@ -77,24 +108,29 @@ def return_splits_custom(train_csv_path,
         missing_log = defaultdict(list)
 
         df = df.drop_duplicates(subset=["slide"])
-        print(df.head(5))
-        print(df.columns)
+        df['label'] = df['label'].str.lower()
+
         for _, row in df.iterrows():
             slide_id = row["slide"]
-            label = row["label"].lower()
+            label = row["label"]
 
             try:
-                path = os.path.join(data_dir_map[label], f"{slide_id}.h5")
+                path = os.path.join(data_dir_map[label]['5x'] if isinstance(data_dir_map[label], dict) else data_dir_map[label],
+                                     'h5_files' if use_h5 else 'pt_files',
+                                     f"{slide_id}.h5" if use_h5 else f"{slide_id}.pt")
                 if os.path.exists(path):
                     kept.append(row)
                     kept_per_label[label].append(slide_id)
+                    global_kept_per_label[label].append(slide_id)
                 else:
                     missing.append(row)
                     missing_log[label].append(slide_id)
+                    global_missing_log[label].append(slide_id)
             except Exception as e:
                 print(f"[WARN] {slide_id} → error: {e}")
                 missing.append(row)
                 missing_log[label].append(slide_id)
+                global_missing_log[label].append(slide_id)
 
         df_kept = pd.DataFrame(kept).drop_duplicates(subset=["slide"])
 
@@ -114,6 +150,7 @@ def return_splits_custom(train_csv_path,
             labels = df["label"].dropna().unique().tolist()
 
         for label in labels:
+            label = label.lower()
             count_miss = len(missing_log[label])
             available = len(kept_per_label[label])
             print(f"[SUMMARY - {name.upper()} | {label.upper()}] -- AVAILABLE: {available}  MISSING: {count_miss}")
@@ -135,5 +172,18 @@ def return_splits_custom(train_csv_path,
     df_train = filter_df(pd.read_csv(train_csv_path), "train")
     df_val = filter_df(pd.read_csv(val_csv_path), "val")
     df_test = filter_df(pd.read_csv(test_csv_path), "test")
+
+    # Save combined summary
+    summary_rows = []
+    labels_all = set(list(global_kept_per_label.keys()) + list(global_missing_log.keys()))
+    for label in sorted(labels_all):
+        total_available = len(global_kept_per_label[label])
+        total_missing = len(global_missing_log[label])
+        summary_rows.append((label, total_available, total_missing))
+        print(f"[SUMMARY - ALL | {label.upper()}] -- AVAILABLE: {total_available}  MISSING: {total_missing}")
+
+    df_summary = pd.DataFrame(summary_rows, columns=["label", "available", "missing"])
+    df_summary.to_csv("logs/missing_summary_all.csv", index=False)
+    print("[INFO] Saved combined summary to logs/missing_summary_all.csv")
 
     return create_dataset(df_train), create_dataset(df_val), create_dataset(df_test)
