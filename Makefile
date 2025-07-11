@@ -558,6 +558,8 @@ zip_all: zip_all_kich zip_all_kirc zip_all_kirp
 
 
 ######### 
-check_data_conch_5x:
+check_data_renal:
 	python check_data.py --config configs_maui/data_tcga_renal.yaml --k_start 1 --k_end 1
 
+check_data_lung:
+	python check_data.py --config configs_maui/data_tcga_lung.yaml --k_start 1 --k_end 1
