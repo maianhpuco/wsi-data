@@ -59,7 +59,7 @@ def check_data(fold_id, data_dir_map_config, args):
     # Combine all
     df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
 
-    print(df_full.head())
+    # print(df_full.head())
     print(f"Total samples: {len(df_full)}")
 
     # Prepare output folder
