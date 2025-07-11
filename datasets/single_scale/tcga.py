@@ -100,12 +100,14 @@ def return_splits_custom(train_csv_path,
         missing_log = defaultdict(list)
 
         df = df.drop_duplicates(subset=["slide"])
+        print(df.head(5))
+        print(df.columns)
         for _, row in df.iterrows():
             slide_id = row["slide"]
             label = row["label"].lower()
 
             try:
-                path = os.path.join(data_dir_map[label]['5x'], 'h5_files' if use_h5 else 'pt_files', f"{slide_id}.h5" if use_h5 else f"{slide_id}.pt")
+                path = os.path.join(data_dir_map[label], '.h5')
                 if os.path.exists(path):
                     kept.append(row)
                     kept_per_label[label].append(slide_id)

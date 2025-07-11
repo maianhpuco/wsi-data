@@ -11,7 +11,7 @@ paths:
     kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/features_fp/pt_files"
     kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/features_fp/pt_files"
     kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/features_fp/pt_files"
-
+# below are .h5 files 
   conch_patch_256x256_5x:  
     kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_5x"
     kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp/patch_256x256_5x"
