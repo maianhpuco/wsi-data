@@ -112,12 +112,6 @@ def return_splits_custom(train_csv_path,
             labels = ['luad', 'lusc']
         else:
             labels = df["label"].dropna().unique().tolist()
-
-        for label in labels:
-            count_miss = len(missing_log[label])
-            available = len(kept_per_label[label])
-            print(f"[SUMMARY - {name.upper()} | {label.upper()}] -- AVAILABLE: {available}  MISSING: {count_miss}")
-
         return df_kept
 
     def create_dataset(df):
