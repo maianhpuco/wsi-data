@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 
 class Generic_MIL_Dataset(Dataset):
     def __init__(self,
-                 data_dir_s,
+                 data_dir_map,
                  patient_ids,
                  slides,
                  labels,
@@ -18,7 +18,7 @@ class Generic_MIL_Dataset(Dataset):
                  use_h5=True,
                  ignore=[],
                  **kwargs):
-        self.data_dir_s = data_dir_s
+        self.data_dir_map = data_dir_map
         self.label_dict = label_dict
         self.ignore = ignore
         self.seed = seed
@@ -50,18 +50,15 @@ class Generic_MIL_Dataset(Dataset):
         label_str = row['label']
         label = self.label_dict[label_str]
 
-        folder_s = self.data_dir_s[label_str.lower()]
+        folder_data = self.data_dir_map[label_str.lower()]
         
-        h5_path_s = os.path.join(folder_s, f"{slide_id}.h5")
-        # print("h5 file large and small")
-        # print(h5_path_l)
-        # print(h5_path_s)
-        with h5py.File(h5_path_s, 'r') as f_s:
-            features_s = torch.from_numpy(f_s['features'][:])
-            coords_s = torch.from_numpy(f_s['coords'][:])
+        h5_path = os.path.join(folder_data, f"{slide_id}.h5")
+        with h5py.File(h5_path, 'r') as f_s:
+            features = torch.from_numpy(f_s['features'][:])
+            coords   = torch.from_numpy(f_s['coords'][:])
 
         
-        return features_s, coords_s, label
+        return features, coords, label
 
 def return_splits_custom(train_csv_path,
                           val_csv_path,
