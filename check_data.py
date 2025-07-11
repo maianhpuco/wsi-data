@@ -93,8 +93,9 @@ def check_data(fold_id, data_dir_map_config, args):
         if missing:
             df_missing = pd.DataFrame(missing, columns=['patient_id', 'slide_id'])
             missing_records[label_lower] = df_missing
-            save_path = f"logs/missing_{label_lower}.csv"
+            save_path = f"logs/{data_dir_map_config}/missing_{label_lower}.csv"
             df_missing.to_csv(save_path, index=False)
+            
             print(f"[INFO] Saved missing file list for {label} → {save_path}")
         else:
             print(f"[INFO] No missing slides for label: {label}")
@@ -135,10 +136,13 @@ if __name__ == "__main__":
     # main(args)
     for fold_id in range(args.k_start, args.k_end + 1):
         print(f"Processing fold {fold_id}...")
-        data_dir_map_config = 'conch_patch_256x256_5x'
-        check_data(fold_id, data_dir_map_config, args)
-        data_dir_map_config = 'conch_patch_256x256_10x'
-        check_data(fold_id, data_dir_map_config, args) 
+        data_dir_map_configs=[
+            'conch_patch_256x256_5x', 
+            'conch_patch_256x256_10x'] 
+        for data_dir_map_config in data_dir_map_configs:  
+            check_data(fold_id, data_dir_map_config, args)
+            print("---------------------------------------")
+
           
         
 
