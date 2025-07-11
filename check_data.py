@@ -35,7 +35,7 @@ def prepare_dataset(args, fold_id):
     else:
         raise NotImplementedError(f"[✗] Dataset '{args.dataset_name}' not supported.")
     
-def check_data(fold_id, args):
+def check_data(fold_id, data_dir_map_config, args):
     import pandas as pd
     import os
     from collections import defaultdict
@@ -66,7 +66,7 @@ def check_data(fold_id, args):
     os.makedirs("logs", exist_ok=True)
 
     # Get path map for .h5 files
-    data_dir_map = args.paths[args.data_dir_map]
+    data_dir_map = args.paths[data_dir_map_config]
 
     # Count available and missing slides per label
     label_counts = defaultdict(lambda: {"available": 0, "missing": 0})
@@ -135,6 +135,10 @@ if __name__ == "__main__":
     # main(args)
     for fold_id in range(args.k_start, args.k_end + 1):
         print(f"Processing fold {fold_id}...")
-        check_data(fold_id, args) 
+        data_dir_map_config = 'conch_patch_256x256_5x'
+        check_data(fold_id, data_dir_map_config, args)
+        data_dir_map_config = 'conch_patch_256x256_10x'
+        check_data(fold_id, data_dir_map_config, args) 
+          
         
 
