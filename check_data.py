@@ -35,6 +35,8 @@ def prepare_dataset(args, fold_id):
     else:
         raise NotImplementedError(f"[✗] Dataset '{args.dataset_name}' not supported.")
     
+    
+    
 def check_data(fold_id, args):
     import pandas as pd
     import os
@@ -55,17 +57,50 @@ def check_data(fold_id, args):
 
     print(df_full.head())
     print(f"Total samples: {len(df_full)}")
-    
+
     # Count slides per label
     label_counts = df_full['label'].value_counts().reset_index()
     label_counts.columns = ['label', 'slide_count']
     print("\n[Slide count per label]")
     print(label_counts)
 
+    os.makedirs("logs", exist_ok=True)
+    # df_full.to_csv("logs/full_dataset.csv", index=False)
+    # label_counts.to_csv("logs/slide_count_per_label.csv", index=False)
+
+    # Check for missing .h5 files
+    missing_records = {}
+
+    data_dir_map = args.paths["data_dir_map"]
+
+    for label in df_full['label'].unique():
+        label_lower = label.lower()
+        df_label = df_full[df_full['label'] == label]
+
+        missing = []
+        for _, row in df_label.iterrows():
+            slide_id = row['slide']
+            patient_id = row['patient_id']
+
+            slide_path = os.path.join(data_dir_map[label_lower], f"{slide_id}.h5")
+            if not os.path.exists(slide_path):
+                missing.append((patient_id, slide_id))
+
+        if missing:
+            df_missing = pd.DataFrame(missing, columns=['patient_id', 'slide_id'])
+            missing_records[label_lower] = df_missing
+            save_path = f"logs/missing_{label_lower}.csv"
+            df_missing.to_csv(save_path, index=False)
+            print(f"[INFO] Saved missing file list for {label} → {save_path}")
+        else:
+            print(f"[INFO] No missing slides for label: {label}")
+
+
+
     # Count slides per label and split
-    label_split_counts = df_full.groupby(['label', 'split']).size().reset_index(name='count')
-    print("\n[Slide count per label and split]")
-    print(label_split_counts)
+    # label_split_counts = df_full.groupby(['label', 'split']).size().reset_index(name='count')
+    # print("\n[Slide count per label and split]")
+    # print(label_split_counts)
 
     # os.makedirs("logs", exist_ok=True)
     # df_full.to_csv("logs/full_dataset.csv", index=False)
