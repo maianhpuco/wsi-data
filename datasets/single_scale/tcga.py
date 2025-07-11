@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import torch
 import h5py
+from collections import defaultdict
 from torch.utils.data import Dataset
 
 class Generic_MIL_Dataset(Dataset):
@@ -13,7 +14,7 @@ class Generic_MIL_Dataset(Dataset):
                  label_dict,
                  seed=1,
                  print_info=False,
-                 use_h5=False, 
+                 use_h5=False,
                  ignore=[],
                  **kwargs):
 
@@ -63,7 +64,7 @@ class Generic_MIL_Dataset(Dataset):
             raise ValueError(f"Slide ID {slide_id} not found in dataset.")
 
         label = row.iloc[0]['label']
-        data_dir = self.data_dir_map[label.lower()]['5x']  # Default to 5x
+        data_dir = self.data_dir_map[label.lower()]['5x']
 
         if not self.use_h5:
             full_path = os.path.join(data_dir, 'pt_files', f"{slide_id}.pt")
@@ -82,90 +83,78 @@ class Generic_MIL_Dataset(Dataset):
 
         return feats
 
-    def count_missing_files_multiscale(self, scales=['5x', '10x']):
-        missing = {}
-        for _, row in self.slide_data.iterrows():
-            slide_id = row['slide_id']
-            label = row['label'].lower()
-            missing_scales = []
-
-            for scale in scales:
-                if label not in self.data_dir_map or scale not in self.data_dir_map[label]:
-                    print(f"Missing directory mapping for label {label} at scale {scale}")
-                    continue
-
-                data_dir = self.data_dir_map[label][scale]
-                folder = 'h5_files' if self.use_h5 else 'pt_files'
-                filename = f"{slide_id}.h5" if self.use_h5 else f"{slide_id}.pt"
-                full_path = os.path.join(data_dir, folder, filename)
-
-                if not os.path.exists(full_path):
-                    missing_scales.append(scale)
-
-            if missing_scales:
-                missing[slide_id] = missing_scales
-
-        print(f"Total slides with missing files: {len(missing)}")
-        return missing
-
-    def count_existing_feature_files(self, scale='5x'):
-        count = 0
-        for _, row in self.slide_data.iterrows():
-            slide_id = row['slide_id']
-            label = row['label'].lower()
-            if label not in self.data_dir_map or scale not in self.data_dir_map[label]:
-                continue
-            data_dir = self.data_dir_map[label][scale]
-            folder = 'h5_files' if self.use_h5 else 'pt_files'
-            filename = f"{slide_id}.h5" if self.use_h5 else f"{slide_id}.pt"
-            full_path = os.path.join(data_dir, folder, filename)
-            if os.path.exists(full_path):
-                count += 1
-        return count
-
-def return_splits_custom(train_csv_path, 
-                          val_csv_path, 
-                          test_csv_path, 
-                          data_dir_map, 
-                          label_dict, 
-                          seed=1, 
-                          print_info=False, 
+def return_splits_custom(train_csv_path,
+                          val_csv_path,
+                          test_csv_path,
+                          data_dir_map,
+                          label_dict,
+                          seed=1,
+                          print_info=False,
                           use_h5=False,
-                          scales=['5x', '10x']):
-    def create_dataset(df, split_name):
-        patient_ids = df["patient_id"].dropna().tolist()
-        slides = df["slide"].dropna().tolist()
-        labels = df["label"].dropna().tolist()
+                          args=None):
 
-        dataset = Generic_MIL_Dataset(
+    def filter_df(df, name):
+        print("------------------")
+        kept, missing = [], []
+        kept_per_label = defaultdict(list)
+        missing_log = defaultdict(list)
+
+        df = df.drop_duplicates(subset=["slide"])
+        for _, row in df.iterrows():
+            slide_id = row["slide"]
+            label = row["label"].lower()
+
+            try:
+                path = os.path.join(data_dir_map[label]['5x'], 'h5_files' if use_h5 else 'pt_files', f"{slide_id}.h5" if use_h5 else f"{slide_id}.pt")
+                if os.path.exists(path):
+                    kept.append(row)
+                    kept_per_label[label].append(slide_id)
+                else:
+                    missing.append(row)
+                    missing_log[label].append(slide_id)
+            except Exception as e:
+                print(f"[WARN] {slide_id} → error: {e}")
+                missing.append(row)
+                missing_log[label].append(slide_id)
+
+        df_kept = pd.DataFrame(kept).drop_duplicates(subset=["slide"])
+
+        os.makedirs("logs", exist_ok=True)
+        if missing_log:
+            pd.DataFrame([(k, v) for k, lst in missing_log.items() for v in lst],
+                         columns=["label", "slide"]).to_csv(f"logs/missing_slides_{name}.csv", index=False)
+            print(f"[INFO] Saved missing slides → logs/missing_slides_{name}.csv")
+
+        print(f"[INFO] {name.upper()}: Kept {len(df_kept)} / {len(df)}")
+
+        if args is not None and getattr(args, "dataset_name", "") == "tcga_renal":
+            labels = ['kich', 'kirc', 'kirp']
+        elif args is not None and getattr(args, "dataset_name", "") == "tcga_lung":
+            labels = ['luad', 'lusc']
+        else:
+            labels = df["label"].dropna().unique().tolist()
+
+        for label in labels:
+            count_miss = len(missing_log[label])
+            available = len(kept_per_label[label])
+            print(f"[SUMMARY - {name.upper()} | {label.upper()}] -- AVAILABLE: {available}  MISSING: {count_miss}")
+
+        return df_kept
+
+    def create_dataset(df):
+        return Generic_MIL_Dataset(
             data_dir_map=data_dir_map,
-            patient_ids=patient_ids,
-            slides=slides,
-            labels=labels,
+            patient_ids=df["patient_id"].dropna().tolist(),
+            slides=df["slide"].dropna().tolist(),
+            labels=df["label"].dropna().tolist(),
             label_dict=label_dict,
-            shuffle=False,
             seed=seed,
-            print_info=print_info, 
+            print_info=print_info,
             use_h5=use_h5
         )
 
-        print(f"\n[{split_name.upper()} SPLIT]")
-        print(f"Total slides: {len(dataset)}")
-        missing = dataset.count_missing_files_multiscale(scales=scales)
-        available = len(dataset) - len(missing)
-        print(f"Slides with all scales available: {available}")
-        for scale in scales:
-            count = dataset.count_existing_feature_files(scale=scale)
-            print(f"Files available at scale {scale}: {count}")
+    df_train = filter_df(pd.read_csv(train_csv_path), "train")
+    df_val = filter_df(pd.read_csv(val_csv_path), "val")
+    df_test = filter_df(pd.read_csv(test_csv_path), "test")
 
-        return dataset
-
-    df_train = pd.read_csv(train_csv_path)
-    df_val = pd.read_csv(val_csv_path)
-    df_test = pd.read_csv(test_csv_path)
-
-    train_dataset = create_dataset(df_train, "train")
-    val_dataset = create_dataset(df_val, "val")
-    test_dataset = create_dataset(df_test, "test")
-
-    return train_dataset, val_dataset, test_dataset
+    return create_dataset(df_train), create_dataset(df_val), create_dataset(df_test)
