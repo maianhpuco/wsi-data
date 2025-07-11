@@ -15,7 +15,18 @@ paths:
   slide_list:  "/home/mvu9/processing_datasets/processing_tcga_256/kirp/process_list_autogen.csv" 
   missing_patches_h5: "/home/mvu9/processing_datasets/missing_files/patches_h5/kirp.csv"
   missing_pt_files: "/home/mvu9/processing_datasets/missing_files/pt_files/kirp.csv" 
-
+  
+  clip_rn50_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_5x" 
+  conch_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_5x" 
+  quilt_features_path: 
+    patch_256x256_10x: "/home/mvu9/processing_datasets/processing_tcga_256/kirp/quilt_features_fp/patch_256x256_10x" 
+    patch_256x256_5x:  "/home/mvu9/processing_datasets/processing_tcga_256/kirp/quilt_features_fp/patch_256x256_5x" 
+    
+ 
 # Processing parameters
 processing:
   patch_size: 1024
