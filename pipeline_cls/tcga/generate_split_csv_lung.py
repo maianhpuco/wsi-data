@@ -36,8 +36,8 @@ def generate_tcga_splits(config):
     df = df.rename(columns={'uuid': 'patient_id', 'filename': 'slide'})
     df['slide'] = df['slide'].str.replace('.svs', '', regex=False)
 
-    df = df[df['slide'].isin(all_pt_files)]
-    print(f"Filtered to {len(df)} slides with existing .pt files")
+    # df = df[df['slide'].isin(all_pt_files)]
+    # print(f"Filtered to {len(df)} slides with existing .pt files")
 
     unique_patients = df[['patient_id', 'label']].drop_duplicates()
     patient_ids = unique_patients['patient_id'].values
