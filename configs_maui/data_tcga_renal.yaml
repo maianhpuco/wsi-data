@@ -32,3 +32,4 @@ paths:
 split_folder: "/project/hnguyen2/mvu9/folder_04_ma/wsi-fs/splits_csv_tcga_renal"
 fold_number: 5
 label_dict: {'KIRP': 0, 'KIRC': 1, 'KICH': 2} 
+patch_size: 256 
