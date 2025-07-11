@@ -36,27 +36,29 @@ def prepare_dataset(args, fold_id):
         raise NotImplementedError(f"[✗] Dataset '{args.dataset_name}' not supported.")
     
 def check_data(fold_id, args):
-    import pandas as pd 
-    
-    train_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv") 
-    val_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/val.csv"),
-    test_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/test.csv") 
-    # import json
+    import pandas as pd
+    import os
+
+    train_csv_path = os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv")
+    val_csv_path   = os.path.join(args.paths['split_folder'], f"fold_{fold_id}/val.csv")
+    test_csv_path  = os.path.join(args.paths['split_folder'], f"fold_{fold_id}/test.csv")
+
     train_df = pd.read_csv(train_csv_path)
     val_df = pd.read_csv(val_csv_path)
-    test_df = pd.read_csv(test_csv_path) 
-    
+    test_df = pd.read_csv(test_csv_path)
+
     train_df['split'] = 'train'
     val_df['split'] = 'val'
     test_df['split'] = 'test'
-     
+
     df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
-    # Optional: check result
+
     print(df_full.head())
     print(f"Total samples: {len(df_full)}")
 
-    # You can save if needed
-    df_full.to_csv("logs/full_dataset.csv", index=False) 
+    # os.makedirs("logs", exist_ok=True)
+    # df_full.to_csv("logs/full_daaset.csv", index=False)
+
     
 # def main(args):
 
