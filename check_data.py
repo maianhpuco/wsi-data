@@ -60,8 +60,9 @@ def check_data(fold_id, data_dir_map_config, args):
     df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
     print(f"Total samples: {len(df_full)}")
 
-    # Prepare output folder
-    log_dir = os.path.join("logs", data_dir_map_config)
+    # Set custom log directory
+    root_log_dir = "/project/hnguyen2/mvu9/folder_04_ma/logs"
+    log_dir = os.path.join(root_log_dir, f"fold_{fold_id}", data_dir_map_config)
     os.makedirs(log_dir, exist_ok=True)
 
     # Get path map for .h5 files
@@ -110,6 +111,7 @@ def check_data(fold_id, data_dir_map_config, args):
     print(f"[INFO] Saved summary to {summary_path}")
 
     return df_summary
+
 
 
 
