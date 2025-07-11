@@ -108,6 +108,21 @@ class Generic_MIL_Dataset(Dataset):
         print(f"Total slides with missing files: {len(missing)}")
         return missing
 
+    def count_existing_feature_files(self, scale='5x'):
+        count = 0
+        for _, row in self.slide_data.iterrows():
+            slide_id = row['slide_id']
+            label = row['label'].lower()
+            if label not in self.data_dir_map or scale not in self.data_dir_map[label]:
+                continue
+            data_dir = self.data_dir_map[label][scale]
+            folder = 'h5_files' if self.use_h5 else 'pt_files'
+            filename = f"{slide_id}.h5" if self.use_h5 else f"{slide_id}.pt"
+            full_path = os.path.join(data_dir, folder, filename)
+            if os.path.exists(full_path):
+                count += 1
+        return count
+
 def return_splits_custom(train_csv_path, 
                           val_csv_path, 
                           test_csv_path, 
@@ -121,7 +136,7 @@ def return_splits_custom(train_csv_path,
         patient_ids = df["patient_id"].dropna().tolist()
         slides = df["slide"].dropna().tolist()
         labels = df["label"].dropna().tolist()
-        
+
         dataset = Generic_MIL_Dataset(
             data_dir_map=data_dir_map,
             patient_ids=patient_ids,
@@ -137,7 +152,11 @@ def return_splits_custom(train_csv_path,
         print(f"\n[{split_name.upper()} SPLIT]")
         print(f"Total slides: {len(dataset)}")
         missing = dataset.count_missing_files_multiscale(scales=scales)
-        print(f"Slides with all scales available: {len(dataset) - len(missing)}")
+        available = len(dataset) - len(missing)
+        print(f"Slides with all scales available: {available}")
+        for scale in scales:
+            count = dataset.count_existing_feature_files(scale=scale)
+            print(f"Files available at scale {scale}: {count}")
 
         return dataset
 
@@ -150,39 +169,3 @@ def return_splits_custom(train_csv_path,
     test_dataset = create_dataset(df_test, "test")
 
     return train_dataset, val_dataset, test_dataset
- 
-
-# def return_splits_custom(train_csv_path, 
-#                           val_csv_path, 
-#                           test_csv_path, 
-#                           data_dir_map, 
-#                           label_dict, 
-#                           seed=1, 
-#                           print_info=False, 
-#                           use_h5=False):
-
-#     df_train = pd.read_csv(train_csv_path)
-#     df_val = pd.read_csv(val_csv_path)
-#     df_test = pd.read_csv(test_csv_path)
-
-#     def create_dataset(df):
-#         patient_ids = df["patient_id"].dropna().tolist()
-#         slides = df["slide"].dropna().tolist()
-#         labels = df["label"].dropna().tolist()
-#         return Generic_MIL_Dataset(
-#             data_dir_map=data_dir_map,
-#             patient_ids=patient_ids,
-#             slides=slides,
-#             labels=labels,
-#             label_dict=label_dict,
-#             shuffle=False,
-#             seed=seed,
-#             print_info=print_info, 
-#             use_h5=use_h5
-#         )
-
-#     train_dataset = create_dataset(df_train)
-#     val_dataset = create_dataset(df_val)
-#     test_dataset = create_dataset(df_test)
-
-#     return train_dataset, val_dataset, test_dataset
