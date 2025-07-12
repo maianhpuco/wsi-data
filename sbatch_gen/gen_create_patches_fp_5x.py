@@ -35,14 +35,17 @@ echo "Done"
 
 # Generate SBATCH files
 for i, dataset in enumerate(datasets):
+    sbatch_name = f"create_patches_fp_5x_{dataset}"    # for .sbatch file and job name
+    log_name = f"cpfp_5x_{dataset}.log"                # for log file
+
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = f"cpfp_5x_{dataset}"
-    log_file = os.path.join(log_dir, f"{job_name}.log")
+    job_name = sbatch_name
+    log_file = os.path.join(log_dir, log_name)
     node = nodes[i % len(nodes)]  # Round-robin node assignment
     sbatch_content = create_sbatch_script(config_path, job_name, log_file, node)
 
-    sbatch_path = os.path.join(sbatch_dir, f"{job_name}.sbatch")
+    sbatch_path = os.path.join(sbatch_dir, f"{sbatch_name}.sbatch")
     with open(sbatch_path, "w") as f:
         f.write(sbatch_content)
 
-    print(f"--> Generated SBATCH: {sbatch_path} (Node: {node})")
+    print(f"--> Generated SBATCH: {sbatch_path} (Log: {log_file}, Node: {node})")
