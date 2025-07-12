@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=create_patches_fp_10x_kich
-#SBATCH --output=logs/create_patches_fp_10x_kich.log
+#SBATCH --output=logs/cpfp_10x_kich.log
 #SBATCH --nodelist=compute-0-1
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4

@@ -293,7 +293,7 @@ if __name__ == '__main__':
 	paths = config['paths']
 	source = paths['source_dir']
 	save_dir = paths['save_dir']
-	patch_save_dir = paths['patch_h5_dir_5x']  # Use patch_h5_dir instead of constructing patches_<patch_size>
+	patch_save_dir = paths['patch_h5_dir_10x']  # Use patch_h5_dir instead of constructing patches_<patch_size>
 	mask_save_dir = paths['mask_save_dir']
 	only_mask_save_dir = paths['only_mask_save_dir']
 	stitch_save_dir = paths['stitch_save_dir']
