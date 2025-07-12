@@ -589,6 +589,8 @@ maui_check_data_lung:
 # 	--magnification 5x \
 # 	--slide_filter_csv /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_kirc.csv \
 
+create_patches_camelyon16_5x:
+	sbatch sbatch_scripts/create_patches_fp_5x_camelyon16.sbatch 
 create_patches_kich_5x:
 	sbatch sbatch_scripts/create_patches_fp_5x_kich.sbatch
 create_patches_kirp_5x:
@@ -600,12 +602,15 @@ create_patches_luad_5x:
 create_patches_lusc_5x:
 	sbatch sbatch_scripts/create_patches_fp_5x_lusc.sbatch
 create_patches_all_5x: \
+	create_patches_camelyon16_5x \
 	create_patches_kich_5x \
 	create_patches_kirp_5x \
 	create_patches_kirc_5x \
 	create_patches_luad_5x \
 	create_patches_lusc_5x
 
+create_patches_camelyon16_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_camelyon16.sbatch 
 create_patches_kich_10x:
 	sbatch sbatch_scripts/create_patches_fp_10x_kich.sbatch
 create_patches_kirp_10x:
@@ -618,9 +623,13 @@ create_patches_lusc_10x:
 	sbatch sbatch_scripts/create_patches_fp_10x_lusc.sbatch
 
 create_patches_all_10x: \
+	create_patches_camelyon16_10x \
 	create_patches_kich_10x \
 	create_patches_kirp_10x \
 	create_patches_kirc_10x \
 	create_patches_luad_10x \
 	create_patches_lusc_10x
+
+
+
 
