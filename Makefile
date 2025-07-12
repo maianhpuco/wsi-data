@@ -589,6 +589,9 @@ maui_check_data_lung:
 # 	--magnification 5x \
 # 	--slide_filter_csv /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_kirc.csv \
 
+
+# ==========================  FEW-SHOT PROCESSING PIPELINE ==========================
+
 create_patches_camelyon16_5x:
 	sbatch sbatch_scripts/create_patches_fp_5x_camelyon16.sbatch 
 create_patches_kich_5x:
@@ -635,3 +638,49 @@ create_patches_all_10x: \
 # python pipeline_fewshot/tcga/extract_conch_fp.py --config config/config_kich.yaml --magnification 5x --patch_size 256
 
 
+extract_camelyon16_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_camelyon16.sbatch
+extract_kich_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_kich.sbatch
+extract_kirp_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_kirp.sbatch
+extract_kirc_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_kirc.sbatch
+extract_luad_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_luad.sbatch
+extract_lusc_5x:
+	sbatch sbatch_scripts/extract_conch_fp_5x_lusc.sbatch
+
+extract_all_5x: \
+	extract_camelyon16_5x \
+	extract_kich_5x \
+	extract_kirp_5x \
+	extract_kirc_5x \
+	extract_luad_5x \
+	extract_lusc_5x
+
+
+extract_camelyon16_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_camelyon16.sbatch
+extract_kich_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_kich.sbatch
+extract_kirp_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_kirp.sbatch
+extract_kirc_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_kirc.sbatch
+extract_luad_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_luad.sbatch
+extract_lusc_10x:
+	sbatch sbatch_scripts/extract_conch_fp_10x_lusc.sbatch
+
+extract_all_10x: \
+	extract_camelyon16_10x \
+	extract_kich_10x \
+	extract_kirp_10x \
+	extract_kirc_10x \
+	extract_luad_10x \
+	extract_lusc_10x
+
+# Run all
+extract_all: extract_all_5x extract_all_10x
+ 
