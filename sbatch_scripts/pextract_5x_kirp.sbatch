@@ -9,7 +9,6 @@
 
 echo "Starting pextract_5x_kirp job on compute-0-2"
 
-python pipeline_fewshot/tcga/patch_extraction.py --config configs_maui/data_kirp.yaml --patch_size 256 --magnification 5x   
+python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_simea/data_kirp.yaml
 
 echo "Done"
-

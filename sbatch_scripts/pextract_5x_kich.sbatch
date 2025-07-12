@@ -9,8 +9,6 @@
 
 echo "Starting pextract_5x_kich job on compute-0-1"
 
-python pipeline_fewshot/tcga/patch_extraction.py --config configs_maui/data_kich.yaml --patch_size 256 --magnification 5x   
+python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_simea/data_kich.yaml
 
 echo "Done"
-
-# python pipeline_fewshot/tcga/patch_extraction_conch.py --config configs_maui/data_kich.yaml --patch_size 256 --magnification 5x   
