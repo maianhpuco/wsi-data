@@ -408,7 +408,7 @@ class WholeSlideImage(object):
     def process_contour(self, cont, contour_holes, patch_level, save_path, patch_size = 256, step_size = 256,
                         contour_fn='four_pt', mag='40', use_padding=True, top_left=None, bot_right=None):
         start_x, start_y, w, h = cv2.boundingRect(cont) if cont is not None else (0, 0, self.level_dim[patch_level][0], self.level_dim[patch_level][1])
-        print("mag": mag)
+        print("mag:",  mag)
         if(mag == '20'):
             patch_size /= 2
             step_size /= 2
