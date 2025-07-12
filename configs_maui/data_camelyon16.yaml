@@ -23,7 +23,18 @@ paths:
   ht_files: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/features_fp/h5_files"
   split_folder: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/splits_csv" 
   gt_h5_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/gt_h5" 
-
+  clip_rn50_features_path: 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/clip_rn50_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/camelyon16/clip_rn50_features_fp_clamver/patch_256x256_5x" 
+  
+  conch_features_path: 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/conch_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/camelyon16/conch_features_fp_clamver/patch_256x256_5x"
+      
+  quilt_features_path: 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/quilt_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/camelyon16/quilt_features_fp_clamver/patch_256x256_5x" 
+  
 fold_number: 5  
 processing:
   patch_size: 256
