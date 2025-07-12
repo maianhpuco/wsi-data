@@ -6,7 +6,11 @@ import pandas as pd
 from tqdm import tqdm
 import yaml
 import sys 
-sys.path.append("src/externals/CLAM")
+# sys.path.append("src/externals/CLAM")
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(base_path)
+print("Search path:", base_path)
+
 # internal imports
 from wsi_core.WholeSlideImage import WholeSlideImage
 from wsi_core.wsi_utils import StitchCoords
