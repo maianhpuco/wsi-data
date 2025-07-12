@@ -284,9 +284,20 @@ class Whole_Slide_Bag_FP(Dataset):
 	def __getitem__(self, idx):
 		with h5py.File(self.file_path,'r') as hdf5_file:
 			coord = hdf5_file['coords'][idx]
-		img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
+		#12 july  === 
+		x, y = map(int, coord)
+		patch_size = int(self.patch_size)
+		patch_level = int(self.patch_level)  
+		img = self.wsi.read_region((x, y), patch_level, (patch_size, patch_size)).convert('RGB')
+		if self.roi_transforms is not None:
+			img = self.roi_transforms(img) 
+  		#12 july  ==== 
+  
+		# img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
+		# Fix: cast to Python int
 
-		img = self.roi_transforms(img)
+
+		# img = self.roi_transforms(img)
 		return {'img': img, 'coord': coord}
 
 class Dataset_All_Bags(Dataset):
