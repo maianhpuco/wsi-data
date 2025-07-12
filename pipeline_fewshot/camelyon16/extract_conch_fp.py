@@ -63,9 +63,9 @@ def main(args):
     source = cfg['paths']['source']
     
     if args.magnification == '5x': 
-        patch_h5_dir = cfg['paths']['patch_h5_dir_5x']
+        patch_h5_dir = cfg['paths']['patch_save_dir_5x']
     elif args.magnification == '10x':
-        patch_h5_dir = cfg['paths']['patch_h5_dir_10x'] 
+        patch_h5_dir = cfg['paths']['patch_save_dir_10x'] 
         
     feat_dir = cfg['paths']['conch_features_path'][key]
     os.makedirs(feat_dir, exist_ok=True)
