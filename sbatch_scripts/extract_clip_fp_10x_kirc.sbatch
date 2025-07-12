@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ecl10x_kirc
-#SBATCH --output=logs_clip/extract_clip_fp_10x_kirc.log
+#SBATCH --output=logs/extract_clip_fp_10x_kirc.log
 #SBATCH --nodelist=compute-0-3
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4

@@ -8,8 +8,8 @@ magnifications = ["5x", "10x"]
 nodes = [f"compute-0-{i}" for i in range(1, 6)]
 
 # Directories and script path
-sbatch_dir = "sbatch_scripts_clip"
-log_dir = "logs_clip"
+sbatch_dir = "sbatch_scripts"
+log_dir = "logs"
 
 # Create output directories if they don't exist
 os.makedirs(sbatch_dir, exist_ok=True)

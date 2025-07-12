@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ecl5x_lusc
-#SBATCH --output=logs_clip/extract_clip_fp_5x_lusc.log
+#SBATCH --output=logs/extract_clip_fp_5x_lusc.log
 #SBATCH --nodelist=compute-0-5
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
