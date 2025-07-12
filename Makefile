@@ -565,20 +565,29 @@ maui_check_data_lung:
 	python check_data.py --config configs_maui/data_tcga_lung.yaml --k_start 1 --k_end 1
 
 simea_pextract_conch_kich_5x:
-	CUDA_VISIBLE_DEVICES=1 python pipeline_fewshot/tcga/patch_extraction_conch_from_files.py --config configs_simea/data_kich.yaml --patch_size 256 --magnification 5x 
+	CUDA_VISIBLE_DEVICES=1 python pipeline_fewshot/tcga/create_features_conch_from_files.py --config configs_simea/data_kich.yaml --patch_size 256 --magnification 5x 
 simea_pextract_conch_kirp_5x:
-	CUDA_VISIBLE_DEVICES=2 python pipeline_fewshot/tcga/patch_extraction_conch_from_files.py --config configs_simea/data_kirp.yaml --patch_size 256 --magnification 5x
+	CUDA_VISIBLE_DEVICES=2 python pipeline_fewshot/tcga/create_features_conch_from_files.py --config configs_simea/data_kirp.yaml --patch_size 256 --magnification 5x
 simea_pextract_conch_kirc_5x:
-	CUDA_VISIBLE_DEVICES=3 python pipeline_fewshot/tcga/patch_extraction_conch_from_files.py --config configs_simea/data_kirc.yaml --patch_size 256 --magnification 5x \
+	CUDA_VISIBLE_DEVICES=3 python pipeline_fewshot/tcga/create_features_conch_from_files.py --config configs_simea/data_kirc.yaml --patch_size 256 --magnification 5x \
 	--missing_file /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_kirc.csv 
 simea_pextract_conch_luad_5x:
-	CUDA_VISIBLE_DEVICES=4 python pipeline_fewshot/tcga/patch_extraction_conch_from_files.py --config configs_simea/data_luad.yaml --patch_size 256 --magnification 5x \
+	CUDA_VISIBLE_DEVICES=4 python pipeline_fewshot/tcga/create_features_conch_from_files.py --config configs_simea/data_luad.yaml --patch_size 256 --magnification 5x \
 	--missing_file /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_luad.csv  
 simea_pextract_conch_lusc_5x:
-	CUDA_VISIBLE_DEVICES=5 python pipeline_fewshot/tcga/patch_extraction_conch_from_files.py --config configs_simea/data_lusc.yaml --patch_size 256 --magnification 5x \
+	CUDA_VISIBLE_DEVICES=5 python pipeline_fewshot/tcga/create_features_conch_from_files.py --config configs_simea/data_lusc.yaml --patch_size 256 --magnification 5x \
 	--missing_file /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_lusc.csv   
 
 simea_pextract_conch:
 	simea_pextract_conch_kirc_5x \
 	simea_pextract_conch_luad_5x \
 	simea_pextract_conch_lusc_5x
+
+# simea_pg_5x_kirc: 
+# 	patch_generation_from_files.p  --config config.yaml \
+# 	--patch_size 256 \
+# 	--magnification 5x \
+# 	--slide_filter_csv /home/mvu9/folder_04_ma/missing_tcga/conch_patch_256x256_5x/missing_kirc.csv \
+
+simea_cf_kich_5x:
+	CUDA_VISIBLE_DEVICES=1 python pipeline_fewshot/tcga/create_features_fp.py --config configs_simea/data_kich.yaml --patch_size 256 --magnification 5x

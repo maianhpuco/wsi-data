@@ -3,6 +3,8 @@ paths:
   source_dir: "/project/hnguyen2/mvu9/datasets/TCGA-datasets/KIRC"
   save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc"
   patch_h5_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/patches_h5"
+  patch_h5_dir_5x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/patches_h5_5x"
+  patch_h5_dir_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/patches_h5_10x"
   # patch_png_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/patches_png"
   patch_png_dir:
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/png_patches/patch_256x256_10x"

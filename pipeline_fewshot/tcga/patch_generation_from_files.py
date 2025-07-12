@@ -13,41 +13,6 @@ def load_config(path):
         return yaml.safe_load(f)
 
 def get_patch_params(magnification):
-    '''
-    At 20x, each pixel in the slide represents a small area of tissue. So reading a 512×512 region gives you a small field of view — high detail. 
-    
-    ):
-
-    Get patch extraction parameters based on target magnification level.
-
-    This function determines how large a region (in pixels) should be read from
-    a Whole Slide Image (WSI) scanned at 40x magnification, in order to simulate
-    patch extraction at a lower magnification (e.g., 5x, 10x, or 20x).
-
-    All extracted patches are resized to a fixed output size (e.g., 256x256 pixels)
-    regardless of the input magnification, for consistency during training or inference.
-
-    Parameters:
-    -----------
-    magnification : str
-        The desired magnification level as a string. Must be one of:
-        '5x', '10x', or '20x'.
-
-    Returns:
-    --------
-    input_size : int
-        The size (in pixels) of the region to read from the WSI at 40x,
-        such that it corresponds to the desired magnification's field of view.
-
-    output_size : int
-        The target size (in pixels) for the saved patch after resizing.
-        Fixed to 256x256 to ensure uniform patch size across magnifications.
-
-    Raises:
-    -------
-    ValueError:
-        If the provided magnification level is unsupported.
-    ''' 
     output_size = 256
     if magnification == '5x':
         input_size = 2048  # Save all patches as 256x256 regardless of mag 
@@ -80,7 +45,8 @@ def build_slide_path_lookup(slide_name_file, uuid_name_file, slide_dir, ext=".ti
 
     return slide_paths
 
-def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magnification):
+def generate_patch(
+    h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magnification):
     slide_id = h5_file_name.replace('.h5', '')
     slide_path = slide_paths.get(slide_id)
     h5_path = os.path.join(patch_h5_dir, h5_file_name)
@@ -131,7 +97,7 @@ def generate_patch(h5_file_name, slide_paths, patch_h5_dir, patch_png_dir, magni
         print(f"[ERROR] {slide_id}: {e}")
         with open(error_log_path, 'a') as f:
             f.write(f"{slide_id} - {str(e)}\n")
- 
+            
 def main(args, config):
     patch_h5_dir = config['paths']['patch_h5_dir']
     patch_png_map = config['paths'].get('patch_png_dir', {})
@@ -140,20 +106,29 @@ def main(args, config):
     uuid_name_file = config['paths']['uuid_name_file']
     slide_ext = config.get('feature_extraction', {}).get('slide_ext', '.svs')
 
+    # Load allowed slide_ids from CSV
+    slide_filter_csv = config['paths'].get('slide_filter_csv', None)
+    allowed_slide_ids = None
+    if slide_filter_csv and os.path.exists(slide_filter_csv):
+        df_filter = pd.read_csv(slide_filter_csv)
+        allowed_slide_ids = set(df_filter['slide_id'].astype(str).str.replace(slide_ext, '', regex=False))
+
     key = f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"
     patch_png_dir = patch_png_map.get(key)
     if patch_png_dir is None:
         raise ValueError(f"Missing patch_png_dir for key: '{key}'")
     os.makedirs(patch_png_dir, exist_ok=True)
 
-    # Build slide ID → path map
     slide_paths = build_slide_path_lookup(slide_name_file, uuid_name_file, slide_dir, ext=slide_ext)
 
-    # Process each .h5 patch file
     h5_files = sorted([f for f in os.listdir(patch_h5_dir) if f.endswith('.h5')])
+    if allowed_slide_ids is not None:
+        h5_files = [f for f in h5_files if f.replace('.h5', '') in allowed_slide_ids]
+
     with ThreadPoolExecutor(max_workers=16) as executor:
         for h5_file in tqdm(h5_files, desc="Dispatching patch generation"):
             executor.submit(generate_patch, h5_file, slide_paths, patch_h5_dir, patch_png_dir, args.magnification)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
