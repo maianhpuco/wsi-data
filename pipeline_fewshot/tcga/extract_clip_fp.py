@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import yaml
 import torch
 import argparse
@@ -12,6 +11,7 @@ from PIL import ImageFile
 import openslide
 from torch.utils.data import DataLoader
 from torchvision import transforms
+import clip
 
 # Handle truncated images
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -19,13 +19,12 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 # Setup paths
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(base_path)
-sys.path.append(os.path.join(base_path, "src/externals/CONCH"))
 
 # Imports
-from conch.open_clip_custom import create_model_from_pretrained
 from utils.file_utils import save_hdf5
 from dataset_modules.dataset_h5 import Dataset_All_Bags, Whole_Slide_Bag_FP
 
+# Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_config(path):
@@ -46,7 +45,7 @@ def compute_w_loader(output_path, loader, model):
         with torch.inference_mode():
             imgs = data['img'].to(device)
             coords = data['coord'].numpy().astype(np.int32)
-            feats = model(imgs).cpu().numpy().astype(np.float32)
+            feats = model.encode_image(imgs).cpu().numpy().astype(np.float32)
 
         save_hdf5(output_path, {'features': feats, 'coords': coords}, attr_dict=None, mode=mode)
         mode = 'a'
@@ -54,17 +53,16 @@ def compute_w_loader(output_path, loader, model):
 
 def main(args):
     cfg = load_config(args.config)
-    conch_cfg = cfg['conch_feature_extraction']
+    clip_cfg = cfg['clip_feature_extraction']
 
     # === Load config paths ===
     source_dir = cfg['paths']['source_dir']
-    # patch_h5_dir = cfg['paths']['patch_h5_dir']
-    if args.magnification == '5x': 
+    if args.magnification == '5x':
         patch_h5_dir = cfg['paths']['patch_h5_dir_5x']
     elif args.magnification == '10x':
-        patch_h5_dir = cfg['paths']['patch_h5_dir_10x']  
-        
-    feat_dir = cfg['paths']['conch_features_path'][f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"]
+        patch_h5_dir = cfg['paths']['patch_h5_dir_10x']
+
+    feat_dir = cfg['paths']['clip_rn50_features_path'][f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"]
     os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
     os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
 
@@ -77,7 +75,7 @@ def main(args):
     uuid_df = pd.read_excel(uuid_name_file)
     uuid_map = dict(zip(uuid_df['Filename'], uuid_df['UUID']))
 
-    slide_ext = conch_cfg.get("slide_ext", ".svs")
+    slide_ext = clip_cfg.get("slide_ext", ".svs")
     slide_files = [s for s in slide_df['Filename'] if s in uuid_map]
 
     slide_paths = {}
@@ -96,16 +94,15 @@ def main(args):
         for sid in slide_paths.keys():
             f.write(sid + slide_ext + '\n')
 
-    # === Load model ===
-    model, _ = create_model_from_pretrained(conch_cfg['model_name'], conch_cfg['assets_dir'])
-    model.forward = lambda x: model.encode_image(x, proj_contrast=False, normalize=False)
-    model = model.to(device).eval()
-    img_transform = eval_transforms_clip()
+    # === Load CLIP model ===
+    model, _ = clip.load("RN50", device=device, download_root=clip_cfg.get("cache_dir", "./clip_cache"))
+    model = model.eval()
+    img_transform = eval_transforms_clip(pretrained=True)
 
     dataset = Dataset_All_Bags(csv_path)
     saved = os.listdir(os.path.join(feat_dir, 'pt_files'))
-    batch_size = conch_cfg.get("batch_size", 64)
-    no_auto_skip = conch_cfg.get("no_auto_skip", False)
+    batch_size = clip_cfg.get("batch_size", 64)
+    no_auto_skip = clip_cfg.get("no_auto_skip", False)
     loader_kwargs = {'num_workers': 8, 'pin_memory': True} if torch.cuda.is_available() else {}
 
     for idx in tqdm(range(len(dataset))):
@@ -143,7 +140,7 @@ def main(args):
             continue
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CONCH feature extraction for TCGA KICH/KIRC/KIRP")
+    parser = argparse.ArgumentParser(description="CLIP-ResNet50 feature extraction for TCGA")
     parser.add_argument('--config', type=str, required=True)
     parser.add_argument('--magnification', type=str, required=True)
     parser.add_argument('--patch_size', type=int, required=True)
