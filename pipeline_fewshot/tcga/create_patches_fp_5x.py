@@ -58,7 +58,7 @@ def patching(WSI_object, **kwargs):
 	# elif mag == '40x':
 	# 	_mag = '40'
 	# Patch
- 	_mag ='5' 
+	_mag ='5' 
 	magnification = WSI_object.wsi.properties.get('aperio.AppMag', _mag)  # default to 20x
 	# magnification = WSI_object.wsi.properties['aperio.AppMag']
 	kwargs['mag'] = str(magnification)
