@@ -684,7 +684,6 @@ extract_all_10x: \
 # Run all
 extract_all: extract_all_5x extract_all_10x
 extract_b1: \
-	extract_camelyon16_10x \
 	extract_kich_10x \
 	extract_kirp_10x \
 	extract_kirc_10x \
@@ -692,8 +691,10 @@ extract_b1: \
 	extract_kich_5x \
 	extract_kirp_5x \
 	extract_kirc_5x 
+	
 extract_b2: \
 	extract_luad_10x \
 	extract_luad_5x \
 	extract_lusc_5x \
-	extract_camelyon16_5x
+	extract_camelyon16_5x \
+	extract_camelyon16_10x 
