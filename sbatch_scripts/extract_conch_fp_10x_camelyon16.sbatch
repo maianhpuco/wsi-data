@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=ec10x_camelyon16
 #SBATCH --output=logs/extract_conch_fp_10x_camelyon16.log
-#SBATCH --nodelist=compute-0-1
+#SBATCH --nodelist=compute-0-6
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --time=1-00:00:00

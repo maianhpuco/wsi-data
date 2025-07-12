@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=cp5x_luad
 #SBATCH --output=logs/create_patches_fp_5x_luad.log
-#SBATCH --nodelist=compute-0-4
+#SBATCH --nodelist=compute-0-7
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --time=1-00:00:00  # 1 day
