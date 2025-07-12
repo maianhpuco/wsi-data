@@ -692,3 +692,8 @@ extract_b1: \
 	extract_kich_5x \
 	extract_kirp_5x \
 	extract_kirc_5x 
+extract_b2: \
+	extract_luad_10x \
+	extract_luad_5x \
+	extract_lusc_5x \
+	extract_camelyon16_5x
