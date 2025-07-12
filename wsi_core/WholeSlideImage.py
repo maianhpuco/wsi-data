@@ -418,7 +418,7 @@ class WholeSlideImage(object):
         elif mag == '5':
             patch_size /= 8
             step_size /= 8
-
+        return 
         patch_downsample = (int(self.level_downsamples[patch_level][0]), int(self.level_downsamples[patch_level][1]))
         ref_patch_size = (patch_size*patch_downsample[0], patch_size*patch_downsample[1])
 
