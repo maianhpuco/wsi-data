@@ -35,7 +35,7 @@ echo "Done"
 
 # Generate SBATCH files
 for i, dataset in enumerate(datasets):
-    job_name = f"cpfp_5x_{dataset}"                         # short name shown in squeue
+    job_name = f"cp5x_{dataset}"                         # short name shown in squeue
     log_name = f"create_patches_fp_5x_{dataset}.log"        # full descriptive log file
     sbatch_name = f"create_patches_fp_5x_{dataset}"         # filename for the sbatch script
 

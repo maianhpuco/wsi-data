@@ -1,6 +1,5 @@
 #!/bin/bash
-
-#SBATCH --job-name=cpfp_5x_camelyon16
+#SBATCH --job-name=cp5x_camelyon16
 #SBATCH --output=logs/create_patches_fp_5x_camelyon16.log
 #SBATCH --nodelist=compute-0-6
 #SBATCH --mem=24G
