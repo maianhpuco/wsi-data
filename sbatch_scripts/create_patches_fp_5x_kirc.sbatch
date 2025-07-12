@@ -9,6 +9,6 @@
 
 echo "Starting create_patches_fp_5x_kirc job on compute-0-3"
 
-python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_simea/data_kirc.yaml
+python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_maui/data_kirc.yaml
 
 echo "Done"

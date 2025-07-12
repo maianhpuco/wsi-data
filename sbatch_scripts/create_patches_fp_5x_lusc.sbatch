@@ -9,6 +9,6 @@
 
 echo "Starting create_patches_fp_5x_lusc job on compute-0-5"
 
-python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_simea/data_lusc.yaml
+python pipeline_fewshot/tcga/create_patches_fp_5x.py --config configs_maui/data_lusc.yaml
 
 echo "Done"
