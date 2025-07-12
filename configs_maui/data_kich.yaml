@@ -68,7 +68,7 @@ clip_feature_extraction:
 
 
 conch_feature_extraction:
-  model_name: "conch_ViT-B-16"
+  model_name: "conch_ViT-B-16" 
   batch_size: 64
   target_patch_size: 224
   slide_ext: .svs
