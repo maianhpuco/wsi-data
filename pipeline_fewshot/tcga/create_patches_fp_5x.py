@@ -46,18 +46,19 @@ def segment(WSI_object, seg_params, filter_params):
 	seg_time_elapsed = time.time() - start_time
 	return WSI_object, seg_time_elapsed
 
-def patching(WSI_object, mag='20x', **kwargs):
+def patching(WSI_object, **kwargs):
 	### Start Patch Timer
 	start_time = time.time()
-	if mag == '20x':
-		_mag = '20'
-	elif mag == '10x':
-		_mag = '10'
-	elif mag == '5x':
-		_mag = '5'
-	elif mag == '40x':
-		_mag = '40'
+	# if mag == '20x':
+	# 	_mag = '20'
+	# elif mag == '10x':
+	# 	_mag = '10'
+	# elif mag == '5x':
+	# 	_mag = '5'
+	# elif mag == '40x':
+	# 	_mag = '40'
 	# Patch
+ 	_mag ='5' 
 	magnification = WSI_object.wsi.properties.get('aperio.AppMag', _mag)  # default to 20x
 	# magnification = WSI_object.wsi.properties['aperio.AppMag']
 	kwargs['mag'] = str(magnification)
@@ -244,7 +245,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, only_mask_sav
 		if patch:
 			current_patch_params.update({'patch_level': patch_level, 'patch_size': patch_size, 'step_size': step_size,
 										 'save_path': patch_save_dir})
-			file_path, patch_time_elapsed = patching(WSI_object = WSI_object,  mag=args.magnification, **current_patch_params,)
+			file_path, patch_time_elapsed = patching(WSI_object = WSI_object, **current_patch_params,)
 
 		stitch_time_elapsed = -1
 		if stitch:
