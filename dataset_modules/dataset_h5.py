@@ -288,6 +288,7 @@ class Whole_Slide_Bag_FP(Dataset):
 		x, y = map(int, coord)
 		patch_size = int(self.patch_size)
 		patch_level = int(self.patch_level)  
+		print("Coordinates:", coord)
 		img = self.wsi.read_region((x, y), patch_level, (patch_size, patch_size)).convert('RGB')
   		
 		print("Patch size before transform:", img.size)
