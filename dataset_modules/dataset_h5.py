@@ -289,8 +289,12 @@ class Whole_Slide_Bag_FP(Dataset):
 		patch_size = int(self.patch_size)
 		patch_level = int(self.patch_level)  
 		img = self.wsi.read_region((x, y), patch_level, (patch_size, patch_size)).convert('RGB')
+  		
+		print("Patch size before transform:", img.size)
+   
 		if self.roi_transforms is not None:
 			img = self.roi_transforms(img) 
+			print("Patch size after transform:", img.shape)
   		#12 july  ==== 
   
 		# img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
