@@ -75,7 +75,7 @@ def main(args):
     os.makedirs(os.path.join(feat_dir, 'h5_files'), exist_ok=True)
 
     # Generate CSV
-    slide_ext = conch_cfg.get("slide_ext", ".tiff")
+    slide_ext = conch_cfg.get("slide_ext", ".tif")
     slide_files = [f for f in os.listdir(source) if f.endswith(slide_ext)]
     if not slide_files:
         print(f"[✗] No slides found in {source}")
