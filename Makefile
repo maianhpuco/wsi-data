@@ -700,3 +700,51 @@ extract_b2: \
 	extract_camelyon16_10x 
 
 # python pipeline_fewshot/tcga/extract_clip_fp.py --config config/config_kich.yaml --magnification 5x --patch_size 256
+
+
+# ---- CLIP 5x ----
+extract_clip_camelyon16_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_camelyon16.sbatch
+extract_clip_kich_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_kich.sbatch
+extract_clip_kirp_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_kirp.sbatch
+extract_clip_kirc_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_kirc.sbatch
+extract_clip_luad_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_luad.sbatch
+extract_clip_lusc_5x:
+	sbatch sbatch_scripts/extract_clip_fp_5x_lusc.sbatch
+
+extract_clip_all_5x: \
+	extract_clip_camelyon16_5x \
+	extract_clip_kich_5x \
+	extract_clip_kirp_5x \
+	extract_clip_kirc_5x \
+	extract_clip_luad_5x \
+	extract_clip_lusc_5x
+
+# ---- CLIP 10x ----
+extract_clip_camelyon16_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_camelyon16.sbatch
+extract_clip_kich_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_kich.sbatch
+extract_clip_kirp_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_kirp.sbatch
+extract_clip_kirc_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_kirc.sbatch
+extract_clip_luad_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_luad.sbatch
+extract_clip_lusc_10x:
+	sbatch sbatch_scripts/extract_clip_fp_10x_lusc.sbatch
+
+extract_clip_all_10x: \
+	extract_clip_camelyon16_10x \
+	extract_clip_kich_10x \
+	extract_clip_kirp_10x \
+	extract_clip_kirc_10x \
+	extract_clip_luad_10x \
+	extract_clip_lusc_10x
+
+# ---- Run All CLIP ----
+extract_clip_all: extract_clip_all_5x extract_clip_all_10x
