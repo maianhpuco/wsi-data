@@ -606,3 +606,21 @@ create_patches_all_5x: \
 	create_patches_luad_5x \
 	create_patches_lusc_5x
 
+create_patches_kich_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_kich.sbatch
+create_patches_kirp_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_kirp.sbatch
+create_patches_kirc_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_kirc.sbatch
+create_patches_luad_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_luad.sbatch
+create_patches_lusc_10x:
+	sbatch sbatch_scripts/create_patches_fp_10x_lusc.sbatch
+
+create_patches_all_10x: \
+	create_patches_kich_10x \
+	create_patches_kirp_10x \
+	create_patches_kirc_10x \
+	create_patches_luad_10x \
+	create_patches_lusc_10x
+
