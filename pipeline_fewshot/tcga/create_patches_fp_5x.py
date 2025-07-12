@@ -309,8 +309,8 @@ if __name__ == '__main__':
 	seg = proc['seg']
 	patch = proc['patch']
 	stitch = proc['stitch']
-	auto_skip = proc['auto_skip']
-
+	# auto_skip = proc['auto_skip']
+	auto_skip = False 
 	# ====== added ======
 	if args.csv_filenames == "yes":
 		csv_filter_path = paths["missing_patches_h5"]
