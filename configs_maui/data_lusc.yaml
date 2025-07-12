@@ -19,17 +19,29 @@ paths:
   preset_file: "/project/hnguyen2/mvu9/folder_04_ma/wsi-data/presets/tcga_vilamil.csv"
   manifest_dir: "/project/hnguyen2/mvu9/download_tcga/gdc-client/manifest/LUSC"
 
-  # clip_rn50_features_path: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features" 
+  # clip_rn50_features_path: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_fseatures" 
+  # clip_rn50_features_path: 
+  #   patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_10x" 
+  #   patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_5x" 
+  # conch_features_path: 
+  #   patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_10x" 
+  #   patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_5x" 
+  # quilt_features_path: 
+  #   patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_10x" 
+  #   patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_5x" 
+  
   clip_rn50_features_path: 
-    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_10x" 
-    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp/patch_256x256_5x" 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/clip_rn50_features_fp_clamver/patch_256x256_5x" 
+  
   conch_features_path: 
-    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_10x" 
-    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp/patch_256x256_5x" 
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/conch_features_fp_clamver/patch_256x256_5x"
+      
   quilt_features_path: 
-    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_10x" 
-    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp/patch_256x256_5x" 
-     
+    patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp_clamver/patch_256x256_10x" 
+    patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/lusc/quilt_features_fp_clamver/patch_256x256_5x" 
+   
 # Processing parameters
 processing:
   patch_size: 256
