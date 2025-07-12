@@ -6,7 +6,11 @@ paths:
   
   label_file: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/camil_label_file/camelyon_17_splits/splits_0.csv"
   save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16"
+  
   patch_save_dir: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/patches"
+  patch_save_dir_5x: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/patches_5x"
+  patch_save_dir_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/patches_10x"
+
   patch_png_dir:
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/png_patches/patch_256x256_10x"
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/processing_camelyon16/png_patches/patch_256x256_5x"
