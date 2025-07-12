@@ -409,19 +409,34 @@ class WholeSlideImage(object):
                         contour_fn='four_pt', mag='40', use_padding=True, top_left=None, bot_right=None):
         start_x, start_y, w, h = cv2.boundingRect(cont) if cont is not None else (0, 0, self.level_dim[patch_level][0], self.level_dim[patch_level][1])
         print("mag:",  mag)
-        if(mag == '20'):
-            patch_size /= 2
-            step_size /= 2
-        elif mag == '10':
-            patch_size /= 4
-            step_size /= 4
-        elif mag == '5':
-            patch_size /= 8
-            step_size /= 8
+        # if(mag == '20'):
+        #     patch_size *= 2
+        #     step_size *= 2
+        # elif mag == '10':
+        #     patch_size *= 4
+        #     step_size *= 4
+        # elif mag == '5':
+        #     patch_size *= 8
+        #     step_size *= 8
+        # Define desired patch size in full resolution (level 0)
+        #july 12 
+        MAG_TO_REF_PATCH_SIZE = {
+            '20': 512,
+            '10': 1024,
+            '5': 2048
+        }
+        ref_size = MAG_TO_REF_PATCH_SIZE[mag]
+
+        # Calculate downsample factor
+        downsample = self.level_downsamples[patch_level][0]  # assume x and y are equal
+        patch_size = int(ref_size / downsample)
+        step_size = patch_size  # You can make step smaller for overlap
+        
+        #july 12   
         # return 
         patch_downsample = (int(self.level_downsamples[patch_level][0]), int(self.level_downsamples[patch_level][1]))
         ref_patch_size = (patch_size*patch_downsample[0], patch_size*patch_downsample[1])
-
+        print("Patch Size (ref_patch_size):", ref_patch_size)
         img_w, img_h = self.level_dim[0]
         if use_padding:
             stop_y = start_y+h
