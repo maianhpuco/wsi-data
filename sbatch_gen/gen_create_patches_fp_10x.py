@@ -35,11 +35,11 @@ echo "Done"
 
 # Generate SBATCH files
 for i, dataset in enumerate(datasets):
-    sbatch_name = f"create_patches_fp_10x_{dataset}"    # for .sbatch file and job name
-    log_name = f"cpfp_10x_{dataset}.log"                # for log file
+    job_name = f"cpfp_10x_{dataset}"                         # short name shown in squeue
+    log_name = f"create_patches_fp_10x_{dataset}.log"        # full descriptive log file
+    sbatch_name = f"create_patches_fp_10x_{dataset}"         # filename for the sbatch script
 
     config_path = f"configs_maui/data_{dataset}.yaml"
-    job_name = sbatch_name
     log_file = os.path.join(log_dir, log_name)
     node = nodes[i % len(nodes)]  # Round-robin node assignment
     sbatch_content = create_sbatch_script(config_path, job_name, log_file, node)
