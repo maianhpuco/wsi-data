@@ -36,3 +36,26 @@ processing:
   patch: true
   stitch: false
   auto_skip: true
+
+clip_feature_extraction:
+  model_name: clip_RN50  # or clip_ViTB32, resnet50_trunc, model_dino, etc.
+  batch_size: 64 
+  assets_dir: /project/hnguyen2/mvu9/pretrained_checkpoints  # only needed for DINO or other custom models ckpt_path = os.path.join(args.assets_dir, f'{args.model_name}.pth')
+  cache_dir: /home/mvu9/model_cache  # clip.load("ViT-B/32", download_root=args.cache_dir)
+ 
+
+conch_feature_extraction:
+  model_name: conch_v1
+  batch_size: 64
+  target_patch_size: 224
+  slide_ext: .svs
+  no_auto_skip: false
+  assets_dir:  /home/mvu9/pretrained_checkpoints/conch_checkpoints/pytorch_model.bin
+
+quilt_feature_extraction:
+  model_name: quilt
+  batch_size: 64
+  target_patch_size: 224
+  slide_ext: .svs
+  no_auto_skip: false 
+  assets_dir:  /home/mvu9/pretrained_checkpoints/QuiltNet-B-32 
