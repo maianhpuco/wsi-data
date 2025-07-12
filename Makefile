@@ -632,5 +632,6 @@ create_patches_all_10x: \
 
 
 # python pipeline_fewshot/camelyon16/extract_conch_fp.py --config config/config_kich.yaml --magnification 5x --patch_size 256
+# python pipeline_fewshot/tcga/extract_conch_fp.py --config config/config_kich.yaml --magnification 5x --patch_size 256
 
 
