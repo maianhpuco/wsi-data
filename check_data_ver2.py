@@ -81,30 +81,41 @@ def check_data(fold_id, data_dir_map_config, args):
         print(f"[✓] Found {available} files, [✗] Missing {missing} files.")
 
         if missing_list:
-            log_dir = os.path.join("/project/hnguyen2/mvu9/folder_04_ma/logs", "missing_camelyon16", data_dir_map_config)
+            log_dir = os.path.join(
+                "/project/hnguyen2/mvu9/folder_04_ma/logs",
+                "missing_camelyon16",
+                data_dir_map_config
+            )
             os.makedirs(log_dir, exist_ok=True)
             df_missing = pd.DataFrame(missing_list, columns=["slide_id"])
             save_path = os.path.join(log_dir, f"missing_fold{fold_id}.csv")
             df_missing.to_csv(save_path, index=False)
-            print(f"[✎] Missing slide list saved to {save_path}") 
-    else:
-        train_csv_path = os.path.join(split_dir, f"fold_{fold_id}/train.csv")
-        val_csv_path   = os.path.join(split_dir, f"fold_{fold_id}/val.csv")
-        test_csv_path  = os.path.join(split_dir, f"fold_{fold_id}/test.csv")
+            print(f"[✎] Missing slide list saved to {save_path}")
 
-        train_df = pd.read_csv(train_csv_path)
-        val_df   = pd.read_csv(val_csv_path)
-        test_df  = pd.read_csv(test_csv_path)
+        return  # 🛑 Exit early to avoid TCGA block
 
-        train_df['split'] = 'train'
-        val_df['split']   = 'val'
-        test_df['split']  = 'test'
+    # === TCGA section ===
+    train_csv_path = os.path.join(split_dir, f"fold_{fold_id}/train.csv")
+    val_csv_path   = os.path.join(split_dir, f"fold_{fold_id}/val.csv")
+    test_csv_path  = os.path.join(split_dir, f"fold_{fold_id}/test.csv")
 
-        df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
+    train_df = pd.read_csv(train_csv_path)
+    val_df   = pd.read_csv(val_csv_path)
+    test_df  = pd.read_csv(test_csv_path)
 
+    train_df['split'] = 'train'
+    val_df['split']   = 'val'
+    test_df['split']  = 'test'
+
+    df_full = pd.concat([train_df, val_df, test_df], ignore_index=True)
     print(f"Total samples: {len(df_full)}")
 
-    log_dir = os.path.join("/project/hnguyen2/mvu9/folder_04_ma/logs", "missing_tcga", args.dataset_name, data_dir_map_config)
+    log_dir = os.path.join(
+        "/project/hnguyen2/mvu9/folder_04_ma/logs",
+        "missing_tcga",
+        args.dataset_name,
+        data_dir_map_config
+    )
     os.makedirs(log_dir, exist_ok=True)
 
     data_dir_map = args.paths[data_dir_map_config]
@@ -144,6 +155,7 @@ def check_data(fold_id, data_dir_map_config, args):
 
     print(df_summary)
     return df_summary
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
