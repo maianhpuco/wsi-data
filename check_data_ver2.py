@@ -77,7 +77,7 @@ def check_data(fold_id, data_dir_map_config, args):
                 missing += 1
                 missing_list.append((slide_id,))
 
-        print(f"[✓] Found {available} files, [✗] Missing {missing} files.")
+        # print(f"[✓] Found {available} files, [✗] Missing {missing} files.")
 
         if missing_list:
             log_dir = os.path.join(
@@ -89,7 +89,7 @@ def check_data(fold_id, data_dir_map_config, args):
             df_missing = pd.DataFrame(missing_list, columns=["slide_id"])
             save_path = os.path.join(log_dir, f"missing_fold{fold_id}.csv")
             df_missing.to_csv(save_path, index=False)
-            print(f"[✎] Missing slide list saved to {save_path}")
+            # print(f"[✎] Missing slide list saved to {save_path}")
 
         # === Print summary in table format like TCGA
         total = available + missing
