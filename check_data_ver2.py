@@ -91,12 +91,22 @@ def check_data(fold_id, data_dir_map_config, args):
             # print(f"[INFO] Saved missing file list for {label} → {save_path}")
         # else:
             # print(f"[INFO] No missing slides for label: {label}")
-
-    # Save availability summary
+    total_counts = {label: counts["available"] + counts["missing"] for label, counts in label_counts.items()}
     df_summary = pd.DataFrame([
-        {"label": label, "slide_available": counts["available"], "slide_missing": counts["missing"]}
+        {
+            "label": label,
+            "slide_available": counts["available"],
+            "slide_missing": counts["missing"],
+            "%_available": f"{100 * counts['available'] / total_counts[label]:.2f}%",
+            "%_missing": f"{100 * counts['missing'] / total_counts[label]:.2f}%"
+        }
         for label, counts in label_counts.items()
-    ])
+    ]) 
+    # Save availability summary
+    # df_summary = pd.DataFrame([
+    #     {"label": label, "slide_available": counts["available"], "slide_missing": counts["missing"]}
+    #     for label, counts in label_counts.items()
+    # ])
     # print("\n[Slide availability summary]")
     print(df_summary)
 
