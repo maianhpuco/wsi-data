@@ -16,23 +16,6 @@ class Generic_MIL_Dataset(Dataset):
                  use_h5=False, 
                  ignore=[],
                  **kwargs):
-        """
-        Initialize the dataset for MIL classification, supporting .pt and .h5 feature files.
-        
-        Args:
-            data_dir (str or dict): Directory containing feature files (.pt or .h5).
-                                   If dict, maps source names to paths (e.g., {'camelyon16': 'path'}).
-            csv_path (str, optional): Path to CSV with 'slide_id' and 'label' columns.
-            label_dict (dict): Maps label strings to integers (e.g., {'normal': 0, 'tumor': 1}).
-            case_ids (list, optional): List of slide IDs (used with return_splits_custom).
-            labels (list, optional): List of labels (used with return_splits_custom).
-            shuffle (bool): Shuffle data (not used).
-            seed (int): Random seed.
-            print_info (bool): Print dataset info.
-            patient_strat (bool): Stratify by patient (not used).
-            ignore (list): Slides to ignore.
-            **kwargs: Additional arguments (for compatibility).
-        """
         self.data_dir = data_dir
         self.label_dict = label_dict
         self.ignore = ignore
