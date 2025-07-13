@@ -14,8 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(current_dir, 'src')))
 
 def prepare_dataset(args, fold_id):
     if args.dataset_name in ['tcga_renal', 'tcga_lung']:
-        from datasets.single_scale.tcga import return_splits_custom
-        
+        # from datasets.single_scale.tcga import return_splits_custom
+        from datasets.classification.tcga import return_splits_custom 
         patch_size = args.patch_size
         data_dir_map = args.data_dir_map_config
         data_dir_mapping = args.paths[data_dir_map]
