@@ -37,7 +37,12 @@ paths:
   quilt_features_path: 
     patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/quilt_features_fp_clamver/patch_256x256_10x" 
     patch_256x256_5x:  "/project/hnguyen2/mvu9/processing_datasets/camelyon16/quilt_features_fp_clamver/patch_256x256_5x" 
-  
+  # Additional variable-style names for convenience
+  conch_patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/conch_features_fp_clamver/patch_256x256_10x"
+  conch_patch_256x256_5x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/conch_features_fp_clamver/patch_256x256_5x"
+  clip_rn50_patch_256x256_10x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/clip_rn50_features_fp_clamver/patch_256x256_10x"
+  clip_rn50_patch_256x256_5x: "/project/hnguyen2/mvu9/processing_datasets/camelyon16/clip_rn50_features_fp_clamver/patch_256x256_5x" 
+
 fold_number: 5  
 processing:
   patch_size: 256

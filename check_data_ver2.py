@@ -58,11 +58,35 @@ def check_data(fold_id, data_dir_map_config, args):
         for split in ["train", "val", "test"]:
             dfs.append(pd.DataFrame({
                 "slide": df[split],
-                "label": df[f"{split}_label"],
                 "split": split
             }))
         df_full = pd.concat(dfs, ignore_index=True).dropna()
-        df_full['label'] = df_full['label'].astype(int)
+
+        print(f"Total samples: {len(df_full)}")
+
+        data_dir = args.paths[data_dir_map_config]
+        h5_dir = os.path.join(data_dir, "h5_files")
+
+        available, missing = 0, 0
+        missing_list = []
+
+        for slide_id in df_full['slide']:
+            slide_path = os.path.join(h5_dir, f"{slide_id}.h5")
+            if os.path.exists(slide_path):
+                available += 1
+            else:
+                missing += 1
+                missing_list.append((slide_id,))
+
+        print(f"[✓] Found {available} files, [✗] Missing {missing} files.")
+
+        if missing_list:
+            log_dir = os.path.join("/project/hnguyen2/mvu9/folder_04_ma/logs", "missing_camelyon16", data_dir_map_config)
+            os.makedirs(log_dir, exist_ok=True)
+            df_missing = pd.DataFrame(missing_list, columns=["slide_id"])
+            save_path = os.path.join(log_dir, f"missing_fold{fold_id}.csv")
+            df_missing.to_csv(save_path, index=False)
+            print(f"[✎] Missing slide list saved to {save_path}") 
     else:
         train_csv_path = os.path.join(split_dir, f"fold_{fold_id}/train.csv")
         val_csv_path   = os.path.join(split_dir, f"fold_{fold_id}/val.csv")
