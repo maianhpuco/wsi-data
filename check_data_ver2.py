@@ -50,7 +50,6 @@ def prepare_dataset(args, fold_id):
 
 def check_data(fold_id, data_dir_map_config, args):
     split_dir = args.paths['split_folder']
-
     if args.dataset_name == 'camelyon16':
         split_csv_path = os.path.join(split_dir, f"fold_{fold_id}.csv")
         df = pd.read_csv(split_csv_path)
@@ -92,7 +91,18 @@ def check_data(fold_id, data_dir_map_config, args):
             df_missing.to_csv(save_path, index=False)
             print(f"[✎] Missing slide list saved to {save_path}")
 
-        return  # 🛑 Exit early to avoid TCGA block
+        # === Print summary in table format like TCGA
+        total = available + missing
+        df_summary = pd.DataFrame([{
+            "slide_available": available,
+            "slide_missing": missing,
+            "%_available": f"{100 * available / total:.2f}%",
+            "%_missing": f"{100 * missing / total:.2f}%"
+        }])
+
+        print(df_summary)
+        return df_summary
+
 
     # === TCGA section ===
     train_csv_path = os.path.join(split_dir, f"fold_{fold_id}/train.csv")
