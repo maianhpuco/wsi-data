@@ -35,7 +35,7 @@ def prepare_dataset(args, fold_id):
     
     elif args.dataset_name == 'camelyon16':
         from datasets.classification.camelyon16 import return_splits_custom
-        csv_path = args.paths['split_csv']
+        csv_path = args.paths['split_folder']
         label_dict = args.label_dict
         i=1 
         split_csv_path = os.path.join(csv_path, f'fold_{i}.csv') 
