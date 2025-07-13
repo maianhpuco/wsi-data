@@ -748,3 +748,11 @@ extract_clip_all_10x: \
 
 # ---- Run All CLIP ----
 extract_clip_all: extract_clip_all_5x extract_clip_all_10x
+
+######### 
+maui_check_data_renal:
+	python check_data.py --config configs_maui/data_tcga_renal.yaml --k_start 1 --k_end 1
+
+maui_check_data_lung:
+	python check_data.py --config configs_maui/data_tcga_lung.yaml --k_start 1 --k_end 1
+ 

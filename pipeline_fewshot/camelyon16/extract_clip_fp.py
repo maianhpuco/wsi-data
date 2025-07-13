@@ -58,9 +58,9 @@ def main(args):
     # === Load config paths ===
     source_dir = cfg['paths']['source_dir']
     if args.magnification == '5x':
-        patch_h5_dir = cfg['paths']['patch_h5_dir_5x']
+        patch_h5_dir = cfg['paths']['patch_save_dir_5x']
     elif args.magnification == '10x':
-        patch_h5_dir = cfg['paths']['patch_h5_dir_10x']
+        patch_h5_dir = cfg['paths']['patch_save_dir_10x']
 
     feat_dir = cfg['paths']['clip_rn50_features_path'][f"patch_{args.patch_size}x{args.patch_size}_{args.magnification}"]
     os.makedirs(os.path.join(feat_dir, 'pt_files'), exist_ok=True)
@@ -75,7 +75,7 @@ def main(args):
     uuid_df = pd.read_excel(uuid_name_file)
     uuid_map = dict(zip(uuid_df['Filename'], uuid_df['UUID']))
 
-    slide_ext = clip_cfg.get("slide_ext", ".svs")
+    slide_ext = clip_cfg.get("slide_ext", ".tif")
     slide_files = [s for s in slide_df['Filename'] if s in uuid_map]
 
     slide_paths = {}

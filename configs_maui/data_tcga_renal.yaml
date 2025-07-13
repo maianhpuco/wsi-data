@@ -12,23 +12,43 @@ paths:
     kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/features_fp/pt_files"
     kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/features_fp/pt_files"
 # below are .h5 files 
+  # conch_patch_256x256_5x:  
+  #   kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_5x"
+  #   kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp/patch_256x256_5x"
+  #   kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_5x"
+  # conch_patch_256x256_10x:  
+  #   kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_10x"
+  #   kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp/patch_256x256_10x"
+  #   kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_10x"
+
+  # clip_rn50_patch_256x256_5x:  
+  #   kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_5x"
+  #   kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp/patch_256x256_5x"
+  #   kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_5x"
+  # clip_rn50_patch_256x256_10x:  
+  #   kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_10x"
+  #   kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp/patch_256x256_10x"
+  #   kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_10x" 
+
   conch_patch_256x256_5x:  
-    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_5x"
-    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp/patch_256x256_5x"
-    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_5x"
+    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp_clamver/patch_256x256_5x"
+    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp_clamver/patch_256x256_5x"
+    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp_clamver/patch_256x256_5x"
   conch_patch_256x256_10x:  
-    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp/patch_256x256_10x"
-    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp/patch_256x256_10x"
-    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp/patch_256x256_10x"
+    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/conch_features_fp_clamver/patch_256x256_10x"
+    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/conch_features_fp_clamver/patch_256x256_10x"
+    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/conch_features_fp_clamver/patch_256x256_10x"
 
   clip_rn50_patch_256x256_5x:  
-    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_5x"
-    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp/patch_256x256_5x"
-    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_5x"
+    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp_clamver/patch_256x256_5x"
+    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp_clamver/patch_256x256_5x"
+    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp_clamver/patch_256x256_5x"
   clip_rn50_patch_256x256_10x:  
-    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp/patch_256x256_10x"
-    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp/patch_256x256_10x"
-    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp/patch_256x256_10x" 
+    kich: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kich/clip_rn50_features_fp_clamver/patch_256x256_10x"
+    kirc: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirc/clip_rn50_features_fp_clamver/patch_256x256_10x"
+    kirp: "/project/hnguyen2/mvu9/processing_datasets/processing_tcga_256/kirp/clip_rn50_features_fp_clamver/patch_256x256_10x" 
+
+
 fold_number: 5
 label_dict: {'KIRP': 0, 'KIRC': 1, 'KICH': 2} 
 patch_size: 256 
