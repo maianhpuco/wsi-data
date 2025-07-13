@@ -19,9 +19,7 @@ def prepare_dataset(args, fold_id):
     if args.dataset_name in ['tcga_renal', 'tcga_lung']:
         # from datasets.single_scale.tcga import return_splits_custom
         from datasets.classification.tcga import return_splits_custom 
-        patch_size = args.patch_size
-        
-    
+        # patch_size = args.patch_size
         train_dataset, val_dataset, test_dataset = return_splits_custom(
             train_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv"),
             val_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/val.csv"),
@@ -39,7 +37,7 @@ def prepare_dataset(args, fold_id):
         from datasets.classification.camelyon16 import return_splits_custom
         csv_path = args.paths['split_csv']
         label_dict = args.label_dict
-
+        split_csv_path = os.path.join(csv_path, f'fold_{i}.csv') 
         train_dataset, val_dataset, test_dataset = return_splits_custom(
             csv_path=csv_path,
             data_dir=data_dir_mapping,
