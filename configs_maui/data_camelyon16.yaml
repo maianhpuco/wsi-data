@@ -3,6 +3,7 @@ dataset_name: 'camelyon16'
 
 paths:
   source: "/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images"
+  source_dir: "/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images"
   slide_dir: "/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images" 
   anno_xml_dir: "/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations"
   
