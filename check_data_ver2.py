@@ -87,22 +87,22 @@ def check_data(fold_id, data_dir_map_config, args):
         if missing:
             df_missing = pd.DataFrame(missing, columns=['patient_id', 'slide_id'])
             save_path = os.path.join(log_dir, f"missing_{label_lower}.csv")
-            df_missing.to_csv(save_path, index=False)
-            print(f"[INFO] Saved missing file list for {label} → {save_path}")
-        else:
-            print(f"[INFO] No missing slides for label: {label}")
+            # df_missing.to_csv(save_path, index=False)
+            # print(f"[INFO] Saved missing file list for {label} → {save_path}")
+        # else:
+            # print(f"[INFO] No missing slides for label: {label}")
 
     # Save availability summary
     df_summary = pd.DataFrame([
         {"label": label, "slide_available": counts["available"], "slide_missing": counts["missing"]}
         for label, counts in label_counts.items()
     ])
-    print("\n[Slide availability summary]")
+    # print("\n[Slide availability summary]")
     print(df_summary)
 
     summary_path = os.path.join(log_dir, "slide_availability_summary.csv")
-    df_summary.to_csv(summary_path, index=False)
-    print(f"[INFO] Saved summary to {summary_path}")
+    # df_summary.to_csv(summary_path, index=False)
+    # print(f"[INFO] Saved summary to {summary_path}")
 
     return df_summary
 
@@ -136,6 +136,6 @@ if __name__ == "__main__":
             'clip_rn50_patch_256x256_10x',
         ]
         for data_dir_map_config in data_dir_map_configs:  
-            print(f"Checking data for {data_dir_map_config}...")
+            print(f">> Checking data for {data_dir_map_config}...")
             check_data(fold_id, data_dir_map_config, args)
             print("---------------------------------------")
