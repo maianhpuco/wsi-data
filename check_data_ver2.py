@@ -13,12 +13,14 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(current_dir, 'src')))
 
 def prepare_dataset(args, fold_id):
+    data_dir_map = args.data_dir_map_config
+    data_dir_mapping = args.paths[data_dir_map] 
+    
     if args.dataset_name in ['tcga_renal', 'tcga_lung']:
         # from datasets.single_scale.tcga import return_splits_custom
         from datasets.classification.tcga import return_splits_custom 
         patch_size = args.patch_size
-        data_dir_map = args.data_dir_map_config
-        data_dir_mapping = args.paths[data_dir_map]
+        
     
         train_dataset, val_dataset, test_dataset = return_splits_custom(
             train_csv_path=os.path.join(args.paths['split_folder'], f"fold_{fold_id}/train.csv"),
@@ -32,6 +34,23 @@ def prepare_dataset(args, fold_id):
         ) 
         print(len(train_dataset))
         return train_dataset, val_dataset, test_dataset  
+    
+    elif args.dataset_name == 'camelyon16':
+        from datasets.classification.camelyon16 import return_splits_custom
+        csv_path = args.paths['split_csv']
+        label_dict = args.label_dict
+
+        train_dataset, val_dataset, test_dataset = return_splits_custom(
+            csv_path=csv_path,
+            data_dir=data_dir_mapping,
+            label_dict=label_dict,
+            seed=1,
+            print_info=True,
+            use_h5=args.use_h5 if hasattr(args, 'use_h5') else False
+        )
+        print(f"[INFO] Loaded {len(train_dataset)} train samples")
+        return train_dataset, val_dataset, test_dataset
+
     else:
         raise NotImplementedError(f"[✗] Dataset '{args.dataset_name}' not supported.")
     
